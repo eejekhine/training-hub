@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>COUPLES ROUTINE</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#0c0c0c;--bg2:#141414;--bg3:#1c1c1c;--border:#222;--border2:#2c2c2c;
+  --text:#f0f0f0;--muted:#666;--muted2:#3a3a3a;
+  --pink:#e06a8a;--pink2:#f07a9a;--gold:#e2b96b;--green:#52d98a;--purple:#a06ae0;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+.nav{background:#080808;border-bottom:1px solid var(--border);padding:0 16px;display:flex;align-items:center;overflow-x:auto;position:sticky;top:0;z-index:100}
+.nav::-webkit-scrollbar{height:0}
+.nav-brand{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;background:linear-gradient(135deg,var(--pink),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;padding:16px 16px 16px 0;border-right:1px solid var(--border);margin-right:4px;flex-shrink:0}
+.nav-btn{background:none;border:none;color:var(--muted);font-family:'Barlow',sans-serif;font-size:13px;font-weight:700;letter-spacing:.5px;padding:18px 12px;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;transition:color .15s,border-color .15s;flex-shrink:0}
+.nav-btn:hover{color:var(--text)}
+.nav-btn.active{color:var(--pink);border-bottom-color:var(--pink)}
+
+.screen{display:none;max-width:620px;margin:0 auto;padding:24px 18px 80px}
+.screen.active{display:block}
+
+.hero{text-align:center;padding:36px 18px 28px;border-bottom:1px solid var(--border);margin-bottom:28px}
+.hero-eyebrow{font-size:10px;letter-spacing:4px;color:var(--pink);font-weight:700;margin-bottom:8px}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:58px;line-height:.9;letter-spacing:2px;margin-bottom:14px}
+.hero-sub{font-size:13px;color:var(--muted);line-height:1.7;max-width:420px;margin:0 auto 20px}
+.compat-box{background:#14101a;border:1px solid #a06ae030;border-radius:12px;padding:14px 16px;text-align:left}
+.compat-title{font-size:11px;color:var(--purple);font-weight:700;letter-spacing:1px;margin-bottom:4px}
+.compat-text{font-size:12px;color:var(--muted);line-height:1.6}
+
+.slabel{font-size:10px;letter-spacing:4px;color:var(--muted2);margin-bottom:18px;font-weight:700}
+
+.week-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:28px}
+.week-card{border:1px solid var(--border);border-radius:12px;padding:18px 14px;background:var(--bg2);cursor:pointer;transition:transform .15s,border-color .15s;text-align:center}
+.week-card:hover{transform:translateY(-2px);border-color:var(--border2)}
+.week-card.day-a{border-top:3px solid var(--pink)}
+.week-card.day-b{border-top:3px solid var(--gold)}
+.week-card.day-c{border-top:3px solid var(--purple)}
+.wc-day{font-size:9px;letter-spacing:3px;color:var(--muted);font-weight:700;margin-bottom:4px}
+.wc-name{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;margin-bottom:6px}
+.wc-meta{font-size:11px;color:var(--muted);margin-bottom:10px}
+.wc-pills{display:flex;flex-wrap:wrap;gap:4px;justify-content:center}
+.wc-pill{font-size:9px;padding:2px 7px;border-radius:20px;background:var(--border);color:var(--muted);font-weight:600}
+.wc-arrow{font-size:10px;color:var(--muted2);letter-spacing:2px;font-weight:700;margin-top:10px}
+
+.w-hdr{margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--border)}
+.back-btn{background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:0 0 20px;display:flex;align-items:center;gap:6px;font-family:'Barlow',sans-serif;font-weight:600;transition:color .15s}
+.back-btn:hover{color:var(--text)}
+.w-day-label{font-size:10px;letter-spacing:3px;color:var(--muted);font-weight:700;margin-bottom:4px}
+.w-title{font-family:'Bebas Neue',sans-serif;font-size:44px;letter-spacing:1px;line-height:1;margin-bottom:6px}
+.w-meta{font-size:13px;color:var(--muted);margin-bottom:14px}
+.prog-wrap{background:var(--border);border-radius:4px;height:3px;overflow:hidden}
+.prog-fill{height:100%;border-radius:4px;transition:width .4s;width:0%}
+.prog-fill.a{background:linear-gradient(90deg,var(--pink),var(--pink2))}
+.prog-fill.b{background:linear-gradient(90deg,var(--gold),#f0c97a)}
+.prog-fill.c{background:linear-gradient(90deg,var(--purple),#b07af0)}
+.prog-text{font-size:11px;color:var(--muted);margin-top:6px;letter-spacing:.5px}
+
+.tip-box{border-radius:10px;padding:13px 15px;margin-bottom:18px;border:1px solid}
+.tip-box.a{background:#1e1015;border-color:#e06a8a22}
+.tip-box.b{background:#1a1508;border-color:#e2b96b22}
+.tip-box.c{background:#140f1e;border-color:#a06ae022}
+.tip-label{font-size:10px;font-weight:700;letter-spacing:1px;margin-bottom:4px}
+.tip-label.a{color:var(--pink)}
+.tip-label.b{color:var(--gold)}
+.tip-label.c{color:var(--purple)}
+.tip-text{font-size:12px;color:var(--muted);line-height:1.6}
+
+.block-list{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.block{border-radius:12px;overflow:hidden;border:1px solid var(--border);background:var(--bg2)}
+.block-hdr{width:100%;background:none;border:none;padding:14px 15px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;color:var(--text);font-family:'Barlow',sans-serif;text-align:left;transition:background .15s}
+.block-hdr:hover{background:var(--bg3)}
+.b-left{display:flex;align-items:center;gap:11px}
+.b-num{font-family:'Bebas Neue',sans-serif;font-size:21px;color:var(--border2);min-width:22px;line-height:1}
+.b-name{font-size:14px;font-weight:700}
+.b-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.b-chev{font-size:10px;color:var(--muted2);transition:transform .2s}
+.block.open .b-chev{transform:rotate(180deg)}
+.block-body{display:none;border-top:1px solid var(--border)}
+.block.open .block-body{display:block}
+
+.ex-list{display:flex;flex-direction:column;padding:4px 14px 12px 48px}
+.ex-item{display:flex;align-items:flex-start;gap:11px;padding:10px 4px;border-bottom:1px solid var(--border);cursor:pointer;border-radius:6px;transition:background .1s}
+.ex-item:last-child{border-bottom:none}
+.ex-item:hover{background:var(--bg3)}
+.ex-chk{width:19px;height:19px;border-radius:5px;border:2px solid var(--border2);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.ex-item.done .ex-chk{background:var(--green);border-color:var(--green)}
+.ex-item.done .ex-chk::after{content:'✓';font-size:10px;color:#000;font-weight:900}
+.ex-item.done .ex-name{text-decoration:line-through;color:var(--muted)}
+.ex-item.done .ex-detail{opacity:.35}
+.ex-item.done .ex-mod{opacity:.35}
+.ex-cnt{flex:1}
+.ex-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ex-name{font-size:13px;font-weight:700}
+.ex-tag{font-size:9px;padding:2px 7px;border-radius:20px;font-weight:700;letter-spacing:.3px;white-space:nowrap}
+.ex-tag.both{background:#ffffff0a;color:#888}
+.ex-tag.her{background:#e06a8a15;color:var(--pink)}
+.ex-tag.him{background:#e2b96b15;color:var(--gold)}
+.ex-detail{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.5}
+.ex-mod{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.5;padding:6px 10px;background:var(--bg3);border-radius:6px;border-left:2px solid var(--border2)}
+.ex-mod span{font-weight:700}
+
+.done-banner{background:linear-gradient(135deg,#0e0e1e,#161628);border:1px solid #a06ae030;border-radius:12px;padding:22px;text-align:center;display:none;margin-top:8px}
+.done-banner.show{display:block}
+.done-emoji{font-size:32px;margin-bottom:6px}
+.done-title{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--pink);letter-spacing:2px}
+.done-sub{font-size:12px;color:var(--muted);margin-top:4px}
+
+.tips-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px}
+.tc-icon{font-size:18px;margin-bottom:6px}
+.tc-title{font-size:13px;font-weight:700;margin-bottom:4px}
+.tc-body{font-size:12px;color:var(--muted);line-height:1.6}
+
+/* Log tab */
+.log-banner{background:#1e1015;border:1px solid var(--pink)44;border-radius:10px;padding:12px 14px;font-size:12px;color:var(--muted);margin-bottom:16px;display:none}
+.log-banner.show{display:block}
+.log-form{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:20px;display:grid;gap:10px}
+.log-form .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.log-form label{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-weight:700;display:block;margin-bottom:4px}
+.log-form input,.log-form select,.log-form textarea{
+  width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;color:var(--text);
+  padding:9px 10px;font-family:'Barlow',sans-serif;font-size:13px
+}
+.log-form textarea{min-height:60px;resize:vertical}
+.log-form button{background:var(--pink);color:#1a0d12;border:none;border-radius:7px;padding:10px;font-weight:700;font-size:13px;cursor:pointer;font-family:'Barlow',sans-serif;text-transform:uppercase;letter-spacing:.5px}
+.log-list{display:flex;flex-direction:column;gap:8px;margin-bottom:24px}
+.log-item{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--pink);border-radius:8px;padding:11px 13px;position:relative}
+.log-item .li-top{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:var(--muted);margin-bottom:3px}
+.log-item .li-main{font-size:13px;color:var(--text)}
+.log-del{position:absolute;top:10px;right:12px;background:none;border:none;color:var(--muted);font-size:10px;text-decoration:underline;cursor:pointer}
+.pr-badge{display:inline-block;background:var(--pink);color:#1a0d12;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:6px}
+
+@media(max-width:400px){.hero-title{font-size:44px}.week-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">COUPLES ROUTINE</div>
+  <button class="nav-btn active" onclick="showTab('home')">Home</button>
+  <button class="nav-btn" onclick="showTab('day-a')">Day A</button>
+  <button class="nav-btn" onclick="showTab('day-b')">Day B</button>
+  <button class="nav-btn" onclick="showTab('day-c')">Day C</button>
+  <button class="nav-btn" onclick="showTab('tips')">Tips</button>
+  <button class="nav-btn" onclick="showTab('log')">Log</button>
+</nav>
+
+<!-- HOME -->
+<div class="screen active" id="screen-home">
+  <div class="hero">
+    <div class="hero-eyebrow">3 Days · ~90 Min · Gym</div>
+    <div class="hero-title">COUPLES<br>ROUTINE</div>
+    <div class="hero-sub">Same gym, same session, same exercises. Every exercise shows both versions — hers and his — so you can train together without holding each other back.</div>
+    <div class="compat-box">
+      <div class="compat-title">🟣 COMPATIBLE WITH YOUR ATHLETE PROGRAMME</div>
+      <div class="compat-text">This is Upper / Lower / Full Body. Your hooper split is Push / Pull / Legs. No overlap — swap between them freely or run both in the same week on different days.</div>
+    </div>
+  </div>
+
+  <div class="slabel">THE THREE SESSIONS</div>
+  <div class="week-row">
+    <div class="week-card day-a" onclick="showTab('day-a')">
+      <div class="wc-day">DAY A</div>
+      <div class="wc-name">Upper Body</div>
+      <div class="wc-meta">~90 min</div>
+      <div class="wc-pills"><span class="wc-pill">Chest</span><span class="wc-pill">Back</span><span class="wc-pill">Shoulders</span><span class="wc-pill">Arms</span></div>
+      <div class="wc-arrow">START →</div>
+    </div>
+    <div class="week-card day-b" onclick="showTab('day-b')">
+      <div class="wc-day">DAY B</div>
+      <div class="wc-name">Lower Body</div>
+      <div class="wc-meta">~90 min</div>
+      <div class="wc-pills"><span class="wc-pill">Glutes</span><span class="wc-pill">Quads</span><span class="wc-pill">Hamstrings</span><span class="wc-pill">Calves</span></div>
+      <div class="wc-arrow">START →</div>
+    </div>
+    <div class="week-card day-c" onclick="showTab('day-c')">
+      <div class="wc-day">DAY C</div>
+      <div class="wc-name">Full Body</div>
+      <div class="wc-meta">~90 min</div>
+      <div class="wc-pills"><span class="wc-pill">Compound</span><span class="wc-pill">Core</span><span class="wc-pill">Cardio</span></div>
+      <div class="wc-arrow">START →</div>
+    </div>
+  </div>
+
+  <div class="slabel">HOW TO READ THE EXERCISES</div>
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:24px">
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;align-items:flex-start;gap:12px">
+        <span class="ex-tag both" style="flex-shrink:0;margin-top:1px">BOTH</span>
+        <span style="font-size:12px;color:var(--muted)">Same exercise, same sets and reps — you just load different weights.</span>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:12px">
+        <span class="ex-tag her" style="flex-shrink:0;margin-top:1px">HER</span>
+        <span style="font-size:12px;color:var(--muted)">Her specific version — lighter weight, modified movement, or a different exercise altogether that targets the same muscle.</span>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:12px">
+        <span class="ex-tag him" style="flex-shrink:0;margin-top:1px">HIM</span>
+        <span style="font-size:12px;color:var(--muted)">His version — added weight, harder variation, or extra volume.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="slabel">SUGGESTED SCHEDULE</div>
+  <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px">
+    <div style="text-align:center;padding:10px 4px;border-radius:8px;border:1px solid var(--border);background:var(--bg2)"><div style="font-size:9px;letter-spacing:1px;color:var(--muted);font-weight:700;margin-bottom:4px">MON</div><div style="font-size:10px;font-weight:700;color:var(--pink)">UPPER</div></div>
+    <div style="text-align:center;padding:10px 4px;border-radius:8px;border:1px solid var(--border);background:var(--bg2)"><div style="font-size:9px;letter-spacing:1px;color:var(--muted);font-weight:700;margin-bottom:4px">TUE</div><div style="font-size:10px;font-weight:700;color:var(--muted2)">REST</div></div>
+    <div style="text-align:center;padding:10px 4px;border-radius:8px;border:1px solid var(--border);background:var(--bg2)"><div style="font-size:9px;letter-spacing:1px;color:var(--muted);font-weight:700;margin-bottom:4px">WED</div><div style="font-size:10px;font-weight:700;color:var(--gold)">LOWER</div></div>
+    <div style="text-align:center;padding:10px 4px;border-radius:8px;border:1px solid var(--border);background:var(--bg2)"><div style="font-size:9px;letter-spacing:1px;color:var(--muted);font-weight:700;margin-bottom:4px">THU</div><div style="font-size:10px;font-weight:700;color:var(--muted2)">REST</div></div>
+    <div style="text-align:center;padding:10px 4px;border-radius:8px;border:1px solid var(--border);background:var(--bg2)"><div style="font-size:9px;letter-spacing:1px;color:var(--muted);font-weight:700;margin-bottom:4px">FRI</div><div style="font-size:10px;font-weight:700;color:var(--purple)">FULL</div></div>
+    <div style="text-align:center;padding:10px 4px;border-radius:8px;border:1px solid var(--border);background:var(--bg2)"><div style="font-size:9px;letter-spacing:1px;color:var(--muted);font-weight:700;margin-bottom:4px">SAT</div><div style="font-size:10px;font-weight:700;color:var(--muted2)">REST</div></div>
+    <div style="text-align:center;padding:10px 4px;border-radius:8px;border:1px solid var(--border);background:var(--bg2)"><div style="font-size:9px;letter-spacing:1px;color:var(--muted);font-weight:700;margin-bottom:4px">SUN</div><div style="font-size:10px;font-weight:700;color:var(--muted2)">REST</div></div>
+  </div>
+</div>
+
+<!-- DAY A: UPPER -->
+<div class="screen" id="screen-day-a">
+  <button class="back-btn" onclick="showTab('home')">← Back</button>
+  <div class="w-hdr">
+    <div class="w-day-label">DAY A — MONDAY</div>
+    <div class="w-title">UPPER BODY</div>
+    <div class="w-meta">~90 min · Chest · Back · Shoulders · Arms</div>
+    <div class="prog-wrap"><div class="prog-fill a" id="prog-a"></div></div>
+    <div class="prog-text" id="pt-a">0 of 0 done</div>
+  </div>
+  <div class="tip-box a">
+    <div class="tip-label a">💡 THE PLAN</div>
+    <div class="tip-text">Work through each block together. Rest 60–90 sec between sets. She focuses on feeling the muscle and controlling the weight — not lifting heavy for the sake of it. You add load where it says.</div>
+  </div>
+  <div class="block-list" id="bl-a"></div>
+  <div class="done-banner" id="db-a"><div class="done-emoji">💪</div><div class="done-title">UPPER DONE</div><div class="done-sub">Good session. Rest tomorrow.</div></div>
+</div>
+
+<!-- DAY B: LOWER -->
+<div class="screen" id="screen-day-b">
+  <button class="back-btn" onclick="showTab('home')">← Back</button>
+  <div class="w-hdr">
+    <div class="w-day-label">DAY B — WEDNESDAY</div>
+    <div class="w-title">LOWER BODY</div>
+    <div class="w-meta">~90 min · Glutes · Quads · Hamstrings · Calves</div>
+    <div class="prog-wrap"><div class="prog-fill b" id="prog-b"></div></div>
+    <div class="prog-text" id="pt-b">0 of 0 done</div>
+  </div>
+  <div class="tip-box b">
+    <div class="tip-label b">💡 THE PLAN</div>
+    <div class="tip-text">Hip thrusts and RDLs are the two best exercises for glutes and hamstrings — make sure she feels both. This session complements your hooper leg day rather than replacing it. Rest 90 sec between sets on the heavy compound lifts.</div>
+  </div>
+  <div class="block-list" id="bl-b"></div>
+  <div class="done-banner" id="db-b"><div class="done-emoji">🍑</div><div class="done-title">LOWER DONE</div><div class="done-sub">Legs are growing. Rest tomorrow.</div></div>
+</div>
+
+<!-- DAY C: FULL BODY -->
+<div class="screen" id="screen-day-c">
+  <button class="back-btn" onclick="showTab('home')">← Back</button>
+  <div class="w-hdr">
+    <div class="w-day-label">DAY C — FRIDAY</div>
+    <div class="w-title">FULL BODY</div>
+    <div class="w-meta">~90 min · Compound lifts · Core · Cardio finish</div>
+    <div class="prog-wrap"><div class="prog-fill c" id="prog-c"></div></div>
+    <div class="prog-text" id="pt-c">0 of 0 done</div>
+  </div>
+  <div class="tip-box c">
+    <div class="tip-label c">💡 THE PLAN</div>
+    <div class="tip-text">End of week — hits everything. Compound movements first, then isolation, then core, then a short cardio finisher together. Keep the energy up and finish strong.</div>
+  </div>
+  <div class="block-list" id="bl-c"></div>
+  <div class="done-banner" id="db-c"><div class="done-emoji">🔥</div><div class="done-title">FULL BODY DONE</div><div class="done-sub">That's the week. Rest this weekend.</div></div>
+</div>
+
+<!-- TIPS -->
+<div class="screen" id="screen-tips">
+  <div class="slabel">PROGRAMME NOTES</div>
+  <div class="tips-card">
+    <div class="tc-icon">🔄</div>
+    <div class="tc-title">Swapping with your athlete programme</div>
+    <div class="tc-body">This is Upper / Lower / Full Body. Your hooper programme is Push / Pull / Legs / Full Body. The muscle groups don't clash. You can run both in the same week — just don't do hooper Legs and this Lower Body back to back. Give a rest day between them.</div>
+  </div>
+  <div class="tips-card">
+    <div class="tc-icon">⚖️</div>
+    <div class="tc-title">Different weights, same exercises</div>
+    <div class="tc-body">Same movement, different plates. She picks a weight where the last 2 reps are genuinely hard but form stays clean. You go heavier. The HER and HIM notes tell you when the exercise itself changes rather than just the weight.</div>
+  </div>
+  <div class="tips-card">
+    <div class="tc-icon">📈</div>
+    <div class="tc-title">Progressive overload</div>
+    <div class="tc-body">Every 1–2 weeks, try to add a small amount of weight or an extra rep. Even 1kg more on a hip thrust week to week is real progress. Both of you track what you lift so you can see it moving over time.</div>
+  </div>
+  <div class="tips-card">
+    <div class="tc-icon">😴</div>
+    <div class="tc-title">Rest between sets</div>
+    <div class="tc-body">No supersets, so take proper rest. 60 sec on lighter isolation work (curls, laterals). 90 sec on compound lifts (bench, squats, RDL, hip thrust). Use the rest to spot each other or talk through form.</div>
+  </div>
+  <div class="tips-card">
+    <div class="tc-icon">🍗</div>
+    <div class="tc-title">Protein for both</div>
+    <div class="tc-body">Aim for roughly 1.6–2g protein per kg bodyweight daily. For her: chicken, eggs, Greek yogurt, cottage cheese are the easiest sources. For you: same foods, higher total amount. Neither of you needs powder if you're hitting food sources consistently.</div>
+  </div>
+  <div class="tips-card">
+    <div class="tc-icon">🤝</div>
+    <div class="tc-title">Training together</div>
+    <div class="tc-body">Spot each other on bench and squats. Use the same machine or station — adjust the weight between sets. Compete on effort and consistency, not on who lifts more. Her progress looks different to yours but it's equally real.</div>
+  </div>
+</div>
+
+<!-- LOG -->
+<div class="screen" id="screen-log">
+  <div class="slabel" style="margin-top:24px">SESSION LOG</div>
+  <div class="log-banner" id="log-not-configured">Not connected to your database yet — sessions and PRs logged here won't be saved until Supabase is set up. See README.md → "Connect the backend".</div>
+
+  <form class="log-form" id="session-form">
+    <div class="row2">
+      <div>
+        <label>Date</label>
+        <input type="date" id="s-date" required>
+      </div>
+      <div>
+        <label>Day</label>
+        <select id="s-split">
+          <option value="day-a">Day A — Upper</option>
+          <option value="day-b">Day B — Lower</option>
+          <option value="day-c">Day C — Full Body</option>
+        </select>
+      </div>
+    </div>
+    <div>
+      <label>Notes (sets, reps, weight, how it felt)</label>
+      <textarea id="s-notes" placeholder="e.g. DB bench 4x10 @ 14kg, felt good"></textarea>
+    </div>
+    <button type="submit">Log session</button>
+  </form>
+  <div class="log-list" id="session-list"></div>
+
+  <div class="slabel">PERSONAL RECORDS</div>
+  <form class="log-form" id="pr-form">
+    <div class="row2">
+      <div>
+        <label>Exercise</label>
+        <input type="text" id="p-exercise" placeholder="e.g. Dumbbell Bench Press" required>
+      </div>
+      <div>
+        <label>Date</label>
+        <input type="date" id="p-date" required>
+      </div>
+    </div>
+    <div class="row2">
+      <div>
+        <label>Value</label>
+        <input type="number" step="0.5" id="p-value" placeholder="0" required>
+      </div>
+      <div>
+        <label>Unit</label>
+        <input type="text" id="p-unit" placeholder="kg, reps, cm..." value="kg">
+      </div>
+    </div>
+    <button type="submit">Add PR</button>
+  </form>
+  <div class="log-list" id="pr-list"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../config.js"></script>
+<script src="../hub-data.js"></script>
+<script>
+(function () {
+  var TOOL = 'couples-routine';
+  function todayStr() { return new Date().toISOString().slice(0, 10); }
+  function escapeHtml(str) { var d = document.createElement('div'); d.textContent = str || ''; return d.innerHTML; }
+
+  var sDate = document.getElementById('s-date'); if (sDate) sDate.value = todayStr();
+  var pDate = document.getElementById('p-date'); if (pDate) pDate.value = todayStr();
+
+  if (!window.HubData || !HubData.isConfigured()) {
+    var b = document.getElementById('log-not-configured');
+    if (b) b.classList.add('show');
+  }
+
+  async function renderSessions() {
+    var list = document.getElementById('session-list');
+    if (!list || !window.HubData) return;
+    var sessions = await HubData.getSessions(TOOL);
+    list.innerHTML = sessions.length ? '' : '<div style="color:var(--muted);font-size:12px;padding:10px 0">No sessions logged yet.</div>';
+    sessions.forEach(function (s) {
+      var item = document.createElement('div');
+      item.className = 'log-item';
+      item.innerHTML =
+        '<div class="li-top"><span>' + s.date + ' · ' + escapeHtml((s.split || '').toUpperCase()) + '</span></div>' +
+        (s.notes ? '<div class="li-main">' + escapeHtml(s.notes) + '</div>' : '') +
+        '<button class="log-del" type="button">delete</button>';
+      item.querySelector('.log-del').addEventListener('click', async function () {
+        await HubData.deleteSession(s.id);
+        renderSessions();
+      });
+      list.appendChild(item);
+    });
+  }
+
+  async function renderPRs() {
+    var list = document.getElementById('pr-list');
+    if (!list || !window.HubData) return;
+    var prs = await HubData.getPRs(TOOL);
+    list.innerHTML = prs.length ? '' : '<div style="color:var(--muted);font-size:12px;padding:10px 0">No PRs logged yet.</div>';
+    prs.forEach(function (p) {
+      var item = document.createElement('div');
+      item.className = 'log-item';
+      item.innerHTML =
+        '<div class="li-top"><span>' + p.date + '</span></div>' +
+        '<div class="li-main">' + escapeHtml(p.exercise) + '<span class="pr-badge">' + p.value + ' ' + escapeHtml(p.unit || '') + '</span></div>' +
+        '<button class="log-del" type="button">delete</button>';
+      item.querySelector('.log-del').addEventListener('click', async function () {
+        await HubData.deletePR(p.id);
+        renderPRs();
+      });
+      list.appendChild(item);
+    });
+  }
+
+  var sessionForm = document.getElementById('session-form');
+  if (sessionForm) sessionForm.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    await HubData.logSession({
+      tool: TOOL,
+      date: document.getElementById('s-date').value || todayStr(),
+      split: document.getElementById('s-split').value,
+      notes: document.getElementById('s-notes').value.trim() || null
+    });
+    e.target.reset();
+    document.getElementById('s-date').value = todayStr();
+    renderSessions();
+  });
+
+  var prForm = document.getElementById('pr-form');
+  if (prForm) prForm.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    await HubData.addPR({
+      tool: TOOL,
+      exercise: document.getElementById('p-exercise').value.trim(),
+      value: parseFloat(document.getElementById('p-value').value) || 0,
+      unit: document.getElementById('p-unit').value.trim() || null,
+      date: document.getElementById('p-date').value || todayStr()
+    });
+    e.target.reset();
+    document.getElementById('p-date').value = todayStr();
+    renderPRs();
+  });
+
+  if (window.HubData && HubData.isConfigured()) {
+    renderSessions();
+    renderPRs();
+  }
+
+  window.__couplesShowLog = function () { renderSessions(); renderPRs(); };
+})();
+</script>
+
+<script>
+function E(n,d,tag,hmod,hmmod){
+  return{name:n,detail:d,tag:tag||'both',hmod:hmod||null,hmmod:hmmod||null};
+}
+function B(n,s,exs){return{name:n,sub:s,exs:exs};}
+
+var WK={
+a:[
+  B("Warm-Up","10 min",[
+    E("Treadmill or Cross-Trainer","5 min easy — your own pace, just get warm",'both'),
+    E("Arm Circles","15 each direction, both arms — small to large",'both'),
+    E("Band Pull-Aparts","15 reps — hold a band or towel, squeeze shoulder blades back",'both'),
+    E("Scapular Push-Ups","10 reps — flat on floor or knees, just retract and protract, no arm bend",'both'),
+  ]),
+  B("Chest","20 min",[
+    E("Dumbbell Bench Press","4×10 — control the descent (2 sec down), press up",'both',
+      "Her: Start 4–6kg DBs. Focus on feeling the chest contract, not just moving the weight.",
+      "Him: Load up — this is the same movement as your Beloti bench day, just DBs at moderate weight."),
+    E("Incline Dumbbell Press","3×10 — upper chest and front delt, 30–45° incline",'both',
+      "Her: Light DBs, full range matters more than weight.",
+      "Him: Go heavier, same incline as your hooper push day."),
+    E("Cable Fly or Pec Deck","3×12 — full stretch at the bottom, slow squeeze at the top",'both',
+      "Her: Light weight, feel the stretch. Slow and deliberate.",
+      "Him: Moderate weight, pause at the squeeze."),
+    E("Push-Ups","2×failure — go until form breaks, rest, repeat",'both',
+      "Her: Knee push-ups are fine — full chest-to-floor range is what matters.",
+      "Him: Full push-ups, add a 2 sec pause at the bottom."),
+  ]),
+  B("Back","20 min",[
+    E("Lat Pulldown","4×10 — wide grip, pull to upper chest, squeeze shoulder blades at bottom",'both',
+      "Her: Focus on feeling the lats pull — not just pulling the bar down with your arms.",
+      "Him: Add weight, 3 sec controlled release back to top."),
+    E("Seated Cable Row","3×10 — retract shoulder blades fully at the end, hold 1 sec",'both',
+      "Her: Medium weight, upright torso, full retraction.",
+      "Him: Heavy weight — same movement as your Beloti rows."),
+    E("Dumbbell Row","3×10 each arm — one knee on bench, flat back, pull DB to hip",'both',
+      "Her: Light DB, feel the lat and mid-back doing the work.",
+      "Him: Heavy DB, full retraction at the top."),
+    E("Face Pulls","3×15 — cable or band, pull to face, elbows high, external rotation",'both'),
+  ]),
+  B("Shoulders","14 min",[
+    E("Dumbbell Shoulder Press","4×10 — seated or standing, full lockout overhead",'both',
+      "Her: 4–6kg, controlled. No momentum.",
+      "Him: Load it up — overhead strength is direct jump reach."),
+    E("Lateral Raises","4×12 — slow up, slow down, feel the side delt working",'both',
+      "Her: 2–3kg. Slow always beats heavy and swinging.",
+      "Him: 10–14kg, controlled eccentric."),
+    E("Rear Delt Fly","3×15 — bent over or reverse cable, squeeze shoulder blades",'both'),
+  ]),
+  B("Arms","14 min",[
+    E("Barbell Curl","3×10 — strict, no swinging, full range",'both',
+      "Her: EZ bar or light barbell — focus on the squeeze at the top.",
+      "Him: Working toward 27kg goal — go as heavy as strict form allows."),
+    E("Hammer Curl","3×12 each — neutral grip, controlled",'both',
+      "Her: 4–6kg DBs.",
+      "Him: 12–16kg DBs."),
+    E("Tricep Pushdown","3×12 — cable, full extension at bottom, squeeze",'both'),
+    E("Overhead Tricep Extension","3×12 — DB or cable, long head isolation, full stretch at bottom",'both',
+      "Her: Light DB — feel the stretch behind the head.",
+      "Him: Heavier DB or cable."),
+  ]),
+  B("Cool-Down","10 min",[
+    E("Doorframe Chest Stretch","45 sec each side — arm at 90°, lean through doorway",'both'),
+    E("Doorframe Lat Stretch","30 sec each side — hold frame, sink hips back",'both'),
+    E("Overhead Tricep Stretch","30 sec each arm — pull elbow behind head",'both'),
+    E("Child's Pose","90 sec — arms forward, breathe",'both'),
+    E("Supine Twist","30 sec each side — shoulders flat",'both'),
+  ]),
+],
+b:[
+  B("Warm-Up","10 min",[
+    E("Treadmill or Bike","5 min easy",'both'),
+    E("Glute Bridge (bodyweight)","20 reps — squeeze and hold 1 sec at top. Activate before loading.",'both'),
+    E("Leg Swings","10 forward/back + 10 lateral each leg",'both'),
+    E("Hip Circles","10 each direction",'both'),
+  ]),
+  B("Glutes — Priority","22 min",[
+    E("Hip Thrust (barbell or Smith Machine)","4×10 — upper back on bench, bar across hips, drive up, squeeze at top for 1 sec",'both',
+      "Her: This is the best glute exercise. Start with just the bar — feel the glute, not the lower back. If it hurts the hips, use a pad.",
+      "Him: Load heavy. This hits the posterior chain without the knee load of squats — great pairing with your nordics."),
+    E("Romanian Deadlift","4×10 — hinge at hip, soft knee bend, feel the hamstring stretch at the bottom",'both',
+      "Her: 2×8kg DBs to start. Push hips back — don't round the back.",
+      "Him: Barbell, heavier load. Same movement as your hooper RDL."),
+    E("Cable Glute Kickback","3×15 each — slow controlled extension, squeeze at the top",'both',
+      "Her: Great glute isolation. Don't swing the leg — it should be a controlled squeeze.",
+      "Him: Optional — do it or sub in another set of hip thrusts."),
+    E("Hip Abduction Machine","3×15 — sit tall, push knees apart against resistance, squeeze at the end",'both',
+      "Her: This directly targets glute med — the muscle that gives shape to the side of the glute.",
+      "Him: Use it or skip it depending on time."),
+  ]),
+  B("Quads","18 min",[
+    E("Goblet Squat","4×10 — DB or KB at chest, full depth, heels flat, chest tall",'both',
+      "Her: Perfect intro to squatting — the weight at the chest naturally keeps the torso upright. Go as deep as you can.",
+      "Him: Heavy KB or DB. This is also a good front squat pattern warmup."),
+    E("Leg Press","4×12 — feet shoulder width, full range, don't lock knees at the top",'both',
+      "Her: Medium weight, full range beats heavy half reps every time.",
+      "Him: Load it heavy — same as your hooper leg press."),
+    E("Walking Lunges","3×10 each — DB in each hand, step forward, lower back knee toward floor",'both',
+      "Her: Bodyweight first until the movement is clean. Add DBs once confident.",
+      "Him: DBs loaded, push through the front heel."),
+  ]),
+  B("Hamstrings & Calves","14 min",[
+    E("Leg Curl Machine","4×12 — hamstring isolation, slow 3-sec lowering phase",'both',
+      "Her: Feel the hamstring — don't let the weight drop fast.",
+      "Him: Heavy weight, slow eccentric. Same principle as your nordics."),
+    E("Single-Leg Calf Raise (on step)","4×15 each — full range, pause at the top, slow lower",'both',
+      "Her: Bodyweight to start, hold something for balance.",
+      "Him: Hold a DB in the same-side hand for added load."),
+    E("Seated Calf Raise","3×15 — soleus focus, full range",'both'),
+  ]),
+  B("Core Finisher","10 min",[
+    E("Plank","3×40 sec — body completely straight, breathe steadily",'both',
+      "Her: Knee plank is fine — same principle, just shorter lever.",
+      "Him: Full plank, add shoulder taps if easy."),
+    E("Dead Bug","3×8 each side — slow, opposite arm and leg extend together, lower back stays flat",'both'),
+    E("Glute Bridge Pulse (bodyweight)","2×20 — at top of bridge, pulse up 1 inch, fast, squeeze every rep",'both'),
+  ]),
+  B("Cool-Down","10 min",[
+    E("Hip Flexor Stretch","90 sec each — lunge position, tuck pelvis under",'both'),
+    E("Pigeon Pose","90 sec each — breathe and sink into it",'both'),
+    E("Lying Hamstring Stretch","60 sec each — pull straight leg toward you",'both'),
+    E("Child's Pose","60 sec",'both'),
+  ]),
+],
+c:[
+  B("Warm-Up","10 min",[
+    E("Treadmill Build-Up","5 min — start easy, build to 60% effort by the end",'both'),
+    E("World's Greatest Stretch","5 each side — lunge, hand to floor, reach up and rotate",'both'),
+    E("Inchworms","6 reps — walk hands out to push-up position, walk feet back",'both'),
+    E("Hip Circles + Leg Swings","10 each direction each leg",'both'),
+  ]),
+  B("Compound Lower","20 min",[
+    E("Barbell or DB Squat","4×8 — full depth, controlled, chest tall",'both',
+      "Her: Goblet squat with a heavy DB if barbell feels intimidating. Nail the pattern first.",
+      "Him: Barbell back squat — same as your hooper squat day, moderate weight here."),
+    E("Romanian Deadlift","3×10 — hip hinge, hamstring stretch",'both',
+      "Her: DBs, controlled.",
+      "Him: Barbell, heavier load."),
+    E("Leg Press","3×12",'both',
+      "Her: Full range, medium weight.",
+      "Him: Heavy."),
+    E("Bulgarian Split Squat","3×8 each — rear foot on bench, full depth",'both',
+      "Her: Bodyweight first — this is a balance challenge. Add DBs when confident.",
+      "Him: DBs loaded. Eccentric (slow lower) 3-second count if possible."),
+  ]),
+  B("Compound Upper","20 min",[
+    E("Dumbbell Bench Press","3×10",'both',
+      "Her: Light-medium weight, feel the chest.",
+      "Him: Heavy DBs."),
+    E("Pull-Ups or Lat Pulldown","4×8 — full range, controlled lowering",'both',
+      "Her: Lat pulldown machine — pull to upper chest, squeeze.",
+      "Him: Weighted pull-ups if possible — Beloti staple."),
+    E("Dumbbell Row","3×10 each",'both',
+      "Her: Light-medium, feel the back.",
+      "Him: Heavy, full retraction."),
+    E("Dumbbell Shoulder Press","3×10",'both',
+      "Her: 4–6kg, controlled.",
+      "Him: 16–22kg, overhead lockout."),
+  ]),
+  B("Arms & Isolation","12 min",[
+    E("Barbell Curl","3×10 — strict, no swinging",'both',
+      "Her: EZ bar or light barbell.",
+      "Him: Heavy as form allows — toward 27kg goal."),
+    E("Tricep Pushdown","3×12 — full extension",'both'),
+    E("Lateral Raises","3×12 — slow and controlled",'both',
+      "Her: 2–3kg.",
+      "Him: 10–14kg."),
+  ]),
+  B("Core Block","10 min",[
+    E("Hollow Body Hold","3×25 sec — lower back flat on floor, legs low and straight",'both'),
+    E("Russian Twist","3×20 (10 each side) — controlled rotation",'both',
+      "Her: No weight to start — feel the oblique working.",
+      "Him: 5–10kg plate."),
+    E("Plank","3×40 sec",'both',
+      "Her: Knee plank if needed.",
+      "Him: Full plank, add shoulder taps."),
+    E("V-Ups","2×10 — controlled, full range",'both',
+      "Her: Tuck crunches if V-ups are too difficult — same movement pattern.",
+      "Him: Full V-ups."),
+  ]),
+  B("Cardio Finish + Cool-Down","15 min",[
+    E("Cardio: 10 min","Bike, treadmill, cross-trainer, or rower. Steady pace — not sprinting.",'both',
+      "Her: 65–70% max heart rate — you should be able to talk but breathing is elevated.",
+      "Him: 75–80% — push it. This is conditioning work on top of the session."),
+    E("Hip Flexor Stretch","60 sec each",'both'),
+    E("Child's Pose","90 sec",'both'),
+    E("Supine Twist","30 sec each side",'both'),
+  ]),
+],
+};
+
+var checks={a:{},b:{},c:{}};
+
+function renderWorkout(key){
+  var data=WK[key];
+  var bl=document.getElementById('bl-'+key);
+  if(!bl||!data) return;
+  bl.innerHTML=data.map(function(block,bi){
+    var exHTML=block.exs.map(function(ex,ei){
+      var k=bi+'-'+ei;
+      var done=checks[key][k]?' done':'';
+      var tagLabel=ex.tag==='both'?'BOTH':ex.tag==='her'?'HER':'HIM';
+      var tagEl='<span class="ex-tag '+ex.tag+'">'+tagLabel+'</span>';
+      var modHTML='';
+      if(ex.hmod||ex.hmmod){
+        modHTML='<div class="ex-mod">';
+        if(ex.hmod) modHTML+='<span style="color:var(--pink)">Her:</span> '+ex.hmod+'';
+        if(ex.hmod&&ex.hmmod) modHTML+='<br>';
+        if(ex.hmmod) modHTML+='<span style="color:var(--gold)">Him:</span> '+ex.hmmod+'';
+        modHTML+='</div>';
+      }
+      return '<div class="ex-item'+done+'" onclick="toggleCheck(\''+key+'\',\''+k+'\',event)" id="ei-'+key+'-'+k+'">'
+        +'<div class="ex-chk" id="ec-'+key+'-'+k+'">'+(checks[key][k]?'✓':'')+'</div>'
+        +'<div class="ex-cnt">'
+        +'<div class="ex-top"><span class="ex-name">'+ex.name+'</span>'+tagEl+'</div>'
+        +'<div class="ex-detail">'+ex.detail+'</div>'
+        +modHTML
+        +'</div></div>';
+    }).join('');
+    return '<div class="block" id="blk-'+key+'-'+bi+'">'
+      +'<button class="block-hdr" onclick="togBlk(\''+key+'\','+bi+')">'
+      +'<div class="b-left"><div class="b-num">'+String(bi+1).padStart(2,'0')+'</div>'
+      +'<div><div class="b-name">'+block.name+'</div><div class="b-sub">'+block.sub+'</div></div></div>'
+      +'<div class="b-chev">▼</div></button>'
+      +'<div class="block-body"><div class="ex-list">'+exHTML+'</div></div>'
+      +'</div>';
+  }).join('');
+  setTimeout(function(){togBlk(key,0,true);},30);
+  updateProg(key);
+}
+
+function togBlk(key,i,forceOpen){
+  var el=document.getElementById('blk-'+key+'-'+i);
+  if(!el) return;
+  if(forceOpen) el.classList.add('open');
+  else el.classList.toggle('open');
+}
+
+function toggleCheck(key,k,e){
+  e.stopPropagation();
+  checks[key][k]=!checks[key][k];
+  var item=document.getElementById('ei-'+key+'-'+k);
+  var chk=document.getElementById('ec-'+key+'-'+k);
+  if(item) item.classList.toggle('done',!!checks[key][k]);
+  if(chk) chk.textContent=checks[key][k]?'✓':'';
+  updateProg(key);
+}
+
+function updateProg(key){
+  var data=WK[key];
+  if(!data) return;
+  var total=0,done=0;
+  data.forEach(function(b,bi){b.exs.forEach(function(_,ei){total++;if(checks[key][bi+'-'+ei])done++;});});
+  var pct=total?Math.round(done/total*100):0;
+  var pf=document.getElementById('prog-'+key);
+  var pt=document.getElementById('pt-'+key);
+  if(pf) pf.style.width=pct+'%';
+  if(pt) pt.textContent=done+' of '+total+' done';
+  if(done===total&&total>0){var db=document.getElementById('db-'+key);if(db)db.classList.add('show');}
+}
+
+var TABS=['home','day-a','day-b','day-c','tips','log'];
+function showTab(id){
+  TABS.forEach(function(t){
+    var s=document.getElementById('screen-'+t);
+    var b=document.querySelector('.nav-btn[onclick="showTab(\''+t+'\')"]');
+    if(s) s.classList.remove('active');
+    if(b) b.classList.remove('active');
+  });
+  var sc=document.getElementById('screen-'+id);
+  var bn=document.querySelector('.nav-btn[onclick="showTab(\''+id+'\')"]');
+  if(sc) sc.classList.add('active');
+  if(bn) bn.classList.add('active');
+  window.scrollTo(0,0);
+  var map={'day-a':'a','day-b':'b','day-c':'c'};
+  if(map[id]) setTimeout(function(){renderWorkout(map[id]);},30);
+  if(id==='log' && window.__couplesShowLog) setTimeout(window.__couplesShowLog,30);
+}
+
+['a','b','c'].forEach(renderWorkout);
+</script>
+</body>
+</html>

@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>HOOPER PROGRAMME</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#0c0c0c;--bg2:#141414;--bg3:#1c1c1c;--border:#222;--border2:#2c2c2c;
+  --text:#f0f0f0;--muted:#666;--muted2:#3a3a3a;
+  --gold:#e2b96b;--gold2:#f0c97a;--green:#52d98a;
+  --red:#e05252;--blue:#5a9fe0;--purple:#a06ae0;--orange:#e07a3a;--teal:#3ab8c8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+.nav{background:#080808;border-bottom:1px solid var(--border);padding:0 16px;display:flex;align-items:center;overflow-x:auto;position:sticky;top:0;z-index:100}
+.nav::-webkit-scrollbar{height:0}
+.nav-brand{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;padding:16px 16px 16px 0;border-right:1px solid var(--border);margin-right:4px;flex-shrink:0}
+.nav-btn{background:none;border:none;color:var(--muted);font-family:'Barlow',sans-serif;font-size:13px;font-weight:700;letter-spacing:.5px;padding:18px 12px;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;transition:color .15s,border-color .15s;flex-shrink:0}
+.nav-btn:hover{color:var(--text)}
+.nav-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
+
+.screen{display:none;max-width:620px;margin:0 auto;padding:24px 18px 80px}
+.screen.active{display:block}
+
+.hero{padding:32px 18px 26px;border-bottom:1px solid var(--border);margin-bottom:26px;max-width:620px;margin-left:auto;margin-right:auto}
+.hero-eyebrow{font-size:10px;letter-spacing:4px;color:var(--gold);font-weight:700;margin-bottom:6px}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:60px;line-height:.9;letter-spacing:2px;margin-bottom:14px}
+.hero-sub{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:18px}
+
+.warning-box{background:#1e1208;border:1px solid var(--orange);border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.warning-title{font-size:11px;color:var(--orange);font-weight:700;letter-spacing:1px;margin-bottom:5px}
+.warning-text{font-size:12px;color:var(--muted);line-height:1.6}
+
+.info-box{background:#0e1a1c;border:1px solid var(--teal);border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.info-title{font-size:11px;color:var(--teal);font-weight:700;letter-spacing:1px;margin-bottom:5px}
+.info-text{font-size:12px;color:var(--muted);line-height:1.6}
+
+.slabel{font-size:10px;letter-spacing:4px;color:var(--muted2);margin-bottom:18px;font-weight:700}
+
+.split-grid{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+.split-card{border:1px solid var(--border);border-radius:14px;padding:18px 20px;background:var(--bg2);cursor:pointer;transition:transform .15s,border-color .15s,box-shadow .15s;position:relative;overflow:hidden}
+.split-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px}
+.split-card.push::before{background:var(--red)}
+.split-card.pull::before{background:var(--blue)}
+.split-card.legs::before{background:var(--teal)}
+.split-card.phil::before{background:var(--purple)}
+.split-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.4);border-color:var(--border2)}
+.split-day{font-size:10px;letter-spacing:3px;color:var(--muted);font-weight:700;margin-bottom:5px}
+.split-name{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;margin-bottom:4px;line-height:1}
+.split-meta{font-size:12px;color:var(--muted);margin-bottom:12px}
+.split-pills{display:flex;flex-wrap:wrap;gap:6px}
+.split-pill{font-size:10px;padding:3px 8px;border-radius:20px;background:var(--border);color:var(--muted);font-weight:600}
+.split-arrow{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--muted2);letter-spacing:2px;font-weight:700}
+
+.week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:28px}
+.wk-cell{text-align:center;padding:10px 4px;border-radius:8px;border:1px solid var(--border);background:var(--bg2)}
+.wk-name{font-size:9px;letter-spacing:1px;color:var(--muted);font-weight:700;margin-bottom:4px}
+.wk-type{font-size:10px;font-weight:700}
+.wk-push{color:var(--red)}
+.wk-pull{color:var(--blue)}
+.wk-legs{color:var(--teal)}
+.wk-rest{color:var(--muted2)}
+.wk-court{color:var(--green)}
+
+.back-btn{background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:0 0 20px;display:flex;align-items:center;gap:6px;font-family:'Barlow',sans-serif;font-weight:600;transition:color .15s}
+.back-btn:hover{color:var(--text)}
+.w-hdr{margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--border)}
+.w-day-label{font-size:10px;letter-spacing:3px;color:var(--muted);font-weight:700;margin-bottom:4px}
+.w-title{font-family:'Bebas Neue',sans-serif;font-size:44px;letter-spacing:1px;line-height:1;margin-bottom:6px}
+.w-meta{font-size:13px;color:var(--muted);margin-bottom:14px}
+.prog-wrap{background:var(--border);border-radius:4px;height:3px;overflow:hidden}
+.prog-fill{height:100%;border-radius:4px;transition:width .4s;width:0%}
+.prog-fill.push{background:linear-gradient(90deg,var(--red),#f07a7a)}
+.prog-fill.pull{background:linear-gradient(90deg,var(--blue),#7ab8f0)}
+.prog-fill.legs{background:linear-gradient(90deg,var(--teal),#6ad8e8)}
+.prog-text{font-size:11px;color:var(--muted);margin-top:6px;letter-spacing:.5px}
+
+.tip-box{border-radius:10px;padding:13px 15px;margin-bottom:18px;border:1px solid}
+.tip-box.push{background:#1e1010;border-color:#e0525222}
+.tip-box.pull{background:#101520;border-color:#5a9fe022}
+.tip-box.legs{background:#0e1a1c;border-color:#3ab8c822}
+.tip-label{font-size:10px;font-weight:700;letter-spacing:1px;margin-bottom:4px}
+.tip-label.push{color:var(--red)}
+.tip-label.pull{color:var(--blue)}
+.tip-label.legs{color:var(--teal)}
+.tip-text{font-size:12px;color:var(--muted);line-height:1.6}
+
+.shift-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;padding:4px 10px;border-radius:20px;font-weight:700;letter-spacing:.5px;background:#1e1508;color:var(--orange);border:1px solid var(--orange)44;margin-bottom:16px}
+
+.block-list{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.block{border-radius:12px;overflow:hidden;border:1px solid var(--border);background:var(--bg2)}
+.block.shift-block{border-color:var(--orange)44}
+.block.shift-block .block-hdr{background:#1a1208}
+.block-hdr{width:100%;background:none;border:none;padding:14px 15px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;color:var(--text);font-family:'Barlow',sans-serif;text-align:left;transition:background .15s}
+.block-hdr:hover{opacity:.85}
+.b-left{display:flex;align-items:center;gap:11px}
+.b-num{font-family:'Bebas Neue',sans-serif;font-size:21px;color:var(--border2);min-width:22px;line-height:1}
+.b-name{font-size:14px;font-weight:700}
+.b-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.b-chev{font-size:10px;color:var(--muted2);transition:transform .2s}
+.block.open .b-chev{transform:rotate(180deg)}
+.block-body{display:none;border-top:1px solid var(--border)}
+.block.open .block-body{display:block}
+
+.ex-list{display:flex;flex-direction:column;padding:4px 14px 12px 48px}
+.ex-item{display:flex;align-items:flex-start;gap:11px;padding:10px 4px;border-bottom:1px solid var(--border);cursor:pointer;border-radius:6px;transition:background .1s}
+.ex-item:last-child{border-bottom:none}
+.ex-item:hover{background:var(--bg3)}
+.ex-chk{width:19px;height:19px;border-radius:5px;border:2px solid var(--border2);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.ex-item.done .ex-chk{background:var(--green);border-color:var(--green)}
+.ex-item.done .ex-chk::after{content:'✓';font-size:10px;color:#000;font-weight:900}
+.ex-item.done .ex-name{text-decoration:line-through;color:var(--muted)}
+.ex-item.done .ex-detail{opacity:.35}
+.ex-cnt{flex:1}
+.ex-name{font-size:13px;font-weight:700;margin-bottom:3px}
+.ex-detail{font-size:11px;color:var(--muted);line-height:1.5}
+.ex-shift{font-size:11px;color:var(--orange);margin-top:3px;font-style:italic}
+
+.src-tag{display:inline-flex;align-items:center;gap:4px;font-size:9px;padding:2px 7px;border-radius:20px;font-weight:700;letter-spacing:.3px;margin-left:6px;vertical-align:middle}
+.src-tag.beloti{background:#e0525215;color:var(--red)}
+.src-tag.zero{background:#3ab8c815;color:var(--teal)}
+
+.done-banner{background:linear-gradient(135deg,#0e1a0e,#162016);border:1px solid #2a5a2a;border-radius:12px;padding:22px;text-align:center;display:none;margin-top:8px}
+.done-banner.show{display:block}
+.done-emoji{font-size:32px;margin-bottom:6px}
+.done-title{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--green);letter-spacing:2px}
+.done-sub{font-size:12px;color:#4a8a4a;margin-top:4px}
+
+.phil-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px}
+.pc-icon{font-size:18px;margin-bottom:6px}
+.pc-title{font-size:13px;font-weight:700;margin-bottom:4px}
+.pc-body{font-size:12px;color:var(--muted);line-height:1.6}
+
+/* Log tab */
+.log-banner{background:#1e1508;border:1px solid var(--orange)44;border-radius:10px;padding:12px 14px;font-size:12px;color:var(--muted);margin-bottom:16px;display:none}
+.log-banner.show{display:block}
+.log-form{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:20px;display:grid;gap:10px}
+.log-form .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.log-form label{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-weight:700;display:block;margin-bottom:4px}
+.log-form input,.log-form select,.log-form textarea{
+  width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;color:var(--text);
+  padding:9px 10px;font-family:'Barlow',sans-serif;font-size:13px
+}
+.log-form textarea{min-height:60px;resize:vertical}
+.log-form button{background:var(--gold);color:#000;border:none;border-radius:7px;padding:10px;font-weight:700;font-size:13px;cursor:pointer;font-family:'Barlow',sans-serif;text-transform:uppercase;letter-spacing:.5px}
+.log-list{display:flex;flex-direction:column;gap:8px;margin-bottom:24px}
+.log-item{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;padding:11px 13px;position:relative}
+.log-item .li-top{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:var(--muted);margin-bottom:3px}
+.log-item .li-main{font-size:13px;color:var(--text)}
+.log-del{position:absolute;top:10px;right:12px;background:none;border:none;color:var(--muted);font-size:10px;text-decoration:underline;cursor:pointer}
+.pr-badge{display:inline-block;background:var(--gold);color:#000;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:6px}
+
+@media(max-width:400px){.hero-title{font-size:46px}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">HOOPER PROGRAMME</div>
+  <button class="nav-btn active" onclick="showTab('home')">Overview</button>
+  <button class="nav-btn" onclick="showTab('push')">Push</button>
+  <button class="nav-btn" onclick="showTab('pull')">Pull</button>
+  <button class="nav-btn" onclick="showTab('legs')">Legs</button>
+  <button class="nav-btn" onclick="showTab('phil')">Notes</button>
+  <button class="nav-btn" onclick="showTab('log')">Log</button>
+</nav>
+
+<!-- OVERVIEW -->
+<div class="screen active" id="screen-home">
+  <div class="hero">
+    <div class="hero-eyebrow">Night Shift Edition — Beloti × ZeroBounce</div>
+    <div class="hero-title">HOOPER<br>PROGRAMME</div>
+    <div class="hero-sub">Rebuilt around your Evri night shift. Shorter sessions, no heavy spinal loading before work, mobility baked into every session to keep your back and hips healthy across a physical shift.</div>
+  </div>
+
+  <div style="max-width:620px;margin:0 auto;padding:0 18px">
+    <div class="warning-box">
+      <div class="warning-title">⚠️ PRE-SHIFT RULES</div>
+      <div class="warning-text">
+        Push and Pull are safe before shift — upper body work won't compromise 8 hours of warehouse lifting.<br><br>
+        <strong style="color:#e07a3a">Legs day only on days off.</strong> Heavy squats, deadlifts, and plyos before a manual shift is how you get injured. Don't negotiate on this.
+      </div>
+    </div>
+    <div class="info-box">
+      <div class="info-title">🔵 EVERY SESSION ENDS WITH A SHIFT PREP BLOCK</div>
+      <div class="info-text">The last block of every workout is a 8–10 min mobility sequence targeting your lower back, hips, and thoracic spine — the three areas that take the most load during warehouse work. Do not skip it.</div>
+    </div>
+
+    <div class="slabel" style="margin-top:24px">THE WEEK — 3 TO 4 DAYS</div>
+    <div class="week-grid">
+      <div class="wk-cell"><div class="wk-name">MON</div><div class="wk-type wk-push">PUSH</div></div>
+      <div class="wk-cell"><div class="wk-name">TUE</div><div class="wk-type wk-pull">PULL</div></div>
+      <div class="wk-cell"><div class="wk-name">WED</div><div class="wk-type wk-rest">REST</div></div>
+      <div class="wk-cell"><div class="wk-name">THU</div><div class="wk-type wk-push">PUSH</div></div>
+      <div class="wk-cell"><div class="wk-name">FRI</div><div class="wk-type wk-pull">PULL</div></div>
+      <div class="wk-cell"><div class="wk-name">SAT</div><div class="wk-type wk-legs" style="font-size:9px">LEGS<br><span style="color:var(--muted);font-size:8px">day off only</span></div></div>
+      <div class="wk-cell"><div class="wk-name">SUN</div><div class="wk-type wk-court">COURT</div></div>
+    </div>
+
+    <div class="slabel">SESSION OVERVIEW</div>
+    <div class="split-grid">
+      <div class="split-card push" onclick="showTab('push')">
+        <div class="split-day">MON + THU — BEFORE SHIFT</div>
+        <div class="split-name">Push Day</div>
+        <div class="split-meta">~55 min · Upper body only · No spinal loading</div>
+        <div class="split-pills">
+          <span class="split-pill">Bench 5×5</span><span class="split-pill">Incline DB</span>
+          <span class="split-pill">OHP</span><span class="split-pill">Wall-Sit Raise</span>
+          <span class="split-pill">Dips</span><span class="split-pill">Shift Prep</span>
+        </div>
+        <div class="split-arrow">VIEW →</div>
+      </div>
+      <div class="split-card pull" onclick="showTab('pull')">
+        <div class="split-day">TUE + FRI — BEFORE SHIFT</div>
+        <div class="split-name">Pull Day</div>
+        <div class="split-meta">~55 min · Back + Biceps · Mobility first</div>
+        <div class="split-pills">
+          <span class="split-pill">Pull-Ups</span><span class="split-pill">Cable Row</span>
+          <span class="split-pill">Lat Pulldown</span><span class="split-pill">Curls</span>
+          <span class="split-pill">VMO Step-Ups</span><span class="split-pill">Shift Prep</span>
+        </div>
+        <div class="split-arrow">VIEW →</div>
+      </div>
+      <div class="split-card legs" onclick="showTab('legs')">
+        <div class="split-day">SATURDAY — DAY OFF ONLY</div>
+        <div class="split-name">Leg Day</div>
+        <div class="split-meta">~65 min · Vert + mobility focused · No heavy deadlifts</div>
+        <div class="split-pills">
+          <span class="split-pill">Front Squat</span><span class="split-pill">BSS Eccentric</span>
+          <span class="split-pill">Nordics</span><span class="split-pill">VMO Hold</span>
+          <span class="split-pill">Plyos</span><span class="split-pill">Hip Flow</span>
+        </div>
+        <div class="split-arrow">VIEW →</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PUSH -->
+<div class="screen" id="screen-push">
+  <button class="back-btn" onclick="showTab('home')">← Back</button>
+  <div class="w-hdr">
+    <div class="w-day-label">MONDAY + THURSDAY — BEFORE SHIFT</div>
+    <div class="w-title">PUSH DAY</div>
+    <div class="w-meta">~55 min · Chest · Shoulders · Triceps</div>
+    <div class="shift-badge">⚡ PRE-SHIFT SAFE — upper body only, no spinal loading</div>
+    <div class="prog-wrap"><div class="prog-fill push" id="prog-push"></div></div>
+    <div class="prog-text" id="pt-push">0 of 0 done</div>
+  </div>
+  <div class="tip-box push">
+    <div class="tip-label push">💬 THE PLAN</div>
+    <div class="tip-text">Keep intensity moderate — 7/10, not 10/10. You need energy left for 8 hours of physical work. The shift prep block at the end is non-negotiable — it protects your lower back and hips for the night.</div>
+  </div>
+  <div class="block-list" id="bl-push"></div>
+  <div class="done-banner" id="db-push"><div class="done-emoji">💪</div><div class="done-title">PUSH DONE</div><div class="done-sub">Good session. You're ready for shift — back's mobile, body's warm.</div></div>
+</div>
+
+<!-- PULL -->
+<div class="screen" id="screen-pull">
+  <button class="back-btn" onclick="showTab('home')">← Back</button>
+  <div class="w-hdr">
+    <div class="w-day-label">TUESDAY + FRIDAY — BEFORE SHIFT</div>
+    <div class="w-title">PULL DAY</div>
+    <div class="w-meta">~55 min · Back · Biceps · Rear Delts</div>
+    <div class="shift-badge">⚡ PRE-SHIFT SAFE — no heavy floor pulls, cable and machine focus</div>
+    <div class="prog-wrap"><div class="prog-fill pull" id="prog-pull"></div></div>
+    <div class="prog-text" id="pt-pull">0 of 0 done</div>
+  </div>
+  <div class="tip-box pull">
+    <div class="tip-label pull">💬 THE PLAN</div>
+    <div class="tip-text">Pull-ups, cable rows, and lat pulldowns — all pulling from vertical or horizontal angles, no heavy barbell deadlifts off the floor. Your lower back stays fresh for the shift. VMO step-ups are in here for vert work without taxing the posterior chain.</div>
+  </div>
+  <div class="block-list" id="bl-pull"></div>
+  <div class="done-banner" id="db-pull"><div class="done-emoji">🧲</div><div class="done-title">PULL DONE</div><div class="done-sub">Back is strong and mobile. Go get that shift money.</div></div>
+</div>
+
+<!-- LEGS -->
+<div class="screen" id="screen-legs">
+  <button class="back-btn" onclick="showTab('home')">← Back</button>
+  <div class="w-hdr">
+    <div class="w-day-label">SATURDAY — DAY OFF ONLY</div>
+    <div class="w-title">LEG DAY</div>
+    <div class="w-meta">~65 min · Vert focused · ZeroBounce method</div>
+    <div class="shift-badge" style="background:#0e1a1c;color:var(--teal);border-color:var(--teal)44">🏀 DAY OFF ONLY — never before a shift</div>
+    <div class="prog-wrap"><div class="prog-fill legs" id="prog-legs"></div></div>
+    <div class="prog-text" id="pt-legs">0 of 0 done</div>
+  </div>
+  <div class="tip-box legs">
+    <div class="tip-label legs">💬 THE PLAN</div>
+    <div class="tip-text">ZeroBounce method — front squats, eccentric BSS, Nordics, VMO holds, plyos. No heavy trap bar or barbell deadlifts today — your back gets enough loading during the week. Full hip mobility block at the end to recover from the week's shifts.</div>
+  </div>
+  <div class="block-list" id="bl-legs"></div>
+  <div class="done-banner" id="db-legs"><div class="done-emoji">⚡</div><div class="done-title">LEG DAY DONE</div><div class="done-sub">Rim's getting closer. Rest up this weekend.</div></div>
+</div>
+
+<!-- NOTES -->
+<div class="screen" id="screen-phil">
+  <div class="slabel">PROGRAMME NOTES</div>
+  <div class="phil-card">
+    <div class="pc-icon">🏭</div>
+    <div class="pc-title">Why this is different to the original programme</div>
+    <div class="pc-body">The original had heavy trap bar deadlifts, barbell squats, and depth jumps across every session. That's fine when you're recovering at home. Going into 8 hours of heavy warehouse lifting after those movements is a back injury waiting to happen. This version keeps the same philosophy — Beloti strength, ZeroBounce vert — but removes any exercise that compromises your shift or your recovery from it.</div>
+  </div>
+  <div class="phil-card">
+    <div class="pc-icon">🦴</div>
+    <div class="pc-title">What the shift does to your body</div>
+    <div class="pc-body">8 hours of heavy manual handling repeatedly loads your lumbar spine, compresses your hip flexors, and tightens your thoracic spine from carrying and bending. The shift prep block in every session directly counteracts this — cat-cow, hip flexor stretch, thoracic rotation, and child's pose reset the areas that accumulate the most load during warehouse work.</div>
+  </div>
+  <div class="phil-card">
+    <div class="pc-icon">⚡</div>
+    <div class="pc-title">Intensity before shift — stay at 7/10</div>
+    <div class="pc-body">Don't go to failure on everything before an 8-hour physical shift. Leave 1–2 reps in the tank on every set. Your performance at work matters — going in wrecked every night will catch up with you. Save your absolute max effort for the leg day on your day off.</div>
+  </div>
+  <div class="phil-card">
+    <div class="pc-icon">🍗</div>
+    <div class="pc-title">Eating around shift + training</div>
+    <div class="pc-body">Eat a proper meal 60–90 min before training — carbs and protein. Something like rice and chicken, or eggs on toast. Don't train on empty before a physical shift. During the shift, snack on something with protein and carbs on your break. Recover with a meal after shift before you sleep.</div>
+  </div>
+  <div class="phil-card">
+    <div class="pc-icon">😴</div>
+    <div class="pc-title">Sleep and recovery</div>
+    <div class="pc-body">Night shift disrupts your recovery rhythm. Prioritise sleep quality over quantity — dark room, cool temperature. On shift days, your body is doing double duty: training recovery and work recovery simultaneously. This is why the sessions are shorter and the intensity is managed — it's not soft, it's smart.</div>
+  </div>
+  <div class="phil-card">
+    <div class="pc-icon">🏀</div>
+    <div class="pc-title">Court day on Sunday</div>
+    <div class="pc-body">Sunday is your recovery day and court day. Light shooting, pickup games, skills work. Keep it fun — don't treat it as a conditioning session. It's active recovery that keeps your basketball feel sharp while your body recovers from the week.</div>
+  </div>
+</div>
+
+<!-- LOG -->
+<div class="screen" id="screen-log">
+  <div class="slabel" style="margin-top:24px">SESSION LOG</div>
+  <div class="log-banner" id="log-not-configured">Not connected to your database yet — sessions and PRs logged here won't be saved until Supabase is set up. See README.md → "Connect the backend".</div>
+
+  <form class="log-form" id="session-form">
+    <div class="row2">
+      <div>
+        <label>Date</label>
+        <input type="date" id="s-date" required>
+      </div>
+      <div>
+        <label>Split</label>
+        <select id="s-split">
+          <option value="push">Push</option>
+          <option value="pull">Pull</option>
+          <option value="legs">Legs</option>
+        </select>
+      </div>
+    </div>
+    <div>
+      <label>Notes (sets, reps, weight, how it felt)</label>
+      <textarea id="s-notes" placeholder="e.g. Bench 5x5 @ 75kg, felt strong"></textarea>
+    </div>
+    <button type="submit">Log session</button>
+  </form>
+  <div class="log-list" id="session-list"></div>
+
+  <div class="slabel">PERSONAL RECORDS</div>
+  <form class="log-form" id="pr-form">
+    <div class="row2">
+      <div>
+        <label>Exercise</label>
+        <input type="text" id="p-exercise" placeholder="e.g. Bench Press" required>
+      </div>
+      <div>
+        <label>Date</label>
+        <input type="date" id="p-date" required>
+      </div>
+    </div>
+    <div class="row2">
+      <div>
+        <label>Value</label>
+        <input type="number" step="0.5" id="p-value" placeholder="0" required>
+      </div>
+      <div>
+        <label>Unit</label>
+        <input type="text" id="p-unit" placeholder="kg, reps, cm..." value="kg">
+      </div>
+    </div>
+    <button type="submit">Add PR</button>
+  </form>
+  <div class="log-list" id="pr-list"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../config.js"></script>
+<script src="../hub-data.js"></script>
+<script>
+(function () {
+  var TOOL = 'hooper-programme';
+  function todayStr() { return new Date().toISOString().slice(0, 10); }
+  function escapeHtml(str) { var d = document.createElement('div'); d.textContent = str || ''; return d.innerHTML; }
+
+  var sDate = document.getElementById('s-date'); if (sDate) sDate.value = todayStr();
+  var pDate = document.getElementById('p-date'); if (pDate) pDate.value = todayStr();
+
+  if (!window.HubData || !HubData.isConfigured()) {
+    var b = document.getElementById('log-not-configured');
+    if (b) b.classList.add('show');
+  }
+
+  async function renderSessions() {
+    var list = document.getElementById('session-list');
+    if (!list || !window.HubData) return;
+    var sessions = await HubData.getSessions(TOOL);
+    list.innerHTML = sessions.length ? '' : '<div style="color:var(--muted);font-size:12px;padding:10px 0">No sessions logged yet.</div>';
+    sessions.forEach(function (s) {
+      var item = document.createElement('div');
+      item.className = 'log-item';
+      item.innerHTML =
+        '<div class="li-top"><span>' + s.date + ' · ' + escapeHtml((s.split || '').toUpperCase()) + '</span></div>' +
+        (s.notes ? '<div class="li-main">' + escapeHtml(s.notes) + '</div>' : '') +
+        '<button class="log-del" type="button">delete</button>';
+      item.querySelector('.log-del').addEventListener('click', async function () {
+        await HubData.deleteSession(s.id);
+        renderSessions();
+      });
+      list.appendChild(item);
+    });
+  }
+
+  async function renderPRs() {
+    var list = document.getElementById('pr-list');
+    if (!list || !window.HubData) return;
+    var prs = await HubData.getPRs(TOOL);
+    list.innerHTML = prs.length ? '' : '<div style="color:var(--muted);font-size:12px;padding:10px 0">No PRs logged yet.</div>';
+    prs.forEach(function (p) {
+      var item = document.createElement('div');
+      item.className = 'log-item';
+      item.innerHTML =
+        '<div class="li-top"><span>' + p.date + '</span></div>' +
+        '<div class="li-main">' + escapeHtml(p.exercise) + '<span class="pr-badge">' + p.value + ' ' + escapeHtml(p.unit || '') + '</span></div>' +
+        '<button class="log-del" type="button">delete</button>';
+      item.querySelector('.log-del').addEventListener('click', async function () {
+        await HubData.deletePR(p.id);
+        renderPRs();
+      });
+      list.appendChild(item);
+    });
+  }
+
+  var sessionForm = document.getElementById('session-form');
+  if (sessionForm) sessionForm.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    await HubData.logSession({
+      tool: TOOL,
+      date: document.getElementById('s-date').value || todayStr(),
+      split: document.getElementById('s-split').value,
+      notes: document.getElementById('s-notes').value.trim() || null
+    });
+    e.target.reset();
+    document.getElementById('s-date').value = todayStr();
+    renderSessions();
+  });
+
+  var prForm = document.getElementById('pr-form');
+  if (prForm) prForm.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    await HubData.addPR({
+      tool: TOOL,
+      exercise: document.getElementById('p-exercise').value.trim(),
+      value: parseFloat(document.getElementById('p-value').value) || 0,
+      unit: document.getElementById('p-unit').value.trim() || null,
+      date: document.getElementById('p-date').value || todayStr()
+    });
+    e.target.reset();
+    document.getElementById('p-date').value = todayStr();
+    renderPRs();
+  });
+
+  if (window.HubData && HubData.isConfigured()) {
+    renderSessions();
+    renderPRs();
+  }
+
+  window.__hooperShowLog = function () { renderSessions(); renderPRs(); };
+})();
+</script>
+
+<script>
+var SRC={
+  beloti:'<span class="src-tag beloti">BELOTI</span>',
+  zero:'<span class="src-tag zero">ZERO</span>'
+};
+function E(n,d,src,shift){return{name:n,detail:d,src:src||null,shift:shift||null};}
+function B(n,s,exs,isShift){return{name:n,sub:s,exs:exs,isShift:!!isShift};}
+
+var WK={
+push:[
+  B("Warm-Up","8 min",[
+    E("Treadmill or Bike","4 min easy — just get warm, don't tire yourself out"),
+    E("Arm Circles","15 each direction"),
+    E("Scapular Push-Ups","10 reps — retract and protract, no arm bend, shoulder joint prep"),
+    E("Band Pull-Aparts","15 reps — hold a band or towel, squeeze blades back"),
+  ]),
+  B("Chest","18 min",[
+    E("Bench Press","5×5 — 75-80% max, leave 1-2 reps in the tank. Beloti's anchor lift.","beloti",
+      "Pre-shift: don't max out. Strong and controlled, not a PR attempt."),
+    E("Incline Dumbbell Press","3×10 — upper chest, controlled descent","beloti"),
+    E("Cable Fly or Pec Deck","3×12 — full stretch at bottom, squeeze at top. No spinal load."),
+  ]),
+  B("Shoulders","14 min",[
+    E("Dumbbell Shoulder Press","3×10 — seated, strict, full lockout. Arm swing reach for jumps.","beloti"),
+    E("Wall-Sit Lateral Raise","3×12 — sit against wall at parallel, raise DBs laterally. Beloti's signature.","beloti",
+      "The wall sit is isometric quad work — you're getting lower body stimulus without loading the spine."),
+    E("Rear Delt Fly","3×15 — cable or bent-over DB. Protects shoulder health for manual handling."),
+  ]),
+  B("Triceps","8 min",[
+    E("Bodyweight Dips","3×12 — full depth, chest forward. Beloti staple.","beloti"),
+    E("Tricep Pushdown","3×12 — cable, full extension, squeeze at lockout","beloti"),
+  ]),
+  B("Shift Prep — Do Not Skip","8 min",[
+    E("Cat-Cow","2 min — slow, 10 reps. Mobilises the lumbar spine that the shift will load.",null,
+      "This directly undoes the compression your back takes during 8 hours of lifting."),
+    E("Hip Flexor Stretch","60 sec each side — lunge, tuck pelvis under",null,
+      "Warehouse work keeps your hips flexed for hours. This resets the hip flexors before they get stuck in that shortened position."),
+    E("Thoracic Rotation (in squat)","10 each side — deep squat hold, hand behind head, rotate toward knee",null,
+      "Thoracic mobility prevents your lower back compensating for rotation during lifting at work."),
+    E("Child's Pose","90 sec — arms forward, sink into it",null,
+      "Full spinal decompression. Do this slowly and breathe through it."),
+  ],true),
+],
+pull:[
+  B("Warm-Up","8 min",[
+    E("Rowing Machine","3 min easy — posterior chain specific, doesn't load spine heavily"),
+    E("Lat Activation","15 reps — band pulldown or straight-arm pushdown, feel the lat before loading it"),
+    E("Scapular Pull-Ups","8 reps — hang from bar, depress and retract shoulder blades only, no arm bend"),
+    E("Face Pull Warm-Up","15 reps light — rear delts and external rotators firing"),
+  ]),
+  B("Back","20 min",[
+    E("Weighted Pull-Ups","4×6 — belt or hold DB between feet. Full dead hang, chin over bar.","beloti",
+      "Pre-shift: vertical pulling only — no heavy barbell rows off the floor. Pull-ups don't load the lumbar the same way."),
+    E("Seated Cable Row","4×10 — mid-back focus, full retraction, controlled release. No forward lean.",null,
+      "Sitting removes the lumbar load you'd get from a Pendlay row. Same back development, back-safe."),
+    E("Lat Pulldown","3×12 — wide grip, pull to upper chest, squeeze lats at bottom"),
+    E("Face Pulls","3×15 — cable, elbows high, external rotation, rear delt and shoulder health"),
+  ]),
+  B("VMO Step-Ups — ZeroBounce","10 min",[
+    E("Explosive Step-Ups","4×8 each leg — knee-height box, drive through heel, explode up","zero",
+      "ZeroBounce's cheat code for VMO strength and single-leg power. On pull day because it doesn't tax the posterior chain the way squats and deadlifts do — safe before shift."),
+    E("Isometric Step-Up Hold","3×30 sec each — hold at top, 90° knee angle, don't move","zero",
+      "Builds the exact joint angle strength used at takeoff. Low fatigue, high carryover."),
+  ]),
+  B("Biceps","10 min",[
+    E("Barbell Curl","3×10 — strict, no swinging. Beloti staple.","beloti",
+      "Working toward 27kg goal — go as heavy as strict form allows."),
+    E("Hammer Curl","3×12 each — neutral grip, brachialis and forearm"),
+    E("Incline Dumbbell Curl","3×10 — full stretch at bottom, peak contraction at top","beloti"),
+  ]),
+  B("Shift Prep — Do Not Skip","8 min",[
+    E("Cat-Cow","2 min — 10 slow reps, full range each way",null,
+      "Non-negotiable before shift. Spinal mobility resets here."),
+    E("90/90 Hip Stretch","90 sec each side — sit tall, transition slowly",null,
+      "Hip rotation is restricted by warehouse work over time. This keeps it open."),
+    E("Doorframe Lat Stretch","30 sec each side — hold frame, sink hips back",null,
+      "Lat tightness from pull day + warehouse lifting compounds. Stretch it now."),
+    E("Pigeon Pose","60 sec each side — breathe into it",null,
+      "Hip external rotation — warehouse work repeatedly loads hip internal rotation. This counters it."),
+  ],true),
+],
+legs:[
+  B("Warm-Up","10 min",[
+    E("Jump Rope Simulation","2 min — fast feet, no rope, ankle stiffness warm-up","zero"),
+    E("Hip Circles + Leg Swings","10 each direction each leg"),
+    E("Ankle Hops","2×15 — minimal knee bend, stiff ankles, tendon warm-up","zero"),
+    E("Glute Bridges","15 reps — posterior chain activation before loading"),
+  ]),
+  B("Power — ZeroBounce","16 min",[
+    E("Full Depth Front Squat","4×5 — elbows high, heels flat, full depth. ZeroBounce prefers this over back squat for athletic carryover.","zero",
+      "No heavy barbell back squat today — front squat loads the quads without the same lumbar compression. Better for a back that's already been through shift work."),
+    E("Goblet Squat","3×8 — DB at chest, full depth, heels flat. Warm-up pattern or alternative to front squat."),
+  ]),
+  B("Eccentric Leg Work","14 min",[
+    E("Bulgarian Split Squat — Eccentric","4×6 each — 4 count slow lower, explosive drive up","zero",
+      "The eccentric (slow lower) builds more strength per rep than a normal BSS. ZeroBounce specifically programmes this."),
+    E("Leg Press","3×10 — heavy, full range, no lower back involvement","beloti"),
+    E("Walking Lunges","3×8 each — DBs, push through front heel"),
+  ]),
+  B("Knee Health — Non-Negotiable","12 min",[
+    E("Nordic Hamstring Curl","3×5 — 4 count slow eccentric. Partner holds or use machine.","zero",
+      "The single best exercise for jump gains and hamstring injury prevention. ZeroBounce programmes this every single leg session."),
+    E("VMO Isometric Hold (Patrick Step-Up)","3×45 sec each — stand on step, lower to 90° knee angle, hold. Don't move.","zero",
+      "ZeroBounce's signature VMO move. Builds knee strength at the exact angle used at takeoff."),
+    E("Banded Hamstring Curl","3×15 — face down, band around ankle, curl to glute","zero"),
+  ]),
+  B("Plyometrics","8 min",[
+    E("Max Vertical Jumps","3×5 — absolute max effort every rep. 90 sec rest between sets.","zero",
+      "These come after all strength work — nervous system is loaded, now express it. Every rep is a max attempt."),
+    E("Approach Jump Practice","5 reps — full 3-step run-up, reach for the rim every rep","zero"),
+    E("Single-Leg Depth Jump","2×4 each — step off box, single-leg reactive hop","zero"),
+  ]),
+  B("Hip Mobility — Shift Recovery","10 min",[
+    E("Hip Flexor Stretch","90 sec each — long lunge, tuck pelvis",null,
+      "After a week of shift work and training, hip flexors are chronically short. Give this proper time."),
+    E("Pigeon Pose","90 sec each — breathe and sink fully"),
+    E("90/90 Hip Stretch","60 sec each direction — slow transitions"),
+    E("Deep Squat Hold","60 sec — heels flat, doorframe if needed"),
+    E("Child's Pose","90 sec — full spinal decompression after the week"),
+  ],true),
+],
+};
+
+var checks={push:{},pull:{},legs:{}};
+
+function renderWorkout(key){
+  var data=WK[key];
+  var bl=document.getElementById('bl-'+key);
+  if(!bl||!data) return;
+  bl.innerHTML=data.map(function(block,bi){
+    var exHTML=block.exs.map(function(ex,ei){
+      var k=bi+'-'+ei;
+      var done=checks[key][k]?' done':'';
+      var srcTag=ex.src?SRC[ex.src]:'';
+      var shiftEl=ex.shift?'<div class="ex-shift">🏭 '+ex.shift+'</div>':'';
+      return '<div class="ex-item'+done+'" onclick="toggleCheck(\''+key+'\',\''+k+'\',event)" id="ei-'+key+'-'+k+'">'
+        +'<div class="ex-chk" id="ec-'+key+'-'+k+'">'+(checks[key][k]?'✓':'')+'</div>'
+        +'<div class="ex-cnt">'
+        +'<div class="ex-name">'+ex.name+srcTag+'</div>'
+        +'<div class="ex-detail">'+ex.detail+'</div>'
+        +shiftEl
+        +'</div></div>';
+    }).join('');
+    var isShiftBlock=block.isShift;
+    return '<div class="block'+(isShiftBlock?' shift-block':'')+'" id="blk-'+key+'-'+bi+'">'
+      +'<button class="block-hdr" onclick="togBlk(\''+key+'\','+bi+')">'
+      +'<div class="b-left"><div class="b-num">'+String(bi+1).padStart(2,'0')+'</div>'
+      +'<div><div class="b-name">'+(isShiftBlock?'🏭 ':'')+block.name+'</div><div class="b-sub">'+block.sub+'</div></div></div>'
+      +'<div class="b-chev">▼</div></button>'
+      +'<div class="block-body"><div class="ex-list">'+exHTML+'</div></div>'
+      +'</div>';
+  }).join('');
+  setTimeout(function(){togBlk(key,0,true);},30);
+  updateProg(key);
+}
+
+function togBlk(key,i,forceOpen){
+  var el=document.getElementById('blk-'+key+'-'+i);
+  if(!el) return;
+  if(forceOpen) el.classList.add('open');
+  else el.classList.toggle('open');
+}
+
+function toggleCheck(key,k,e){
+  e.stopPropagation();
+  checks[key][k]=!checks[key][k];
+  var item=document.getElementById('ei-'+key+'-'+k);
+  var chk=document.getElementById('ec-'+key+'-'+k);
+  if(item) item.classList.toggle('done',!!checks[key][k]);
+  if(chk) chk.textContent=checks[key][k]?'✓':'';
+  updateProg(key);
+}
+
+function updateProg(key){
+  var data=WK[key];
+  if(!data) return;
+  var total=0,done=0;
+  data.forEach(function(b,bi){b.exs.forEach(function(_,ei){total++;if(checks[key][bi+'-'+ei])done++;});});
+  var pct=total?Math.round(done/total*100):0;
+  var pf=document.getElementById('prog-'+key);
+  var pt=document.getElementById('pt-'+key);
+  if(pf) pf.style.width=pct+'%';
+  if(pt) pt.textContent=done+' of '+total+' done';
+  if(done===total&&total>0){var db=document.getElementById('db-'+key);if(db)db.classList.add('show');}
+}
+
+var TABS=['home','push','pull','legs','phil','log'];
+function showTab(id){
+  TABS.forEach(function(t){
+    var s=document.getElementById('screen-'+t);
+    var b=document.querySelector('.nav-btn[onclick="showTab(\''+t+'\')"]');
+    if(s) s.classList.remove('active');
+    if(b) b.classList.remove('active');
+  });
+  var sc=document.getElementById('screen-'+id);
+  var bn=document.querySelector('.nav-btn[onclick="showTab(\''+id+'\')"]');
+  if(sc) sc.classList.add('active');
+  if(bn) bn.classList.add('active');
+  window.scrollTo(0,0);
+  if(['push','pull','legs'].includes(id)) setTimeout(function(){renderWorkout(id);},30);
+  if(id==='log' && window.__hooperShowLog) setTimeout(window.__hooperShowLog,30);
+}
+
+['push','pull','legs'].forEach(renderWorkout);
+</script>
+</body>
+</html>

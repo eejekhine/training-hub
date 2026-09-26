@@ -1,0 +1,46 @@
+[
+  {
+    "id": "dashboard",
+    "name": "EJx10k Dashboard",
+    "desc": "The master plan — transition, body, room, social, money, goals.",
+    "category": "overview",
+    "href": "https://claude.ai/artifact/GavwhQWb6R4vEz5HVgFZAg",
+    "external": true,
+    "pinned": true
+  },
+  {
+    "id": "hooper-programme",
+    "name": "Hooper Programme",
+    "desc": "Basketball-focused strength & conditioning, built around your shift.",
+    "category": "body",
+    "href": "files/hooper-programme.html"
+  },
+  {
+    "id": "couples-routine",
+    "name": "Couples Routine",
+    "desc": "Shared workout, built for two.",
+    "category": "body",
+    "href": "files/couples-routine.html"
+  },
+  {
+    "id": "budget-plan",
+    "name": "Budget Plan",
+    "desc": "12-month budget, editable — income, outgoings, and the £10k countdown.",
+    "category": "life",
+    "href": "files/budget-plan.html"
+  },
+  {
+    "id": "food-plan",
+    "name": "Food Plan",
+    "desc": "Meals, timing and freezer system.",
+    "category": "life",
+    "href": "files/food-plan.html"
+  },
+  {
+    "id": "uni-study",
+    "name": "Uni Study",
+    "desc": "Leeds Beckett coursework support.",
+    "category": "study",
+    "href": "files/uni-study.html"
+  }
+]

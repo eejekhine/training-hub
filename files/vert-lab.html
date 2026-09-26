@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>VERT LAB</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#0d0d0d;--bg2:#161616;--bg3:#1e1e1e;--border:#252525;--border2:#303030;--text:#f0f0f0;--muted:#666;--muted2:#444;--gold:#e2b96b;--green:#52d98a;--red:#e05a5a;--blue:#5a9fe0;--purple:#9a5ae0;--orange:#e07a3a;--teal:#3ab8c8}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+.header{background:linear-gradient(180deg,#0a0a0a,#111);border-bottom:1px solid var(--border);padding:28px 20px 20px;position:sticky;top:0;z-index:100}
+.header-inner{max-width:620px;margin:0 auto;display:flex;justify-content:space-between;align-items:flex-end}
+.eyebrow{font-size:10px;letter-spacing:4px;color:var(--gold);font-weight:700;margin-bottom:2px}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:58px;line-height:.9;letter-spacing:3px;background:linear-gradient(135deg,#fff,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header-sub{font-size:12px;color:var(--muted);letter-spacing:1px;text-align:right}
+
+.screen{display:none;max-width:620px;margin:0 auto;padding:28px 20px 80px}
+.screen.active{display:block}
+.slabel{font-size:10px;letter-spacing:4px;color:var(--muted2);margin-bottom:22px;font-weight:700}
+
+.back-btn{background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:0 0 22px;display:flex;align-items:center;gap:6px;font-family:'Barlow',sans-serif;font-weight:600;letter-spacing:.5px;transition:color .15s}
+.back-btn:hover{color:var(--text)}
+
+/* Duration grid */
+.dur-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px}
+.dur-btn{border:1px solid var(--border);border-radius:14px;padding:20px 10px 16px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;background:var(--bg2);transition:transform .15s,border-color .15s,box-shadow .15s}
+.dur-btn:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,.5);border-color:var(--border2)}
+.dur-btn.gym{background:linear-gradient(145deg,#111120,#181828);border-color:#e2b96b22}
+.dur-btn.gym:hover{border-color:var(--gold)}
+.dur-num{font-family:'Bebas Neue',sans-serif;font-size:46px;line-height:1;color:#fff}
+.dur-btn.gym .dur-num{color:var(--gold)}
+.dur-unit{font-size:10px;letter-spacing:3px;color:var(--muted);font-weight:700}
+.dur-loc{margin-top:8px;font-size:11px;padding:3px 10px;border-radius:20px;font-weight:600}
+.dur-btn:not(.gym) .dur-loc{background:#ffffff0d;color:#888}
+.dur-btn.gym .dur-loc{background:#e2b96b15;color:var(--gold)}
+.legend{display:flex;gap:20px;flex-wrap:wrap}
+.leg-i{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted)}
+.leg-dot{width:7px;height:7px;border-radius:50%;display:inline-block}
+
+/* Focus grid */
+.focus-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.focus-btn{border-radius:12px;padding:16px 14px;cursor:pointer;border:1px solid transparent;transition:transform .12s;text-align:left}
+.focus-btn:hover{transform:translateY(-2px)}
+.f-icon{font-size:24px;margin-bottom:8px;display:block}
+.f-name{font-family:'Barlow',sans-serif;font-size:17px;font-weight:700;letter-spacing:.3px;display:block}
+.f-desc{font-size:11px;margin-top:3px;opacity:.7;display:block;line-height:1.4}
+
+/* Session card */
+.sess-card{border-radius:14px;padding:22px 20px;cursor:pointer;border:1px solid var(--border);background:var(--bg2);transition:transform .15s,box-shadow .15s;position:relative;overflow:hidden;margin-bottom:12px}
+.sess-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.sess-card:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.sess-card.gym{background:linear-gradient(135deg,#101020,#181828);border-color:#e2b96b22}
+.sess-tag{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:4px 10px;border-radius:20px;font-weight:700;margin-bottom:10px;letter-spacing:.5px}
+.sess-title{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:1px;margin-bottom:4px;line-height:1}
+.sess-meta{font-size:13px;color:var(--muted);margin-bottom:14px}
+.sess-pills{display:flex;flex-wrap:wrap;gap:6px}
+.sess-pill{font-size:10px;padding:3px 9px;border-radius:20px;background:var(--border);color:var(--muted);font-weight:600;letter-spacing:.5px}
+.sess-arrow{position:absolute;right:18px;bottom:18px;font-size:11px;color:var(--muted2);letter-spacing:2px;font-weight:700}
+
+/* Workout */
+.w-header{margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--border)}
+.w-title{font-family:'Bebas Neue',sans-serif;font-size:40px;letter-spacing:1px;margin-bottom:4px;line-height:1}
+.w-meta{font-size:13px;color:var(--muted);margin-bottom:12px}
+.prog-wrap{background:var(--border);border-radius:4px;height:4px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gold),#f0c97a);border-radius:4px;transition:width .4s ease;width:0%}
+.prog-text{font-size:11px;color:var(--muted);margin-top:6px;letter-spacing:1px}
+
+.tip-box{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:16px}
+.tip-title{font-size:11px;font-weight:700;color:var(--gold);margin-bottom:4px;letter-spacing:1px}
+.tip-body{font-size:13px;color:var(--muted);line-height:1.6}
+
+/* Blocks */
+.block-list{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.block{border-radius:12px;overflow:hidden;border:1px solid var(--border);background:var(--bg2)}
+.block-hdr{width:100%;background:none;border:none;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;color:var(--text);font-family:'Barlow',sans-serif;text-align:left;transition:background .15s}
+.block-hdr:hover{background:var(--bg3)}
+.block-left{display:flex;align-items:center;gap:12px}
+.block-num{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--border2);min-width:26px;line-height:1}
+.block-name{font-size:15px;font-weight:700}
+.block-dur{font-size:11px;color:var(--muted);margin-top:1px}
+.block-chev{font-size:10px;color:var(--muted2);transition:transform .2s}
+.block.open .block-chev{transform:rotate(180deg)}
+.block-body{display:none;padding:2px 16px 14px 54px;border-top:1px solid var(--border)}
+.block.open .block-body{display:block}
+
+/* Exercises */
+.ex-list{display:flex;flex-direction:column}
+.ex-item{display:flex;align-items:flex-start;gap:12px;padding:11px 4px;border-bottom:1px solid var(--border);cursor:pointer;border-radius:6px;transition:background .1s}
+.ex-item:last-child{border-bottom:none}
+.ex-item:hover{background:var(--bg3)}
+.ex-check{width:20px;height:20px;border-radius:5px;border:2px solid var(--border2);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.ex-item.done .ex-check{background:var(--green);border-color:var(--green)}
+.ex-item.done .ex-check::after{content:'✓';font-size:11px;color:#000;font-weight:900}
+.ex-item.done .ex-name{text-decoration:line-through;color:var(--muted)}
+.ex-item.done .ex-detail{opacity:.35}
+.ex-content{flex:1;min-width:0}
+.ex-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ex-name{font-size:14px;font-weight:700;color:var(--text)}
+.ex-detail{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.5}
+.viz-btn{background:none;border:1px solid var(--border2);color:var(--gold);font-size:9px;padding:3px 8px;border-radius:5px;cursor:pointer;white-space:nowrap;font-family:'Barlow',sans-serif;font-weight:700;letter-spacing:1px;flex-shrink:0;transition:background .12s}
+.viz-btn:hover{background:var(--bg3)}
+.viz-wrap{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 6px 4px;margin-top:8px}
+
+/* Done banner */
+.done-banner{background:linear-gradient(135deg,#121e12,#182018);border:1px solid #2a5a2a;border-radius:14px;padding:24px 20px;text-align:center;display:none;margin-top:8px}
+.done-banner.show{display:block}
+.done-emoji{font-size:36px;margin-bottom:8px}
+.done-title{font-family:'Bebas Neue',sans-serif;font-size:34px;color:var(--green);letter-spacing:2px}
+.done-sub{font-size:13px;color:#4a8a4a;margin-top:4px}
+
+@media(max-width:480px){.logo{font-size:44px}.dur-num{font-size:38px}.focus-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div>
+      <div class="eyebrow">Grab Rim by June</div>
+      <div class="logo">VERT LAB</div>
+    </div>
+    <div class="header-sub">Pick time.<br>Do work.</div>
+  </div>
+</div>
+
+<div class="screen active" id="s-dur">
+  <div class="slabel">How much time do you have?</div>
+  <div class="dur-grid">
+    <button class="dur-btn" onclick="pickDur(15)"><span class="dur-num">15</span><span class="dur-unit">MIN</span><span class="dur-loc">🏠 Home</span></button>
+    <button class="dur-btn" onclick="pickDur(30)"><span class="dur-num">30</span><span class="dur-unit">MIN</span><span class="dur-loc">🏠 Home</span></button>
+    <button class="dur-btn" onclick="pickDur(45)"><span class="dur-num">45</span><span class="dur-unit">MIN</span><span class="dur-loc">🏠 Home</span></button>
+    <button class="dur-btn gym" onclick="pickDur(60)"><span class="dur-num">60</span><span class="dur-unit">MIN</span><span class="dur-loc">🏋️ Gym</span></button>
+    <button class="dur-btn gym" onclick="pickDur(75)"><span class="dur-num">75</span><span class="dur-unit">MIN</span><span class="dur-loc">🏋️ Gym</span></button>
+    <button class="dur-btn gym" onclick="pickDur(90)"><span class="dur-num">90</span><span class="dur-unit">MIN</span><span class="dur-loc">🏋️ Gym</span></button>
+  </div>
+  <div class="legend">
+    <div class="leg-i"><div class="leg-dot" style="background:#555"></div>Home — no equipment</div>
+    <div class="leg-i"><div class="leg-dot" style="background:var(--gold)"></div>Gym — equipment required</div>
+  </div>
+</div>
+
+<div class="screen" id="s-focus">
+  <button class="back-btn" onclick="goTo('s-dur')">← Back</button>
+  <div class="slabel">What's your focus today?</div>
+  <div class="focus-grid" id="focus-grid"></div>
+</div>
+
+<div class="screen" id="s-sess">
+  <button class="back-btn" onclick="goTo('s-focus')">← Back</button>
+  <div class="slabel" id="sess-label">Choose your session</div>
+  <div id="sess-list"></div>
+</div>
+
+<div class="screen" id="s-workout">
+  <button class="back-btn" onclick="goTo('s-sess')">← Back to sessions</button>
+  <div class="w-header">
+    <div class="w-title" id="w-title"></div>
+    <div class="w-meta" id="w-meta"></div>
+    <div class="prog-wrap"><div class="prog-fill" id="prog-fill"></div></div>
+    <div class="prog-text" id="prog-text">0 of 0 done</div>
+  </div>
+  <div class="tip-box" id="tip-box" style="display:none">
+    <div class="tip-title">💡 TIP</div>
+    <div class="tip-body" id="tip-body"></div>
+  </div>
+  <div class="block-list" id="block-list"></div>
+  <div class="done-banner" id="done-banner">
+    <div class="done-emoji">🏀</div>
+    <div class="done-title">SESSION DONE</div>
+    <div class="done-sub">Rim's getting closer. Rest up and come back tomorrow.</div>
+  </div>
+</div>
+
+<script>
+var cur = {dur:null, focus:null, sessKey:null, checks:{}};
+
+// ── SVG stretch visuals ──
+var VIZS = {
+"Hip Flexor Stretch":'<svg viewBox="0 0 200 95" style="width:100%;height:88px"><g transform="translate(100,50)"><circle cx="0" cy="-40" r="7" fill="none" stroke="#e2b96b" stroke-width="2"/><line x1="0" y1="-33" x2="0" y2="-10" stroke="#e2b96b" stroke-width="2"/><line x1="0" y1="-22" x2="-17" y2="-14" stroke="#e2b96b" stroke-width="2"/><line x1="0" y1="-22" x2="17" y2="-14" stroke="#e2b96b" stroke-width="2"/><line x1="0" y1="-10" x2="-17" y2="8" stroke="#e2b96b" stroke-width="2"/><line x1="-17" y1="8" x2="-19" y2="24" stroke="#e2b96b" stroke-width="2"/><line x1="0" y1="-10" x2="17" y2="8" stroke="#e2b96b" stroke-width="2"/><line x1="17" y1="8" x2="15" y2="24" stroke="#e2b96b" stroke-width="2"/><text x="6" y="2" font-size="9" fill="#e2b96b" opacity=".8">↑</text><line x1="-60" y1="24" x2="60" y2="24" stroke="#2a2a2a" stroke-width="1.5"/></g><text x="100" y="90" text-anchor="middle" font-size="10" fill="#666" font-family="Barlow,sans-serif">Lunge — tuck pelvis forward</text></svg>',
+"Couch Stretch":'<svg viewBox="0 0 200 95" style="width:100%;height:88px"><g transform="translate(90,50)"><circle cx="-10" cy="-38" r="7" fill="none" stroke="#e2b96b" stroke-width="2"/><line x1="-10" y1="-31" x2="-8" y2="-8" stroke="#e2b96b" stroke-width="2"/><line x1="-8" y1="-20" x2="-28" y2="-14" stroke="#e2b96b" stroke-width="2"/><line x1="-8" y1="-20" x2="8" y2="-14" stroke="#e2b96b" stroke-width="2"/><line x1="-8" y1="-8" x2="-20" y2="8" stroke="#e2b96b" stroke-width="2"/><line x1="-20" y1="8" x2="-22" y2="24" stroke="#e2b96b" stroke-width="2"/><line x1="-8" y1="-8" x2="10" y2="6" stroke="#e2b96b" stroke-width="2"/><line x1="10" y1="6" x2="22" y2="-12" stroke="#e2b96b" stroke-width="2.5" stroke-linecap="round"/><rect x="17" y="-22" width="24" height="14" rx="3" fill="#1a1a2a" stroke="#3a3a5a" stroke-width="1.5"/><text x="29" y="-12" font-size="8" fill="#666" text-anchor="middle" font-family="Barlow,sans-serif">sofa</text><line x1="-55" y1="24" x2="18" y2="24" stroke="#2a2a2a" stroke-width="1.5"/></g><text x="100" y="90" text-anchor="middle" font-size="10" fill="#666" font-family="Barlow,sans-serif">Rear foot on sofa — sink hips down</text></svg>',
+"Pigeon Pose":'<svg viewBox="0 0 200 95" style="width:100%;height:88px"><g transform="translate(100,50)"><circle cx="0" cy="-36" r="7" fill="none" stroke="#e2b96b" stroke-width="2"/><line x1="0" y1="-29" x2="0" y2="-8" stroke="#e2b96b" stroke-width="2"/><line x1="0" y1="-18" x2="-26" y2="4" stroke="#e2b96b" stroke-width="2"/><line x1="0" y1="-18" x2="26" y2="4" stroke="#e2b96b" stroke-width="2"/><line x1="0" y1="-8" x2="-18" y2="10" stroke="#e2b96b" stroke-width="2"/><line x1="-18" y1="10" x2="14" y2="10" stroke="#e2b96b" stroke-width="2.5" stroke-linecap="round"/><line x1="0" y1="-8" x2="28" y2="10" stroke="#e2b96b" stroke-width="2"/><line x1="28" y1="10" x2="32" y2="22" stroke="#e2b96b" stroke-width="2"/><line x1="-60" y1="22" x2="60" y2="22" stroke="#2a2a2a" stroke-width="1.5"/></g><text x="100" y="90" text-anchor="middle" font-size="10" fill="#666" font-family="Barlow,sans-serif">Front shin across — back leg straight</text></svg>',
+"90/90 Hip Stretch":'<svg viewBox="0 0 200 95" style="width:100%;height:88px"><g transform="translate(100,50)"><circle cx="0" cy="-36" r="7" fill="none" stroke="#e2b96b" stroke-width="2"/><line x1="0" y1="-29" x2="0" y2="-4" stroke="#e2b96b" stroke-width="2"/><line x1="0" y1="-18" x2="-18" y2="-10" stroke="#e2b96b" stroke-width="2"/><line x1="0" y1="-18" x2="18" y2="-10" stroke="#e2b96b" stroke-width="2"/><line x1="0" y1="-4" x2="-22" y2="6" stroke="#e2b96b" stroke-width="2"/><line x1="-22" y1="6" x2="-22" y2="22" stroke="#e2b96b" stroke-width="2.5"/><line x1="0" y1="-4" x2="22" y2="6" stroke="#e2b96b" stroke-width="2"/><line x1="22" y1="6" x2="38" y2="6" stroke="#e2b96b" stroke-width="2.5"/><text x="-32" y="26" font-size="9" fill="#e2b96b" opacity=".7" font-family="Barlow,sans-serif">90°</text><text x="24" y="2" font-size="9" fill="#e2b96b" opacity=".7" font-family="Barlow,sans-serif">90°</text><line x1="-60" y1="22" x2="60" y2="22" stroke="#2a2a2a" stroke-width="1.5"/></g><text x="100" y="90" text-anchor="middle" font-size="10" fill="#666" font-family="Barlow,sans-serif">Both knees at 90° — sit tall</text></svg>',
+"Deep Squat Hold":'<svg viewBox="0 0 200 95" style="width:100%;height:88px"><g transform="translate(100,52)"><circle cx="0" cy="-40" r="7" fill="none" stroke="#e2b96b" stroke-width="2"/><line x1="0" y1="-33" x2="0" y2="-16" stroke="#e2b96b" stroke-width="2"/><line x1="0" y1="-24" x2="-24" y2="-16" stroke="#e2b96b" stroke-width="2"/><line x1="0" y1="-24" x2="24" y2="-16" stroke="#e2b96b" stroke-width="2"/><line x1="0" y1="-16" x2="-18" y2="2" stroke="#e2b96b" stroke-width="2"/><line x1="0" y1="-16" x2="18" y2="2" stroke="#e2b96b" stroke-width="2"/><line x1="-18" y1="2" x2="-22" y2="20" stroke="#e2b96b" stroke-width="2"/><line x1="18" y1="2" x2="22" y2="20" stroke="#e2b96b" stroke-width="2"/><line x1="-28" y1="20" x2="-14" y2="20" stroke="#e2b96b" stroke-width="3" stroke-linecap="round"/><line x1="14" y1="20" x2="28" y2="20" stroke="#e2b96b" stroke-width="3" stroke-linecap="round"/><line x1="-60" y1="22" x2="60" y2="22" stroke="#2a2a2a" stroke-width="1.5"/></g><text x="100" y="90" text-anchor="middle" font-size="10" fill="#666" font-family="Barlow,sans-serif">Heels flat — chest up — use doorframe</text></svg>',
+"Calf Stretch":'<svg viewBox="0 0 200 95" style="width:100%;height:88px"><g transform="translate(100,50)"><circle cx="0" cy="-38" r="7" fill="none" stroke="#e2b96b" stroke-width="2"/><line x1="0" y1="-31" x2="-4" y2="-8" stroke="#e2b96b" stroke-width="2"/><line x1="-4" y1="-20" x2="-30" y2="-26" stroke="#e2b96b" stroke-width="2"/><line x1="-4" y1="-20" x2="-30" y2="-10" stroke="#e2b96b" stroke-width="2"/><line x1="-34" y1="-34" x2="-34" y2="22" stroke="#444" stroke-width="3" stroke-linecap="round"/><line x1="-4" y1="-8" x2="-12" y2="8" stroke="#e2b96b" stroke-width="2"/><line x1="-12" y1="8" x2="-14" y2="22" stroke="#e2b96b" stroke-width="2"/><line x1="-4" y1="-8" x2="16" y2="8" stroke="#e2b96b" stroke-width="2.5"/><line x1="16" y1="8" x2="18" y2="22" stroke="#e2b96b" stroke-width="2"/><line x1="-60" y1="22" x2="60" y2="22" stroke="#2a2a2a" stroke-width="1.5"/></g><text x="100" y="90" text-anchor="middle" font-size="10" fill="#666" font-family="Barlow,sans-serif">Back leg straight — heel flat on floor</text></svg>',
+"Standing Quad Stretch":'<svg viewBox="0 0 200 95" style="width:100%;height:88px"><g transform="translate(100,52)"><circle cx="0" cy="-40" r="7" fill="none" stroke="#e2b96b" stroke-width="2"/><line x1="0" y1="-33" x2="0" y2="-8" stroke="#e2b96b" stroke-width="2"/><line x1="0" y1="-20" x2="-20" y2="-14" stroke="#e2b96b" stroke-width="2"/><line x1="0" y1="-20" x2="20" y2="-14" stroke="#e2b96b" stroke-width="2"/><line x1="0" y1="-8" x2="-8" y2="14" stroke="#e2b96b" stroke-width="2"/><line x1="-8" y1="14" x2="-10" y2="26" stroke="#e2b96b" stroke-width="2"/><line x1="0" y1="-8" x2="12" y2="6" stroke="#e2b96b" stroke-width="2"/><line x1="12" y1="6" x2="8" y2="-14" stroke="#e2b96b" stroke-width="2.5" stroke-linecap="round"/><circle cx="8" cy="-14" r="3" fill="#e2b96b" opacity=".5"/><line x1="-40" y1="26" x2="40" y2="26" stroke="#2a2a2a" stroke-width="1.5"/></g><text x="100" y="90" text-anchor="middle" font-size="10" fill="#666" font-family="Barlow,sans-serif">Pull ankle to glute — stand tall</text></svg>',
+"Child\'s Pose":'<svg viewBox="0 0 200 95" style="width:100%;height:88px"><g transform="translate(100,56)"><circle cx="-40" cy="8" r="6" fill="none" stroke="#e2b96b" stroke-width="2"/><line x1="-34" y1="6" x2="2" y2="0" stroke="#e2b96b" stroke-width="2"/><line x1="-14" y1="2" x2="-48" y2="-4" stroke="#e2b96b" stroke-width="2"/><line x1="-14" y1="2" x2="-46" y2="4" stroke="#e2b96b" stroke-width="2"/><line x1="2" y1="0" x2="12" y2="-12" stroke="#e2b96b" stroke-width="2"/><line x1="12" y1="-12" x2="20" y2="12" stroke="#e2b96b" stroke-width="2"/><line x1="2" y1="0" x2="18" y2="12" stroke="#e2b96b" stroke-width="2"/><line x1="-60" y1="18" x2="36" y2="18" stroke="#2a2a2a" stroke-width="1.5"/></g><text x="100" y="90" text-anchor="middle" font-size="10" fill="#666" font-family="Barlow,sans-serif">Arms forward — sink hips to heels</text></svg>',
+"Supine Twist":'<svg viewBox="0 0 200 95" style="width:100%;height:88px"><g transform="translate(100,52)"><circle cx="-42" cy="-6" r="6" fill="none" stroke="#e2b96b" stroke-width="2"/><line x1="-36" y1="-6" x2="10" y2="-6" stroke="#e2b96b" stroke-width="2"/><line x1="-14" y1="-6" x2="-14" y2="-28" stroke="#e2b96b" stroke-width="2"/><line x1="-14" y1="-6" x2="32" y2="-10" stroke="#e2b96b" stroke-width="2"/><line x1="10" y1="-6" x2="28" y2="0" stroke="#e2b96b" stroke-width="2"/><line x1="10" y1="-6" x2="-2" y2="16" stroke="#e2b96b" stroke-width="2.5"/><line x1="-2" y1="16" x2="-18" y2="18" stroke="#e2b96b" stroke-width="2"/><text x="8" y="8" font-size="12" fill="#e2b96b" opacity=".7">↙</text><line x1="-60" y1="24" x2="50" y2="24" stroke="#2a2a2a" stroke-width="1.5"/></g><text x="100" y="90" text-anchor="middle" font-size="10" fill="#666" font-family="Barlow,sans-serif">Shoulders flat — knee drops across</text></svg>',
+"Lying Hamstring Stretch":'<svg viewBox="0 0 200 95" style="width:100%;height:88px"><g transform="translate(100,56)"><circle cx="-46" cy="0" r="6" fill="none" stroke="#e2b96b" stroke-width="2"/><line x1="-40" y1="0" x2="8" y2="0" stroke="#e2b96b" stroke-width="2"/><line x1="0" y1="0" x2="-4" y2="-28" stroke="#e2b96b" stroke-width="2.5"/><line x1="-10" y1="-6" x2="-6" y2="-22" stroke="#e2b96b" stroke-width="1.5" stroke-dasharray="3,2"/><line x1="-2" y1="-6" x2="-2" y2="-22" stroke="#e2b96b" stroke-width="1.5" stroke-dasharray="3,2"/><line x1="0" y1="0" x2="46" y2="0" stroke="#e2b96b" stroke-width="2"/><line x1="-60" y1="14" x2="60" y2="14" stroke="#2a2a2a" stroke-width="1.5"/></g><text x="100" y="90" text-anchor="middle" font-size="10" fill="#666" font-family="Barlow,sans-serif">On back — pull straight leg toward you</text></svg>',
+"Ankle Dorsiflexion Stretch":'<svg viewBox="0 0 200 95" style="width:100%;height:88px"><g transform="translate(100,50)"><circle cx="-4" cy="-38" r="7" fill="none" stroke="#e2b96b" stroke-width="2"/><line x1="-4" y1="-31" x2="-2" y2="-8" stroke="#e2b96b" stroke-width="2"/><line x1="-2" y1="-20" x2="-32" y2="-24" stroke="#e2b96b" stroke-width="2"/><line x1="-36" y1="-34" x2="-36" y2="22" stroke="#444" stroke-width="3"/><line x1="-2" y1="-8" x2="-18" y2="8" stroke="#e2b96b" stroke-width="2.5"/><line x1="-18" y1="8" x2="-20" y2="22" stroke="#e2b96b" stroke-width="2"/><text x="-10" y="16" font-size="9" fill="#e2b96b" opacity=".8">← knee</text><line x1="-2" y1="-8" x2="18" y2="10" stroke="#e2b96b" stroke-width="2"/><line x1="18" y1="10" x2="20" y2="22" stroke="#e2b96b" stroke-width="2"/><line x1="-60" y1="22" x2="60" y2="22" stroke="#2a2a2a" stroke-width="1.5"/></g><text x="100" y="90" text-anchor="middle" font-size="10" fill="#666" font-family="Barlow,sans-serif">Knee past toe — heel flat on floor</text></svg>',
+"Standing Hip Flexor Stretch":'<svg viewBox="0 0 200 95" style="width:100%;height:88px"><g transform="translate(100,52)"><circle cx="0" cy="-40" r="7" fill="none" stroke="#e2b96b" stroke-width="2"/><line x1="0" y1="-33" x2="0" y2="-10" stroke="#e2b96b" stroke-width="2"/><line x1="0" y1="-22" x2="-16" y2="-14" stroke="#e2b96b" stroke-width="2"/><line x1="0" y1="-22" x2="16" y2="-14" stroke="#e2b96b" stroke-width="2"/><line x1="0" y1="-10" x2="-16" y2="8" stroke="#e2b96b" stroke-width="2"/><line x1="-16" y1="8" x2="-18" y2="22" stroke="#e2b96b" stroke-width="2"/><line x1="0" y1="-10" x2="16" y2="8" stroke="#e2b96b" stroke-width="2"/><line x1="16" y1="8" x2="14" y2="22" stroke="#e2b96b" stroke-width="2"/><text x="4" y="0" font-size="9" fill="#e2b96b" opacity=".8">↑</text><line x1="-60" y1="22" x2="60" y2="22" stroke="#2a2a2a" stroke-width="1.5"/></g><text x="100" y="90" text-anchor="middle" font-size="10" fill="#666" font-family="Barlow,sans-serif">Lunge — tuck pelvis under</text></svg>'
+};
+
+// ── Focus options ──
+var FOCUSES = {
+15:[
+  {id:"plyo",   icon:"⚡", label:"Explosive",  desc:"Pure plyometrics — ankle hops, squat jumps, approach practice", color:"#e05a5a", bg:"#1e1010"},
+  {id:"core",   icon:"🔩", label:"Core",       desc:"Hollow body, V-ups, Copenhagen plank, glute bridges",          color:"#5a9fe0", bg:"#101520"},
+  {id:"mob",    icon:"🌊", label:"Mobility",   desc:"Hip & ankle flow — pigeon, 90/90, deep squat, couch stretch",  color:"#52d98a", bg:"#101a14"},
+  {id:"upper",  icon:"💪", label:"Upper Body", desc:"Push-ups, pike press, inverted rows — no equipment",           color:"#9a5ae0", bg:"#150f1e"}
+],
+30:[
+  {id:"plyo",   icon:"⚡", label:"Explosive",  desc:"Max jumps + isometrics — the most jump-specific session",      color:"#e05a5a", bg:"#1e1010"},
+  {id:"core",   icon:"🔩", label:"Core",       desc:"Core strength + mobility combo",                               color:"#5a9fe0", bg:"#101520"},
+  {id:"iso",    icon:"🏗️",  label:"Strength",  desc:"Isometric holds — builds tendon stiffness for spring effect",  color:"#e07a3a", bg:"#1e1508"},
+  {id:"upper",  icon:"💪", label:"Upper Body", desc:"Full bodyweight push + pull session",                          color:"#9a5ae0", bg:"#150f1e"},
+  {id:"mob",    icon:"🌊", label:"Recovery",   desc:"Full stretch flow — reduce soreness, reset range of motion",   color:"#52d98a", bg:"#101a14"},
+  {id:"bal",    icon:"🎯", label:"Balance",    desc:"Single-leg strength + landing mechanics",                      color:"#e2b96b", bg:"#1a1508"}
+],
+45:[
+  {id:"full",   icon:"🔥", label:"Full Vert",  desc:"Plyos + isometrics + core + stretch — the complete home session", color:"#e05a5a", bg:"#1e1010"},
+  {id:"grind",  icon:"⚙️", label:"Grind",      desc:"Isometrics + core + plyo finisher — fatigue-resistant strength",  color:"#e07a3a", bg:"#1e1508"},
+  {id:"upper",  icon:"💪", label:"Upper",      desc:"Full bodyweight upper — chest, back, shoulders, arms",             color:"#9a5ae0", bg:"#150f1e"},
+  {id:"mob",    icon:"🌊", label:"Deep Mob",   desc:"Extended hip, ankle, and posterior chain mobility",                color:"#52d98a", bg:"#101a14"},
+  {id:"rec",    icon:"🌿", label:"Recovery",   desc:"Light activation + full body stretch + breathwork",               color:"#3ab8c8", bg:"#0e1a1c"}
+],
+60:[
+  {id:"power",  icon:"🔥", label:"Power",      desc:"Strength + plyos + upper body — full performance day",  color:"#e05a5a", bg:"#1e1010"},
+  {id:"post",   icon:"🏗️",  label:"Posterior", desc:"Hamstrings, glutes, back — posterior chain focus",      color:"#e07a3a", bg:"#1e1508"},
+  {id:"upper",  icon:"💪", label:"Upper Hyp",  desc:"Chest, back, shoulders, arms — hypertrophy focus",     color:"#9a5ae0", bg:"#150f1e"},
+  {id:"sport",  icon:"⚡", label:"Athletic",   desc:"Speed, reactive jumps, lateral power — court-specific", color:"#e2b96b", bg:"#1a1508"}
+],
+75:[
+  {id:"full",   icon:"🏆", label:"Full Power", desc:"Squat + deadlift + plyos + upper body",                color:"#e05a5a", bg:"#1e1010"},
+  {id:"push",   icon:"💥", label:"Push Day",   desc:"Squat + chest + shoulders + press + plyos",            color:"#9a5ae0", bg:"#150f1e"},
+  {id:"pull",   icon:"🧲", label:"Pull Day",   desc:"Deadlift + back + biceps + plyos",                     color:"#5a9fe0", bg:"#101520"},
+  {id:"legs",   icon:"🦵", label:"Legs + Core",desc:"Full leg session + calf work + core finisher",         color:"#e07a3a", bg:"#1e1508"}
+],
+90:[
+  {id:"comp",   icon:"🏆", label:"Complete",   desc:"Every system — the full 90-minute athlete day",        color:"#e2b96b", bg:"#1a1508"},
+  {id:"push",   icon:"💥", label:"Push Full",  desc:"Squat + full push upper + plyos + core",               color:"#9a5ae0", bg:"#150f1e"},
+  {id:"pull",   icon:"🧲", label:"Pull Full",  desc:"Deadlift + full pull upper + plyos + core",            color:"#5a9fe0", bg:"#101520"}
+]
+};
+
+// ── Helper to build block/exercise objects ──
+function B(name, dur, exs, isStretch) { return {name:name, dur:dur, stretch:!!isStretch, exs:exs}; }
+function E(name, detail, viz) { return {name:name, detail:detail, viz:!!viz}; }
+
+// ── All sessions ──
+var SESS = {
+// ─── 15 MIN ───
+"15-plyo":{title:"Ankle & Jump Primer",meta:"15 min · Home · No equipment",accent:"#e05a5a",tip:"Ankle stiffness = free jump height. These tendons act like springs — train them accordingly.",
+blocks:[
+  B("Warm-Up","3 min",[E("Ankle Circles","10 each direction, each foot"),E("Leg Swings","10 forward/back + 10 lateral each leg"),E("Hip Circles","10 each direction — wide and controlled")]),
+  B("Plyometric Circuit","10 min",[E("Ankle Hops","3×15 — minimal knee bend, fast ground contact, stiff ankles"),E("Squat Jumps","3×8 — full depth, explode up, land soft and controlled"),E("Broad Jumps","3×5 — max distance, stick every landing for 2 sec"),E("Depth Drop → Freeze","3×5 — step off a step, absorb landing, hold 2 sec")]),
+  B("Cool-Down","2 min",[E("Standing Quad Stretch","30 sec each leg",true),E("Calf Stretch","30 sec each leg against wall",true)],true)
+]},
+"15-core":{title:"Core Ignition",meta:"15 min · Home · No equipment",accent:"#5a9fe0",tip:"Core power transfers your leg drive into your reach. A weak core leaks energy — fix it here.",
+blocks:[
+  B("Activation","3 min",[E("Dead Bug","5 slow reps each side — lower back pinned to floor the whole time"),E("Glute Bridge","10 reps — squeeze hard at top, 1 sec hold")]),
+  B("Core Circuit","10 min",[E("Hollow Body Hold","3×20 sec — lower back glued down, legs low and straight"),E("V-Ups","3×10 — controlled, full range, no momentum"),E("Plank Shoulder Taps","3×20 — hips completely still, zero rotation"),E("Single-Leg Glute Bridge","3×10 each — full extension, pause at top")]),
+  B("Cool-Down","2 min",[E("Child's Pose","60 sec — arms forward, hips to heels",true),E("Supine Twist","30 sec each side — shoulders flat",true)],true)
+]},
+"15-mob":{title:"Hip & Ankle Reset",meta:"15 min · Home · No equipment",accent:"#52d98a",tip:"Tight hips limit how deep you load before jumping. This directly steals inches from your vertical.",
+blocks:[
+  B("Hip & Ankle Flow","15 min",[E("90/90 Hip Stretch","90 sec each side — sit tall, don't collapse through spine",true),E("Couch Stretch","90 sec each side — hip flexor and quad opener",true),E("Deep Squat Hold","2×60 sec — heels flat, chest up, hold doorframe if needed",true),E("Ankle Dorsiflexion Stretch","60 sec each — knee past toe, heel flat",true),E("Pigeon Pose","90 sec each side — breathe and relax into it",true),E("Standing Hip Flexor Stretch","60 sec each — lunge, tuck pelvis under",true)],true)
+]},
+"15-upper":{title:"Upper Activation",meta:"15 min · Home · No equipment",accent:"#9a5ae0",tip:"Arm swing at peak jump is worth 2–4 inches of reach. Strong shoulders + fast pull = free height.",
+blocks:[
+  B("Warm-Up","2 min",[E("Arm Circles","15 each direction — small to large"),E("Scapular Squeeze","15 reps — pull shoulder blades back and down, hold 1 sec")]),
+  B("Upper Circuit","11 min",[E("Push-Ups","4×max — full lockout, chest to floor, no sagging hips"),E("Diamond Push-Ups","3×10 — hands close, elbows back, tricep focus"),E("Pike Push-Ups","3×10 — hips high in inverted V, overhead press pattern"),E("Inverted Row (under table)","3×10 — pull chest to edge, full retraction at top")]),
+  B("Cool-Down","2 min",[E("Child's Pose","60 sec",true),E("Doorframe Chest Stretch","30 sec each side — arm at 90°, lean through door")],true)
+]},
+// ─── 30 MIN ───
+"30-plyo":{title:"Jump Power Session",meta:"30 min · Home · No equipment",accent:"#e05a5a",tip:"Every max jump rep needs to be 100% effort. If you're not jumping your absolute highest, rest longer — don't grind through tired reps.",
+blocks:[
+  B("Warm-Up","5 min",[E("Jumping Jacks","60 sec"),E("Leg Swings","10 each direction, each leg"),E("Hip Circles","10 each direction"),E("Ankle Hops","2×10 — light, just warming tendons")]),
+  B("Plyometric Block","15 min",[E("Max Vertical Jumps","4×6 — absolute max effort every rep, 90 sec rest between sets"),E("Single-Leg Hops","3×8 each leg — hop forward, stick landing 2 sec"),E("Tuck Jumps","3×8 — knees to chest, fast and powerful"),E("Lateral Bounds","3×8 each — wide explosive, stick every landing"),E("Approach Jump Practice","5 reps — 3-step run-up, max effort, reach as high as possible")]),
+  B("Isometric Block","7 min",[E("Wall Sit","3×45 sec — thighs parallel, back flat, no sliding"),E("Bulgarian Split Squat Hold","3×30 sec each — rear foot on sofa"),E("Isometric Calf Raise Hold","3×30 sec — on step edge, single leg, raised position")]),
+  B("Cool-Down","3 min",[E("Hip Flexor Stretch","60 sec each side",true),E("Calf Stretch","30 sec each side",true),E("Standing Quad Stretch","30 sec each side",true)],true)
+]},
+"30-core":{title:"Core & Stability",meta:"30 min · Home · No equipment",accent:"#5a9fe0",tip:"Copenhagen planks build lateral core stiffness — this stabilises every landing and takeoff and is severely underrated for jumping.",
+blocks:[
+  B("Warm-Up","4 min",[E("Cat-Cow","10 slow reps — full range each way"),E("Bird Dog","5 each side — opposite arm and leg, hold 2 sec"),E("Glute Bridge","10 reps")]),
+  B("Core Strength","14 min",[E("Hollow Body Hold","4×25 sec — lower back pinned, legs straight and low"),E("L-Sit (on floor)","3×15 sec — hands beside hips, lift legs, compress hard"),E("Copenhagen Plank","3×20 sec each — side plank, top foot on chair or sofa edge"),E("Dragon Flag Negatives","3×5 — slow 4-count lower from hollow position on floor"),E("Ab Wheel (towel rollout)","3×8 — slow and controlled, brace throughout")]),
+  B("Mobility Block","9 min",[E("90/90 Hip Stretch","5 transitions each side — slow, sit tall",true),E("Deep Squat Hold","10 deep breaths — expand ribcage, relax into depth",true),E("Couch Stretch","90 sec each leg",true),E("Supine Twist","30 sec each side",true)],true)
+]},
+"30-iso":{title:"Tendon & Isometric",meta:"30 min · Home · No equipment",accent:"#e07a3a",tip:"Isometric strength at your takeoff joint angle directly transfers to your jump — the wall sit position is exactly where you load before leaving the ground.",
+blocks:[
+  B("Warm-Up","4 min",[E("High Knees","45 sec"),E("Glute Bridges","15 reps"),E("Ankle Hops","2×15")]),
+  B("Isometric Block","16 min",[E("Wall Sit","4×60 sec — thighs parallel, breathe steadily, don't slide"),E("Bulgarian Split Squat Hold","4×40 sec each — rear foot on sofa"),E("Isometric Hamstring Curl","3×30 sec each — face down, press heel hard into floor, don't move"),E("Single-Leg Calf Hold","3×45 sec — step edge, single leg, raised position")]),
+  B("Plyo Finisher","5 min",[E("Squat Jumps","3×8 — max intent despite any fatigue"),E("Approach Jumps","5 reps — 3-step run-up, reach absolute maximum")]),
+  B("Cool-Down","5 min",[E("Couch Stretch","90 sec each leg",true),E("Calf Stretch","60 sec each",true),E("Standing Quad Stretch","45 sec each",true)],true)
+]},
+"30-upper":{title:"Bodyweight Upper",meta:"30 min · Home · No equipment",accent:"#9a5ae0",tip:"Arm swing on a max jump is fast and explosive — train your shoulder press and pull with that same explosive intent.",
+blocks:[
+  B("Warm-Up","4 min",[E("Arm Circles","15 each direction"),E("Scapular Push-Ups","15 reps — flat, just protract and retract blades"),E("Band Pull-Apart Simulation","15 reps — hold tension, squeeze blades back")]),
+  B("Push Block","12 min",[E("Push-Ups","4×max — full range, no sagging"),E("Diamond Push-Ups","3×12 — elbows back, tricep focus"),E("Decline Push-Ups (feet on sofa)","3×10 — upper chest and front delt"),E("Archer Push-Ups","3×8 each — shift weight side to side, unilateral loading")]),
+  B("Pull Block","10 min",[E("Inverted Row (under table)","4×max — pull chest to edge, full retraction at top"),E("Door-Frame Pull","3×10 — grip frame, lean back, pull yourself upright"),E("Bicep Curl (bag or books)","3×15 — slow and controlled, full range")]),
+  B("Cool-Down","4 min",[E("Child's Pose","60 sec",true),E("Doorframe Chest Stretch","30 sec each side"),E("Doorframe Lat Stretch","30 sec each side — hold frame, sink hips back")],true)
+]},
+"30-mob":{title:"Active Recovery",meta:"30 min · Home · No equipment",accent:"#52d98a",tip:"Recovery days are where gains happen. You grow between sessions, not during them. This session is doing real work.",
+blocks:[
+  B("Gentle Activation","5 min",[E("Dead Bug","10 each side — no effort, just activation"),E("Glute Bridge","15 slow reps — feel each contraction"),E("Ankle Circles","15 each direction, each foot")]),
+  B("Full Body Stretch","20 min",[E("Hip Flexor Stretch","2 min each — no hurry, sink in slowly",true),E("Pigeon Pose","2 min each — breathe into the stretch",true),E("90/90 Hip Stretch","90 sec each side",true),E("Deep Squat Hold","2×60 sec",true),E("Calf Stretch","60 sec each",true),E("Ankle Dorsiflexion Stretch","60 sec each",true),E("Lying Hamstring Stretch","90 sec each",true),E("Supine Twist","60 sec each side",true),E("Child's Pose","2 min — long slow exhales",true)],true),
+  B("Breathwork","5 min",[E("Box Breathing","4 sec in, 4 hold, 4 out, 4 hold — 10 rounds. Complete nervous system reset.")])
+]},
+"30-bal":{title:"Single-Leg & Landing",meta:"30 min · Home · No equipment",accent:"#e2b96b",tip:"Most dunking failures happen in the last two steps — poor single-leg power and bad landing mechanics. This session targets both.",
+blocks:[
+  B("Warm-Up","4 min",[E("Single-Leg Balance","30 sec each — eyes open, then try eyes closed"),E("Hip Circles","10 each direction"),E("Single-Leg Ankle Hops","2×10 each")]),
+  B("Single-Leg Strength","14 min",[E("Sit-to-Stand Single-Leg","4×8 each — sit onto low chair and stand up, progress to lower surfaces"),E("Rear-Foot Elevated Split Squat","3×10 each — slow down, explosive up"),E("Single-Leg Calf Raise","4×15 each — step edge, full range, pause at top"),E("Single-Leg Romanian Deadlift","3×10 each — hinge at hip, slight bend, back flat")]),
+  B("Landing Mechanics","8 min",[E("Single-Leg Depth Drop","3×5 each — step off step, stick single-leg landing for 3 sec"),E("Lateral Bound to Single-Leg Land","3×6 each — bound sideways, stick it"),E("Approach Jump to Single-Leg Land","5 reps — full run-up, land single leg, hold")]),
+  B("Cool-Down","4 min",[E("Hip Flexor Stretch","60 sec each",true),E("Ankle Dorsiflexion Stretch","45 sec each",true),E("Standing Quad Stretch","30 sec each",true)],true)
+]},
+// ─── 45 MIN ───
+"45-full":{title:"Full Vert Home Session",meta:"45 min · Home · No equipment",accent:"#e05a5a",tip:"This is the session. Hit the max jumps with everything you have — every rep is a chance to train your nervous system to fire at full capacity.",
+blocks:[
+  B("Warm-Up","6 min",[E("Jump Rope Simulation","2 min — same motion, no rope, fast feet"),E("Leg Swings","10 forward/back + 10 lateral each leg"),E("Hip Circles","10 each way — full range"),E("Ankle Hops","2×15 — easy, warming tendons"),E("Inchworms","5 reps — walk hands out, hold, walk back")]),
+  B("Plyometric Block","18 min",[E("Max Vertical Jumps","4×6 — absolute max effort, 90 sec rest. These are your money reps."),E("Depth Drop → Vertical Jump","3×6 — step off step, land and immediately jump max height"),E("Single-Leg Squat Jumps","3×6 each — pistol-ish depth, explode up off one leg"),E("Tuck Jumps","3×8 — knees to chest, fast"),E("Approach Jump Practice","6 reps — 3-step run-up, reach absolute max"),E("Lateral Bounds","3×8 each — wide explosive, stick landing")]),
+  B("Isometric Block","8 min",[E("Wall Sit","3×45 sec — 15 sec rest only between sets"),E("Bulgarian Split Squat Hold","3×30 sec each — rear foot on sofa"),E("Single-Leg Calf Hold","3×30 sec — step edge, raised, single leg")]),
+  B("Core Block","8 min",[E("Hollow Body Hold","3×25 sec"),E("V-Ups","3×12"),E("Plank Shoulder Taps","3×20 — hips completely still"),E("Single-Leg Glute Bridge","3×10 each")]),
+  B("Cool-Down","5 min",[E("Hip Flexor Stretch","90 sec each",true),E("Pigeon Pose","60 sec each",true),E("Calf Stretch","45 sec each",true),E("Child's Pose","60 sec",true)],true)
+]},
+"45-grind":{title:"Strength-Endurance Grind",meta:"45 min · Home · No equipment",accent:"#e07a3a",tip:"This builds the kind of fatigue-resistant strength that keeps your jumps high in the fourth quarter. Suffer through the isometrics.",
+blocks:[
+  B("Warm-Up","5 min",[E("High Knees","45 sec"),E("Glute Bridges","15 reps"),E("Hip Flexor March","10 each leg — standing, drive knee high"),E("Ankle Hops","2×15")]),
+  B("Isometric Strength","15 min",[E("Wall Sit","4×60 sec — thighs parallel, breathe steadily"),E("Bulgarian Split Squat Hold","4×40 sec each"),E("Isometric Hamstring Curl","3×30 sec each — face down, press heel hard into floor"),E("Isometric Calf Hold","3×45 sec — raised position, single leg, step edge")]),
+  B("Core Block","12 min",[E("Dead Bug","3×10 each side — slow and deliberate"),E("Copenhagen Plank","3×25 sec each — side plank, top foot on sofa"),E("Hollow Body to Arch Rock","3×10 — rock between positions, maintain tension throughout"),E("Ab Wheel (towel rollout)","3×8 — full extension if possible")]),
+  B("Plyo Finisher","8 min",[E("Squat Jumps","3×8 — max effort despite fatigue"),E("Approach Jumps","5 reps — full run-up, reach absolute highest")]),
+  B("Cool-Down","5 min",[E("Couch Stretch","90 sec each",true),E("90/90 Hip Stretch","60 sec each",true),E("Supine Twist","30 sec each side",true)],true)
+]},
+"45-upper":{title:"Bodyweight Upper Focus",meta:"45 min · Home · No equipment",accent:"#9a5ae0",tip:"All bodyweight. Pike push-ups = shoulder press. Inverted rows = pull-up. Archer push-ups = unilateral chest. No excuses.",
+blocks:[
+  B("Warm-Up","5 min",[E("Arm Circles","15 each direction — small to large"),E("Scapular Push-Ups","15 reps — just retract and protract"),E("Inchworms","5 reps"),E("Push-Up Hold","2×20 sec — top position, hold steady")]),
+  B("Chest & Triceps","14 min",[E("Push-Ups","4×max — full range, chest to floor, lockout at top"),E("Diamond Push-Ups","4×10 — hands form diamond, elbows back"),E("Decline Push-Ups (feet on sofa)","3×10 — upper chest and front delt"),E("Tricep Dips (on chair)","3×12 — full depth, controlled")]),
+  B("Shoulders","10 min",[E("Pike Push-Ups","4×10 — inverted V, overhead press pattern"),E("Wall Handstand Hold","3×20 sec — kick up against wall, full extension"),E("Side Lateral Raise (bags or books)","3×15 — slow and controlled, feel the delt")]),
+  B("Back & Biceps","10 min",[E("Inverted Row (under table)","4×max — retract fully at top"),E("Door-Frame Pull","3×12 — grip frame, lean back, pull upright"),E("Bicep Curl (bag or books)","3×12 each — strict form, full range")]),
+  B("Cool-Down","6 min",[E("Child's Pose","60 sec",true),E("Doorframe Chest Stretch","45 sec each side"),E("Doorframe Lat Stretch","30 sec each side"),E("Supine Twist","30 sec each",true)],true)
+]},
+"45-mob":{title:"Deep Mobility Session",meta:"45 min · Home · No equipment",accent:"#52d98a",tip:"Tight hip flexors limit your takeoff lean — you physically cannot generate as much force with restricted hips. This session is a performance tool.",
+blocks:[
+  B("Activation","8 min",[E("Dead Bug","10 each side — posterior pelvic tilt throughout"),E("Glute Bridge March","10 each leg — hold bridge, lift one foot"),E("Ankle Hops","2×15 — get blood in the tendons")]),
+  B("Hip Complex","18 min",[E("Hip Flexor Stretch","2 min each — tuck pelvis, feel front of hip",true),E("Couch Stretch","2 min each — rear foot on sofa, sink hips",true),E("Pigeon Pose","2 min each — breathe into it, no forcing",true),E("90/90 Hip Stretch","2 min each direction — transition slowly",true),E("Deep Squat Hold","3×60 sec — heels flat, doorframe if needed",true)],true),
+  B("Ankle & Posterior","12 min",[E("Ankle Dorsiflexion Stretch","90 sec each — knee past toe, heel flat",true),E("Calf Stretch","90 sec each — straight then bent leg",true),E("Lying Hamstring Stretch","90 sec each — pull straight leg",true),E("Supine Twist","60 sec each side",true)],true),
+  B("Close","7 min",[E("Child's Pose","2 min — long slow exhales",true),E("Standing Hip Flexor Stretch","60 sec each — final reset",true)],true)
+]},
+"45-rec":{title:"Active Recovery Day",meta:"45 min · Home · No equipment",accent:"#3ab8c8",tip:"You don't grow during workouts — you grow during recovery. Today is doing as much for your vertical as yesterday's jumps.",
+blocks:[
+  B("Light Activation","8 min",[E("Dead Bug","10 each side — gentle and slow"),E("Glute Bridge","15 reps — just feeling the contraction"),E("Cat-Cow","10 slow reps"),E("Bird Dog","8 each side")]),
+  B("Full Body Stretch","28 min",[E("Hip Flexor Stretch","2 min each",true),E("Couch Stretch","2 min each",true),E("Pigeon Pose","2.5 min each — full relaxation",true),E("90/90 Hip Stretch","90 sec each side",true),E("Deep Squat Hold","2×60 sec",true),E("Ankle Dorsiflexion Stretch","60 sec each",true),E("Calf Stretch","60 sec each",true),E("Lying Hamstring Stretch","90 sec each",true),E("Supine Twist","60 sec each",true),E("Child's Pose","2 min",true)],true),
+  B("Breathwork","9 min",[E("Box Breathing","4 sec in, 4 hold, 4 out, 4 hold — 15 rounds. Full CNS reset."),E("Progressive Muscle Relaxation","Tense each muscle group 5 sec, release — feet to head. Take your time.")])
+]},
+// ─── 60 MIN ───
+"60-power":{title:"Gym Power Session",meta:"60 min · Gym · Equipment required",accent:"#e05a5a",tip:"Always do strength before plyos — your nervous system needs to be fresh for max jumps. Never reverse this order.",
+blocks:[
+  B("Warm-Up","7 min",[E("Bike or Treadmill Jog","3 min easy"),E("Leg Swings + Hip Circles","10 each direction each leg"),E("Ankle Hops","2×15"),E("Box Jumps (warm-up)","2×5 — low box, light and easy")]),
+  B("Lower Body Strength","20 min",[E("Trap Bar Deadlift or Barbell","4×4 — 80-85% max. 2 min rest. Primary strength driver."),E("Bulgarian Split Squat","3×6 each — dumbbells, full depth, control descent"),E("Romanian Deadlift","3×8 — feel the hamstring stretch, drive hips through")]),
+  B("Upper Body Block","16 min",[E("Pull-Ups or Lat Pulldown","4×6 — weighted if possible. Arm swing = free rim height."),E("Dumbbell Shoulder Press","3×10 — overhead strength for reach at peak jump"),E("Barbell or DB Row","3×8 — retract scapula at top, full controlled pull"),E("Face Pulls","3×15 — rear delt health, posture, shoulder longevity")]),
+  B("Plyo Finisher","10 min",[E("Depth Jump → Max Vertical","3×5 — step off box, land, immediately jump max. 90 sec rest."),E("Approach Jump Practice","6 reps — full run-up, reach highest you can")]),
+  B("Cool-Down","7 min",[E("Hip Flexor Stretch","90 sec each",true),E("Pigeon Pose","60 sec each",true),E("Lying Hamstring Stretch","45 sec each",true)],true)
+]},
+"60-post":{title:"Gym Posterior + Pull",meta:"60 min · Gym · Equipment required",accent:"#e07a3a",tip:"Nordic hamstring curls are the single most effective exercise for increasing your vertical. They're brutal — that's the point.",
+blocks:[
+  B("Warm-Up","7 min",[E("Treadmill Jog","3 min easy"),E("Hip Circles + Leg Swings","10 each"),E("Glute Bridges","15 reps bodyweight"),E("Nordic Curl Negatives (light)","2×3 — slow lower only, get used to the position")]),
+  B("Posterior Chain","20 min",[E("Romanian Deadlift","4×6 — heavy, hamstring stretch at bottom, drive hips through"),E("Nordic Hamstring Curl","3×5 — 4 count slow eccentric. The best exercise for jump gains."),E("Hip Thrust (barbell)","4×8 — full extension at top, pause 1 sec, glutes only")]),
+  B("Upper Pull + Arms","18 min",[E("Weighted Pull-Ups","4×5 — belt or hold DB between feet"),E("Incline Dumbbell Press","3×10 — chest and anterior delt"),E("Lateral Raises","3×12 — slow and controlled, shoulder width + aesthetics"),E("Bicep Curl (EZ bar or DB)","3×10 — strict form, working toward your 27kg goal"),E("Tricep Pushdown","3×12 — cable or band, full extension")]),
+  B("Plyo Finisher","8 min",[E("Max Vertical Jumps","3×5 — full effort, 90 sec rest"),E("Approach Jumps","5 reps — full run-up, reach max")]),
+  B("Cool-Down","7 min",[E("Pigeon Pose","90 sec each",true),E("Lying Hamstring Stretch","60 sec each",true),E("Child's Pose","60 sec",true)],true)
+]},
+"60-upper":{title:"Gym Upper Hypertrophy",meta:"60 min · Gym · Equipment required",accent:"#9a5ae0",tip:"Overhead press and pull-ups directly improve your jump reach. Everything else builds the athletic physique.",
+blocks:[
+  B("Warm-Up","6 min",[E("Rowing Machine","3 min easy"),E("Arm Circles + Band Pull-Aparts","15 each"),E("Light Push-Ups","15 reps — full range warm-up")]),
+  B("Push Block","20 min",[E("Barbell Bench Press","4×6 — 80% max, controlled descent, explosive up"),E("Incline DB Press","3×10 — upper chest emphasis"),E("Overhead Press (barbell)","3×8 — standing, strict, full lockout"),E("Lateral Raises","3×15 — slow eccentric, feel the delt"),E("Tricep Pushdown","3×12 — cable, full extension, squeeze at bottom")]),
+  B("Pull Block","20 min",[E("Weighted Pull-Ups","4×5 — full range, control the negative"),E("Pendlay Row","3×8 — explosive pull, bar to lower chest, reset each rep"),E("Face Pulls","3×15 — external rotation, shoulder health"),E("Hammer Curl","3×10 each — neutral grip, brachialis and forearm"),E("Incline Dumbbell Curl","3×10 — full stretch at bottom, squeeze at top")]),
+  B("Core Finisher","7 min",[E("Hanging Leg Raises","3×12 — straight legs, no swinging"),E("Ab Wheel Rollout","3×10 — full extension")]),
+  B("Cool-Down","7 min",[E("Child's Pose","60 sec",true),E("Doorframe Chest Stretch","45 sec each side"),E("Lying Hamstring Stretch","45 sec each",true)],true)
+]},
+"60-sport":{title:"Athletic Speed & Power",meta:"60 min · Gym · Equipment required",accent:"#e2b96b",tip:"This session is basketball-specific. Sprint mechanics, reactive jumping, lateral power — the exact qualities that translate to the court.",
+blocks:[
+  B("Warm-Up","8 min",[E("Treadmill Build-Up","Start 8 km/h, build to 14 km/h over 3 min"),E("Dynamic Stretch Flow","Leg swings, hip circles, world's greatest stretch — 2 min"),E("Acceleration Runs","3×20m — 60% effort, focus on drive phase out of first step")]),
+  B("Speed & Power","20 min",[E("Sprint → Max Jump","5 reps — 15m sprint, plant and jump as high as possible. Full rest between."),E("Reactive Box Jump","4×5 — step off box, minimal ground contact, immediate max jump"),E("Approach Jump Practice","10 reps — full run-up, alternate one and two foot takeoffs")]),
+  B("Strength Block","16 min",[E("Trap Bar Deadlift","4×4 — heavy, explosive intent off floor. 2 min rest."),E("Bulgarian Split Squat","3×6 each — max speed on the up phase"),E("Nordic Hamstring Curl","3×5 — 4 count eccentric")]),
+  B("Lateral Power","8 min",[E("Lateral Shuffle Sprint","4×10m each way — stay low, explosive direction change"),E("Lateral Box Jump","3×6 each — jump sideways onto box, step down, repeat"),E("Defensive Slide Sprints","3×15m — full defensive position, max speed")]),
+  B("Cool-Down","8 min",[E("Hip Flexor Stretch","90 sec each",true),E("Pigeon Pose","60 sec each",true),E("Calf Stretch","45 sec each",true),E("Child's Pose","60 sec",true)],true)
+]},
+// ─── 75 MIN ───
+"75-full":{title:"Gym Full Power Block",meta:"75 min · Gym · Equipment required",accent:"#e05a5a",tip:"Squat + deadlift + plyos in one session is high demand on your nervous system. Eat beforehand and respect every rest period.",
+blocks:[
+  B("Warm-Up","8 min",[E("Rowing Machine or Bike","3 min easy"),E("Dynamic Mobility Flow","Leg swings, hip circles, inchworms — 2 min"),E("Box Jumps (warm-up)","3×4 — low box, light and reactive"),E("Ankle Hops","2×15")]),
+  B("Primary Strength","22 min",[E("Barbell Back Squat","4×4 — 80-85% max. 2 min rest. Primary power generator."),E("Trap Bar Deadlift","3×4 — same heavy intent, explosive off floor"),E("Bulgarian Split Squat","3×6 each — dumbbells, full depth"),E("Romanian Deadlift","3×8 — hamstring focus, controlled")]),
+  B("Plyometric Block","14 min",[E("Depth Jump → Max Vertical","4×5 — 40-50cm box, minimal ground time. 2 min rest."),E("Weighted Jump Squat","3×5 — 20-25% bodyweight only, max intent"),E("Approach Jump Practice","8 reps — full run-up every single rep")]),
+  B("Upper Body Block","20 min",[E("Weighted Pull-Ups","4×5 — belt or hold DB between legs. Arm swing = free inches."),E("Overhead Press (barbell or DB)","4×8 — standing, full lockout, controlled"),E("Barbell or DB Row","3×8 — retract scapula at top"),E("Lateral Raises","3×12 — slow and controlled"),E("Face Pulls","3×15 — external rotation"),E("Bicep Curl","3×8-10 — strict form, working toward 27kg goal")]),
+  B("Cool-Down","11 min",[E("Hip Flexor Stretch","90 sec each",true),E("Pigeon Pose","90 sec each",true),E("Lying Hamstring Stretch","60 sec each",true),E("Child's Pose","60 sec",true)],true)
+]},
+"75-push":{title:"Push Day",meta:"75 min · Gym · Equipment required",accent:"#9a5ae0",tip:"Overhead press and squat both directly transfer to jumping. Keep your intent high on every rep, not just the heavy sets.",
+blocks:[
+  B("Warm-Up","8 min",[E("Bike or Treadmill","3 min easy"),E("Arm Circles + Shoulder Rotations","15 each"),E("Bodyweight Squats","15 reps — full depth warm-up"),E("Box Jumps (light)","2×5")]),
+  B("Lower Push","22 min",[E("Barbell Back Squat","5×4 — 80-85% max. 2 min rest. Primary vertical driver."),E("Leg Press","3×10 — heavy, full range, don't lock knees"),E("Rear-Foot Elevated Split Squat","3×8 each — dumbbells, full depth"),E("Standing Calf Raise","4×15 slow + 4×8 explosive — two separate protocols")]),
+  B("Upper Push","20 min",[E("Overhead Press (barbell)","4×6 — standing, strict, full overhead lockout"),E("Incline DB Press","4×10 — upper chest and front delt"),E("Lateral Raises","4×12 — slow eccentric, feel the delt"),E("Tricep Pushdown","3×10 — cable, full extension"),E("Overhead Tricep Extension","3×12 — dumbbell or cable, long head")]),
+  B("Plyo + Calf Finisher","14 min",[E("Depth Jump → Max Vertical","3×5 — max reactive jump. 90 sec rest."),E("Single-Leg Calf Raise","3×15 each — step edge, full range"),E("Approach Jumps","5 reps — full run-up, max height")]),
+  B("Cool-Down","11 min",[E("Hip Flexor Stretch","90 sec each — critical after heavy squats",true),E("Deep Squat Hold","60 sec",true),E("Pigeon Pose","60 sec each",true),E("Child's Pose","60 sec",true)],true)
+]},
+"75-pull":{title:"Pull Day",meta:"75 min · Gym · Equipment required",accent:"#5a9fe0",tip:"Deadlift + nordic curl + pull-ups is the ultimate posterior chain combination. These muscle groups matter most for jumping.",
+blocks:[
+  B("Warm-Up","8 min",[E("Rowing Machine","3 min — posterior chain specific"),E("Leg Swings + Hip Circles","10 each"),E("Glute Bridges","15 reps"),E("Light Nordic Curl Negatives","2×3 — slow and controlled")]),
+  B("Lower Pull","22 min",[E("Trap Bar Deadlift","5×4 — 80-85% max. 2 min rest. King of hamstring power."),E("Romanian Deadlift","3×8 — full hamstring stretch at bottom"),E("Nordic Hamstring Curl","3×5 — 4 count negative, best exercise for vertical"),E("Hip Thrust","4×8 — barbell, full glute extension, 1 sec pause")]),
+  B("Upper Pull + Arms","22 min",[E("Weighted Pull-Ups","4×5 — full range, dead hang to chin over bar"),E("Pendlay Row","4×6 — explosive pull, bar to lower chest"),E("Face Pulls","3×15 — cable, external rotation"),E("Hammer Curl","3×12 each — neutral grip, brachialis"),E("Incline Dumbbell Curl","3×10 — stretch at bottom, peak contraction"),E("Reverse Curl","3×10 — overhand grip, forearm strength")]),
+  B("Plyo Finisher","12 min",[E("Max Vertical Jumps","3×5 — absolute max, 90 sec rest"),E("Single-Leg Depth Jumps","3×4 each — reactive, single leg"),E("Approach Jumps","5 reps — full run-up, max reach")]),
+  B("Cool-Down","11 min",[E("Pigeon Pose","90 sec each",true),E("Lying Hamstring Stretch","90 sec each",true),E("90/90 Hip Stretch","60 sec each",true),E("Child's Pose","60 sec",true)],true)
+]},
+"75-legs":{title:"Legs + Core Day",meta:"75 min · Gym · Equipment required",accent:"#e07a3a",tip:"Quad, hamstring, glute, calf — all in one session. The most direct vertical jump workout in the programme.",
+blocks:[
+  B("Warm-Up","7 min",[E("Bike or Treadmill","3 min easy"),E("Leg Swings + Hip Circles","10 each"),E("Ankle Hops","2×15"),E("Box Jumps (light)","2×5 — warm-up only")]),
+  B("Compound Lower","24 min",[E("Barbell Back Squat","4×4 — 80-85% max. Primary power generator."),E("Romanian Deadlift","3×8 — hamstring stretch, hip hinge"),E("Leg Press","3×10 — heavy, full range"),E("Walking Lunges (with dumbbells)","3×10 each — torso upright, full stride")]),
+  B("Plyometric Block","14 min",[E("Depth Jump → Max Vertical","4×5 — 40-50cm box, 2 min rest between sets"),E("Single-Leg Depth Jumps","3×4 each — single leg reactive"),E("Approach Jump Practice","8 reps — maximum effort every rep")]),
+  B("Calf & Ankle","8 min",[E("Standing Calf Raise (machine)","4×15 slow + 4×8 explosive"),E("Single-Leg Calf Raise","3×15 each — step edge, full range"),E("Seated Calf Raise","3×15 — soleus isolation")]),
+  B("Core Finisher","10 min",[E("Hanging Leg Raises","4×12 — straight legs"),E("Ab Wheel Rollout","3×10 — full extension"),E("Copenhagen Plank","3×25 sec each"),E("Hollow Body Hold","3×25 sec")]),
+  B("Cool-Down","12 min",[E("Hip Flexor Stretch","90 sec each",true),E("Pigeon Pose","90 sec each",true),E("Calf Stretch","60 sec each",true),E("Deep Squat Hold","60 sec",true),E("Child's Pose","60 sec",true)],true)
+]},
+// ─── 90 MIN ───
+"90-comp":{title:"Full Athlete Day",meta:"90 min · Gym · Equipment required",accent:"#e2b96b",tip:"The complete session — every system in one day. Treat rest periods as part of the workout. Don't rush them.",
+blocks:[
+  B("Warm-Up","10 min",[E("Treadmill Progressive Jog","4 min — easy to 60% effort"),E("Dynamic Mobility Flow","Leg swings, hip circles, world's greatest stretch, inchworms — 3 min"),E("Box Jumps (warm-up)","3×4 — low box, reactive"),E("Ankle Hops + Calf March","2×15 + 2×10")]),
+  B("Max Strength","22 min",[E("Barbell Back Squat","5×4 — 80-87% max. 2 min rest."),E("Trap Bar Deadlift","4×4 — heavy, explosive intent off floor"),E("Bulgarian Split Squat","3×6 each — slow down, explode up"),E("Nordic Hamstring Curl","3×5 — 4 count eccentric. Non-negotiable for jump gains.")]),
+  B("Plyometric Block","18 min",[E("Depth Jump → Max Vertical","5×5 — 45cm box. 2 min between sets. Ground contact under 0.2 sec."),E("Weighted Jump Squat","3×5 — 20-25% bodyweight, max intent every rep"),E("Single-Leg Depth Jumps","3×4 each leg"),E("Approach Jump Practice","10-12 reps — full run-up, maximum reach every single rep")]),
+  B("Upper Body Block","22 min",[E("Weighted Pull-Ups","4×5 — belt or DB between legs. Arm swing = free inches."),E("Overhead Press (barbell)","4×6 — standing, strict, reach strength at top of jump"),E("Pendlay Row","4×6 — explosive pull, bar to lower chest"),E("Incline DB Press","3×10 — chest development"),E("Lateral Raises","3×12 — slow eccentric"),E("Hammer Curl","3×10 — forearm and brachialis, toward 27kg goal"),E("Tricep Pushdown","3×12 — cable or band, full lockout")]),
+  B("Core Block","8 min",[E("Hanging Leg Raises","4×12 — straight legs, no swinging"),E("Ab Wheel Rollout","3×10 — full extension"),E("Dragon Flag Negatives","3×5 — 5 sec lowering phase"),E("Cable Pallof Press","3×12 each — brace and resist rotation")]),
+  B("Mobility & Recovery","10 min",[E("Hip Flexor Stretch","90 sec each — essential after heavy squatting",true),E("Pigeon Pose","90 sec each",true),E("Lying Hamstring Stretch","60 sec each",true),E("Calf Stretch","45 sec each",true),E("Child's Pose","60 sec",true)],true)
+]},
+"90-push":{title:"Full Push Day",meta:"90 min · Gym · Equipment required",accent:"#9a5ae0",tip:"Heavy squat + overhead press + plyos. Your legs and shoulders will be fully taxed — in the best way.",
+blocks:[
+  B("Warm-Up","10 min",[E("Bike or Treadmill","4 min — build from easy"),E("Arm Circles + Rotations","15 each direction"),E("Bodyweight Squats","15 reps"),E("Box Jumps (warm-up)","3×4"),E("Ankle Hops","2×15")]),
+  B("Lower Push","24 min",[E("Barbell Back Squat","5×4 — 80-87% max. 2 min rest."),E("Leg Press","3×10 — heavy, full range"),E("Rear-Foot Elevated Split Squat","3×8 each — dumbbells"),E("Standing Calf Raise","4×15 slow + 4×8 explosive"),E("Seated Calf Raise","3×15 — soleus")]),
+  B("Upper Push","22 min",[E("Overhead Press (barbell)","4×6 — standing strict, full lockout"),E("Incline DB Press","4×10 — upper chest focus"),E("Lateral Raises","4×12 — slow and controlled"),E("Tricep Pushdown (cable)","3×12"),E("Overhead Tricep Extension","3×12 — long head isolation")]),
+  B("Plyometric Block","14 min",[E("Depth Jump → Max Vertical","4×5 — 45cm box. 2 min rest."),E("Weighted Jump Squat","3×5 — 20-25% bodyweight"),E("Approach Jumps","6 reps — full run-up, absolute max")]),
+  B("Core Finisher","8 min",[E("Hanging Leg Raises","3×12"),E("Ab Wheel Rollout","3×10"),E("Hollow Body Hold","3×25 sec")]),
+  B("Cool-Down","12 min",[E("Hip Flexor Stretch","90 sec each",true),E("Deep Squat Hold","90 sec",true),E("Pigeon Pose","60 sec each",true),E("Child's Pose","90 sec",true)],true)
+]},
+"90-pull":{title:"Full Pull Day",meta:"90 min · Gym · Equipment required",accent:"#5a9fe0",tip:"Every deadlift and pull-up set here is directly building your vertical. This session is the backbone of the programme.",
+blocks:[
+  B("Warm-Up","10 min",[E("Rowing Machine","4 min — builds to 70% effort"),E("Leg Swings + Hip Circles","10 each"),E("Glute Bridges","15 reps"),E("Nordic Curl Negatives (light)","2×3 — get used to the position"),E("Ankle Hops","2×15")]),
+  B("Lower Pull","24 min",[E("Trap Bar Deadlift","5×4 — 80-85% max. 2 min rest. Best overall jump builder."),E("Romanian Deadlift","4×8 — heavy, full hamstring stretch"),E("Nordic Hamstring Curl","4×5 — 4 count eccentric, brutal but essential"),E("Hip Thrust (barbell)","4×8 — full extension, 1 sec pause at top"),E("Leg Curl Machine","3×10 — hamstring isolation")]),
+  B("Upper Pull + Arms","24 min",[E("Weighted Pull-Ups","4×5 — add weight, full dead hang to chin over bar"),E("Pendlay Row","4×6 — explosive, controlled negative"),E("Face Pulls","3×15 — external rotation"),E("Hammer Curl","3×12 each"),E("Incline Dumbbell Curl","3×10 — stretch at bottom"),E("Reverse Curl","3×10 — forearm strength"),E("Barbell Curl","3×8 — strict, toward 27kg goal")]),
+  B("Plyometric Block","12 min",[E("Max Vertical Jumps","4×5 — absolute max, 90 sec rest"),E("Single-Leg Depth Jumps","3×4 each — reactive"),E("Approach Jumps","5 reps — full run-up, reach maximum")]),
+  B("Core Block","8 min",[E("Hanging Leg Raises","4×12"),E("Ab Wheel Rollout","3×10"),E("Dragon Flag Negatives","3×5 — 5 sec lower")]),
+  B("Cool-Down","12 min",[E("Pigeon Pose","90 sec each",true),E("Lying Hamstring Stretch","90 sec each",true),E("90/90 Hip Stretch","60 sec each",true),E("Calf Stretch","60 sec each",true),E("Child's Pose","90 sec",true)],true)
+]}
+};
+
+// ── Navigation ──
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ── Duration pick ──
+function pickDur(d) {
+  cur.dur = d; cur.focus = null; cur.sessKey = null; cur.checks = {};
+  renderFocus();
+  goTo('s-focus');
+}
+
+// ── Render focus ──
+function renderFocus() {
+  var opts = FOCUSES[cur.dur] || [];
+  document.getElementById('focus-grid').innerHTML = opts.map(function(f){
+    return '<button class="focus-btn" onclick="pickFocus(\''+f.id+'\')" style="background:'+f.bg+';border-color:'+f.color+'33">'
+      +'<span class="f-icon">'+f.icon+'</span>'
+      +'<span class="f-name" style="color:'+f.color+'">'+f.label+'</span>'
+      +'<span class="f-desc">'+f.desc+'</span>'
+      +'</button>';
+  }).join('');
+}
+
+// ── Focus pick ──
+function pickFocus(fid) {
+  cur.focus = fid;
+  renderSess();
+  goTo('s-sess');
+}
+
+// ── Render sessions ──
+function renderSess() {
+  var key = cur.dur+'-'+cur.focus;
+  var s = SESS[key];
+  document.getElementById('sess-label').textContent = cur.dur+' MIN — YOUR SESSION';
+  var gym = cur.dur >= 60;
+  if (!s) {
+    document.getElementById('sess-list').innerHTML = '<p style="color:var(--muted);padding:20px 0">Session coming soon.</p>';
+    return;
+  }
+  var acc = s.accent || 'var(--gold)';
+  document.getElementById('sess-list').innerHTML =
+    '<div class="sess-card'+(gym?' gym':'')+'" onclick="pickSess(\''+key+'\')" style="--acc:'+acc+'">'
+    +'<style>.sess-card::before{background:'+acc+'}</style>'
+    +'<div class="sess-tag" style="background:'+acc+'20;color:'+acc+';border:1px solid '+acc+'44">'+(gym?'🏋️ Gym':'🏠 Home')+'</div>'
+    +'<div class="sess-title">'+s.title+'</div>'
+    +'<div class="sess-meta">'+s.meta+'</div>'
+    +'<div class="sess-pills">'+s.blocks.map(function(b){return '<span class="sess-pill">'+b.name+'</span>';}).join('')+'</div>'
+    +'<div class="sess-arrow">START →</div>'
+    +'</div>';
+}
+
+// ── Pick session & render workout ──
+function pickSess(key) {
+  cur.sessKey = key; cur.checks = {};
+  var s = SESS[key];
+  if (!s) return;
+  document.getElementById('w-title').textContent = s.title;
+  document.getElementById('w-meta').textContent = s.meta;
+  var tb = document.getElementById('tip-box');
+  if (s.tip) { tb.style.display='block'; document.getElementById('tip-body').textContent=s.tip; }
+  else { tb.style.display='none'; }
+  document.getElementById('done-banner').classList.remove('show');
+  var bl = document.getElementById('block-list');
+  bl.innerHTML = s.blocks.map(function(block, bi){
+    var exHTML = block.exs.map(function(ex, ei){
+      var k = bi+'-'+ei;
+      var vb = (block.stretch || ex.viz) && VIZS[ex.name]
+        ? '<button class="viz-btn" onclick="toggleViz(\''+k+'\',event)" id="vb-'+k+'">SHOW</button>'
+        : '';
+      return '<div class="ex-item" onclick="toggleCheck(\''+k+'\',event)" id="ei-'+k+'">'
+        +'<div class="ex-check" id="ec-'+k+'"></div>'
+        +'<div class="ex-content">'
+        +'<div class="ex-top"><div class="ex-name">'+ex.name+'</div>'+vb+'</div>'
+        +'<div class="ex-detail">'+ex.detail+'</div>'
+        +'<div id="ev-'+k+'" style="display:none" class="viz-wrap">'+(VIZS[ex.name]||'')+'</div>'
+        +'</div></div>';
+    }).join('');
+    return '<div class="block" id="blk-'+bi+'">'
+      +'<button class="block-hdr" onclick="togBlk('+bi+')">'
+      +'<div class="block-left"><div class="block-num">'+String(bi+1).padStart(2,'0')+'</div>'
+      +'<div><div class="block-name">'+block.name+'</div>'
+      +'<div class="block-dur">'+block.dur+(block.stretch?' · tap exercise to see visual':'')+'</div></div></div>'
+      +'<div class="block-chev">▼</div></button>'
+      +'<div class="block-body"><div class="ex-list">'+exHTML+'</div></div>'
+      +'</div>';
+  }).join('');
+  setTimeout(function(){ togBlk(0, true); }, 30);
+  updateProg();
+  goTo('s-workout');
+}
+
+function togBlk(i, forceOpen) {
+  var el = document.getElementById('blk-'+i);
+  if (!el) return;
+  if (forceOpen) el.classList.add('open');
+  else el.classList.toggle('open');
+}
+
+function toggleCheck(k, e) {
+  if (e.target.closest('.viz-btn') || e.target.closest('.viz-wrap')) return;
+  e.stopPropagation();
+  cur.checks[k] = !cur.checks[k];
+  var item = document.getElementById('ei-'+k);
+  if (item) item.classList.toggle('done', !!cur.checks[k]);
+  updateProg();
+}
+
+function toggleViz(k, e) {
+  e.stopPropagation();
+  var v = document.getElementById('ev-'+k);
+  var b = document.getElementById('vb-'+k);
+  if (!v) return;
+  var showing = v.style.display !== 'none';
+  v.style.display = showing ? 'none' : 'block';
+  if (b) b.textContent = showing ? 'SHOW' : 'HIDE';
+}
+
+function updateProg() {
+  var s = SESS[cur.sessKey];
+  if (!s) return;
+  var total=0, done=0;
+  s.blocks.forEach(function(b,bi){ b.exs.forEach(function(_,ei){ total++; if(cur.checks[bi+'-'+ei]) done++; }); });
+  var pct = total ? Math.round(done/total*100) : 0;
+  document.getElementById('prog-fill').style.width = pct+'%';
+  document.getElementById('prog-text').textContent = done+' of '+total+' done';
+  if (done===total && total>0) document.getElementById('done-banner').classList.add('show');
+}
+</script>
+</body>
+</html>

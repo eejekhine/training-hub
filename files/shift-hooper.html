@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SHIFT HOOPER</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#0c0c0c;--bg2:#141414;--bg3:#1c1c1c;--border:#222;--border2:#2c2c2c;
+  --text:#f0f0f0;--muted:#666;--muted2:#3a3a3a;
+  --gold:#e2b96b;--gold2:#f0c97a;--green:#52d98a;
+  --red:#e05252;--blue:#5a9fe0;--orange:#e07a3a;--teal:#3ab8c8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+.nav{background:#080808;border-bottom:1px solid var(--border);padding:0 16px;display:flex;align-items:center;overflow-x:auto;position:sticky;top:0;z-index:100}
+.nav::-webkit-scrollbar{height:0}
+.nav-brand{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--gold);white-space:nowrap;padding:16px 14px 16px 0;border-right:1px solid var(--border);margin-right:4px;flex-shrink:0}
+.nav-btn{background:none;border:none;color:var(--muted);font-family:'Barlow',sans-serif;font-size:13px;font-weight:700;letter-spacing:.5px;padding:18px 11px;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;transition:color .15s,border-color .15s;flex-shrink:0}
+.nav-btn:hover{color:var(--text)}
+.nav-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
+
+.screen{display:none;max-width:620px;margin:0 auto;padding:24px 18px 80px}
+.screen.active{display:block}
+
+/* HERO */
+.hero{padding:32px 0 26px;border-bottom:1px solid var(--border);margin-bottom:26px}
+.hero-eyebrow{font-size:10px;letter-spacing:4px;color:var(--gold);font-weight:700;margin-bottom:6px}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:56px;line-height:.9;letter-spacing:2px;margin-bottom:14px}
+.hero-sub{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:18px}
+
+/* ALERT BOX */
+.alert{border-radius:12px;padding:14px 16px;margin-bottom:12px;border:1px solid}
+.alert.warn{background:#1e1208;border-color:#e07a3a30}
+.alert.info{background:#0e1520;border-color:#5a9fe030}
+.alert.hand{background:#1a100e;border-color:#e0525230}
+.alert-title{font-size:11px;font-weight:700;letter-spacing:1px;margin-bottom:5px}
+.alert.warn .alert-title{color:var(--orange)}
+.alert.info .alert-title{color:var(--blue)}
+.alert.hand .alert-title{color:var(--red)}
+.alert-body{font-size:12px;color:var(--muted);line-height:1.6}
+
+.slabel{font-size:10px;letter-spacing:4px;color:var(--muted2);margin-bottom:16px;font-weight:700}
+
+/* SESSION CARDS */
+.sess-grid{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+.sess-card{border:1px solid var(--border);border-radius:14px;padding:18px 18px;background:var(--bg2);cursor:pointer;transition:transform .15s,border-color .15s;position:relative;overflow:hidden}
+.sess-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px}
+.sess-card.push::before{background:var(--red)}
+.sess-card.pull::before{background:var(--blue)}
+.sess-card.legs::before{background:var(--teal)}
+.sess-card:hover{transform:translateY(-2px);border-color:var(--border2)}
+.sc-label{font-size:9px;letter-spacing:3px;color:var(--muted);font-weight:700;margin-bottom:4px}
+.sc-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;line-height:1;margin-bottom:4px}
+.sc-meta{font-size:12px;color:var(--muted);margin-bottom:10px}
+.sc-pills{display:flex;flex-wrap:wrap;gap:5px}
+.sc-pill{font-size:9px;padding:2px 8px;border-radius:20px;background:var(--border);color:var(--muted);font-weight:600}
+.sc-arrow{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--muted2);letter-spacing:2px;font-weight:700}
+
+/* WORKOUT */
+.back-btn{background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:0 0 20px;display:flex;align-items:center;gap:6px;font-family:'Barlow',sans-serif;font-weight:600;transition:color .15s}
+.back-btn:hover{color:var(--text)}
+.w-hdr{margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--border)}
+.w-eyebrow{font-size:10px;letter-spacing:3px;color:var(--muted);font-weight:700;margin-bottom:4px}
+.w-title{font-family:'Bebas Neue',sans-serif;font-size:44px;letter-spacing:1px;line-height:1;margin-bottom:5px}
+.w-meta{font-size:13px;color:var(--muted);margin-bottom:12px}
+.prog-wrap{background:var(--border);border-radius:4px;height:3px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:4px;transition:width .4s;width:0%}
+.prog-text{font-size:11px;color:var(--muted);margin-top:5px;letter-spacing:.5px}
+
+.tip-box{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:13px 15px;margin-bottom:16px}
+.tip-label{font-size:10px;font-weight:700;letter-spacing:1px;margin-bottom:4px;color:var(--gold)}
+.tip-text{font-size:12px;color:var(--muted);line-height:1.6}
+
+/* BLOCKS */
+.block-list{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.block{border-radius:12px;overflow:hidden;border:1px solid var(--border);background:var(--bg2)}
+.block-hdr{width:100%;background:none;border:none;padding:13px 15px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;color:var(--text);font-family:'Barlow',sans-serif;text-align:left;transition:background .15s}
+.block-hdr:hover{background:var(--bg3)}
+.b-left{display:flex;align-items:center;gap:11px}
+.b-num{font-family:'Bebas Neue',sans-serif;font-size:21px;color:var(--border2);min-width:22px;line-height:1}
+.b-name{font-size:14px;font-weight:700}
+.b-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.b-chev{font-size:10px;color:var(--muted2);transition:transform .2s}
+.block.open .b-chev{transform:rotate(180deg)}
+.block-body{display:none;border-top:1px solid var(--border)}
+.block.open .block-body{display:block}
+
+/* EXERCISES */
+.ex-list{display:flex;flex-direction:column;padding:4px 14px 12px 48px}
+.ex-item{display:flex;align-items:flex-start;gap:11px;padding:10px 4px;border-bottom:1px solid var(--border);cursor:pointer;border-radius:6px;transition:background .1s}
+.ex-item:last-child{border-bottom:none}
+.ex-item:hover{background:var(--bg3)}
+.ex-chk{width:19px;height:19px;border-radius:5px;border:2px solid var(--border2);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.ex-item.done .ex-chk{background:var(--green);border-color:var(--green)}
+.ex-item.done .ex-chk::after{content:'✓';font-size:10px;color:#000;font-weight:900}
+.ex-item.done .ex-name{text-decoration:line-through;color:var(--muted)}
+.ex-item.done .ex-detail{opacity:.35}
+.ex-item.done .ex-note{opacity:.35}
+.ex-cnt{flex:1}
+.ex-name{font-size:13px;font-weight:700;margin-bottom:3px}
+.ex-detail{font-size:11px;color:var(--muted);line-height:1.5}
+.ex-note{font-size:11px;color:var(--gold);margin-top:4px;font-style:italic;line-height:1.4}
+.ex-warn{font-size:11px;color:var(--orange);margin-top:4px;line-height:1.4}
+
+/* HAND CARE SCREEN */
+.hc-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:10px}
+.hc-icon{font-size:22px;margin-bottom:8px}
+.hc-title{font-size:14px;font-weight:700;margin-bottom:5px}
+.hc-body{font-size:12px;color:var(--muted);line-height:1.6}
+
+/* DONE */
+.done-banner{background:linear-gradient(135deg,#0e1a0e,#162016);border:1px solid #2a5a2a;border-radius:12px;padding:22px;text-align:center;display:none;margin-top:8px}
+.done-banner.show{display:block}
+.done-emoji{font-size:32px;margin-bottom:6px}
+.done-title{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--green);letter-spacing:2px}
+.done-sub{font-size:12px;color:#4a8a4a;margin-top:4px}
+
+@media(max-width:420px){.hero-title{font-size:44px}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">SHIFT HOOPER</div>
+  <button class="nav-btn active" onclick="showTab('home')">Home</button>
+  <button class="nav-btn" onclick="showTab('push')">Push</button>
+  <button class="nav-btn" onclick="showTab('pull')">Pull</button>
+  <button class="nav-btn" onclick="showTab('legs')">Legs</button>
+  <button class="nav-btn" onclick="showTab('hands')">Hands</button>
+</nav>
+
+<!-- HOME -->
+<div class="screen active" id="screen-home">
+  <div class="hero">
+    <div class="hero-eyebrow">Night Shift Edition · Pre-Shift Training</div>
+    <div class="hero-title">SHIFT<br>HOOPER</div>
+    <div class="hero-sub">Built for training before an 8-hour heavy lifting night shift. Shorter sessions, lower fatigue, mobility and back health baked into every session. You go to work feeling better, not wrecked.</div>
+  </div>
+
+  <div class="alert warn">
+    <div class="alert-title">⚠️ PRE-SHIFT RULES</div>
+    <div class="alert-body">Sessions cap at 45–60 min. No leg day before shift — your legs work all night. Push and Pull are fine but volume is lower than your normal hooper programme. Nothing here should leave you exhausted — if it does, drop a set next time.</div>
+  </div>
+
+  <div class="alert hand">
+    <div class="alert-title">🤲 HAND PAIN — READ THE HANDS TAB</div>
+    <div class="alert-body">All exercises in this programme are selected or modified to reduce wrist and grip stress. Straps are used on all pull movements. No direct forearm or grip training. See the Hands tab for daily care protocol.</div>
+  </div>
+
+  <div class="alert info">
+    <div class="alert-title">🔄 COMPATIBLE WITH HOOPER PROGRAMME</div>
+    <div class="alert-body">This is a lighter version of Push / Pull / Legs. Run it instead of your main hooper programme on shift weeks. On days off, you can return to the full hooper or couples sessions without issue.</div>
+  </div>
+
+  <div class="slabel" style="margin-top:24px">THE THREE SESSIONS</div>
+  <div class="sess-grid">
+    <div class="sess-card push" onclick="showTab('push')">
+      <div class="sc-label">BEFORE SHIFT</div>
+      <div class="sc-title">Push Day</div>
+      <div class="sc-meta">~50 min · Chest · Shoulders · Triceps · Back Mobility</div>
+      <div class="sc-pills">
+        <span class="sc-pill">Bench</span><span class="sc-pill">OHP</span><span class="sc-pill">Cable Fly</span>
+        <span class="sc-pill">Laterals</span><span class="sc-pill">Dips</span><span class="sc-pill">Back Stretch</span>
+      </div>
+      <div class="sc-arrow">GO →</div>
+    </div>
+    <div class="sess-card pull" onclick="showTab('pull')">
+      <div class="sc-label">BEFORE SHIFT</div>
+      <div class="sc-title">Pull Day</div>
+      <div class="sc-meta">~50 min · Back · Biceps · Rear Delts · Posture Work</div>
+      <div class="sc-pills">
+        <span class="sc-pill">Pull-Ups</span><span class="sc-pill">Cable Row</span><span class="sc-pill">Lat Pulldown</span>
+        <span class="sc-pill">Face Pulls</span><span class="sc-pill">Curls (straps)</span><span class="sc-pill">Thoracic Mob</span>
+      </div>
+      <div class="sc-arrow">GO →</div>
+    </div>
+    <div class="sess-card legs" onclick="showTab('legs')">
+      <div class="sc-label">DAY OFF ONLY — NEVER BEFORE SHIFT</div>
+      <div class="sc-title">Legs + Mobility</div>
+      <div class="sc-meta">~55 min · Hip Mobility · Lower Back · Light Leg Work · Stretch</div>
+      <div class="sc-pills">
+        <span class="sc-pill">Hip Flexors</span><span class="sc-pill">Glute Bridges</span><span class="sc-pill">BSS</span>
+        <span class="sc-pill">Nordics</span><span class="sc-pill">Calf Raise</span><span class="sc-pill">Full Stretch</span>
+      </div>
+      <div class="sc-arrow">GO →</div>
+    </div>
+  </div>
+
+  <div class="slabel">SAMPLE WEEK — 3 OR 4 DAYS</div>
+  <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:10px">
+    <div style="text-align:center;padding:10px 2px;border-radius:8px;border:1px solid var(--border);background:var(--bg2)"><div style="font-size:8px;letter-spacing:1px;color:var(--muted);font-weight:700;margin-bottom:4px">MON</div><div style="font-size:9px;font-weight:700;color:var(--red)">PUSH</div></div>
+    <div style="text-align:center;padding:10px 2px;border-radius:8px;border:1px solid var(--border);background:var(--bg2)"><div style="font-size:8px;letter-spacing:1px;color:var(--muted);font-weight:700;margin-bottom:4px">TUE</div><div style="font-size:9px;font-weight:700;color:var(--blue)">PULL</div></div>
+    <div style="text-align:center;padding:10px 2px;border-radius:8px;border:1px solid var(--border);background:var(--bg2)"><div style="font-size:8px;letter-spacing:1px;color:var(--muted);font-weight:700;margin-bottom:4px">WED</div><div style="font-size:9px;font-weight:700;color:var(--muted2)">REST</div></div>
+    <div style="text-align:center;padding:10px 2px;border-radius:8px;border:1px solid var(--border);background:var(--bg2)"><div style="font-size:8px;letter-spacing:1px;color:var(--muted);font-weight:700;margin-bottom:4px">THU</div><div style="font-size:9px;font-weight:700;color:var(--red)">PUSH</div></div>
+    <div style="text-align:center;padding:10px 2px;border-radius:8px;border:1px solid var(--border);background:var(--bg2)"><div style="font-size:8px;letter-spacing:1px;color:var(--muted);font-weight:700;margin-bottom:4px">FRI</div><div style="font-size:9px;font-weight:700;color:var(--blue)">PULL</div></div>
+    <div style="text-align:center;padding:10px 2px;border-radius:8px;border:1px solid var(--border);background:var(--bg2)"><div style="font-size:8px;letter-spacing:1px;color:var(--muted);font-weight:700;margin-bottom:4px">SAT</div><div style="font-size:9px;font-weight:700;color:var(--teal)">LEGS*</div></div>
+    <div style="text-align:center;padding:10px 2px;border-radius:8px;border:1px solid var(--border);background:var(--bg2)"><div style="font-size:8px;letter-spacing:1px;color:var(--muted);font-weight:700;margin-bottom:4px">SUN</div><div style="font-size:9px;font-weight:700;color:var(--muted2)">REST</div></div>
+  </div>
+  <div style="font-size:11px;color:var(--muted);line-height:1.6">*Legs session only on a day off from the warehouse — never before a shift. If your shift falls on Saturday, skip legs that week or move it to Sunday.</div>
+</div>
+
+<!-- PUSH -->
+<div class="screen" id="screen-push">
+  <button class="back-btn" onclick="showTab('home')">← Back</button>
+  <div class="w-hdr">
+    <div class="w-eyebrow">PUSH DAY · PRE-SHIFT</div>
+    <div class="w-title">PUSH</div>
+    <div class="w-meta">~50 min · Chest · Shoulders · Triceps · Back Mobility</div>
+    <div class="prog-wrap"><div class="prog-fill" id="prog-push"></div></div>
+    <div class="prog-text" id="pt-push">0 of 0 done</div>
+  </div>
+  <div class="tip-box">
+    <div class="tip-label">💡 PRE-SHIFT PUSH</div>
+    <div class="tip-text">3 sets instead of 4 on most exercises. Moderate weight — not a max effort session. The back mobility block at the end is not optional — it directly prepares your spine for 8 hours of lifting.</div>
+  </div>
+  <div class="block-list" id="bl-push"></div>
+  <div class="done-banner" id="db-push"><div class="done-emoji">💪</div><div class="done-title">PUSH DONE</div><div class="done-sub">Good session. Go do your shift.</div></div>
+</div>
+
+<!-- PULL -->
+<div class="screen" id="screen-pull">
+  <button class="back-btn" onclick="showTab('home')">← Back</button>
+  <div class="w-hdr">
+    <div class="w-eyebrow">PULL DAY · PRE-SHIFT</div>
+    <div class="w-title">PULL</div>
+    <div class="w-meta">~50 min · Back · Biceps · Posture · Thoracic Mobility</div>
+    <div class="prog-wrap"><div class="prog-fill" id="prog-pull"></div></div>
+    <div class="prog-text" id="pt-pull">0 of 0 done</div>
+  </div>
+  <div class="tip-box">
+    <div class="tip-label">💡 PRE-SHIFT PULL</div>
+    <div class="tip-text">Use straps on every pulling movement — no gripping required. This protects your hands while still getting full back development. The posture and thoracic work at the end counters the forward-hunch position of warehouse lifting.</div>
+  </div>
+  <div class="block-list" id="bl-pull"></div>
+  <div class="done-banner" id="db-pull"><div class="done-emoji">🧲</div><div class="done-title">PULL DONE</div><div class="done-sub">Back is stronger. Hands are protected. Go work.</div></div>
+</div>
+
+<!-- LEGS -->
+<div class="screen" id="screen-legs">
+  <button class="back-btn" onclick="showTab('home')">← Back</button>
+  <div class="w-hdr">
+    <div class="w-eyebrow">LEGS + MOBILITY · DAY OFF ONLY</div>
+    <div class="w-title">LEGS</div>
+    <div class="w-meta">~55 min · Hip Mobility · Lower Back · Light Leg Work · Full Stretch</div>
+    <div class="prog-wrap"><div class="prog-fill" id="prog-legs"></div></div>
+    <div class="prog-text" id="pt-legs">0 of 0 done</div>
+  </div>
+  <div class="alert warn" style="margin-bottom:16px">
+    <div class="alert-title">⚠️ DAY OFF ONLY</div>
+    <div class="alert-body">Never do this session before a shift. Your legs do all the work at the warehouse — loading them at the gym beforehand is how you get injured. This session is for days when you're not working.</div>
+  </div>
+  <div class="tip-box">
+    <div class="tip-label">💡 WHAT THIS SESSION DOES</div>
+    <div class="tip-text">Light leg work to maintain strength without destroying your legs. Heavy emphasis on hip flexor and lower back mobility — the two things that suffer most from warehouse lifting. Vert work kept in but at low volume.</div>
+  </div>
+  <div class="block-list" id="bl-legs"></div>
+  <div class="done-banner" id="db-legs"><div class="done-emoji">⚡</div><div class="done-title">LEGS DONE</div><div class="done-sub">Hips are open. Back is loose. Rest tonight.</div></div>
+</div>
+
+<!-- HANDS -->
+<div class="screen" id="screen-hands">
+  <div class="slabel">HAND & WRIST CARE PROTOCOL</div>
+  <div class="alert hand" style="margin-bottom:20px">
+    <div class="alert-title">🤲 WHY YOUR HANDS HURT</div>
+    <div class="alert-body">You're brand new to repetitive gripping at volume. The tendons and joints in your hands haven't adapted yet. This is normal — but if ignored it becomes tendinitis or worse. The protocol below should show improvement within 2–3 weeks.</div>
+  </div>
+
+  <div class="slabel">DURING SHIFT</div>
+  <div class="hc-card">
+    <div class="hc-icon">🧤</div>
+    <div class="hc-title">Compression Gloves</div>
+    <div class="hc-body">Wear compression gloves on shift. They reduce joint inflammation during repetitive gripping and keep the hands warm — cold hands are stiffer and more prone to injury. Get a pair that's snug but not cutting circulation.</div>
+  </div>
+  <div class="hc-card">
+    <div class="hc-icon">🔄</div>
+    <div class="hc-title">Grip Variation</div>
+    <div class="hc-body">Don't grip everything the same way all shift if you can help it. Alternate between a full grip and a hook grip where possible. Give your fingers small breaks during any standing or waiting moments.</div>
+  </div>
+
+  <div class="slabel">AFTER SHIFT</div>
+  <div class="hc-card">
+    <div class="hc-icon">🧊</div>
+    <div class="hc-title">Ice — 10 Minutes</div>
+    <div class="hc-body">Ice the knuckles and wrists for 10 minutes when you get home. Wrap ice in a cloth — don't apply directly to skin. This reduces the inflammation that's building up during the shift before it compounds.</div>
+  </div>
+  <div class="hc-card">
+    <div class="hc-icon">💊</div>
+    <div class="hc-title">Ibuprofen Gel</div>
+    <div class="hc-body">Apply ibuprofen gel (Voltarol or similar) to the joints after shift — not before. Masking pain before shift means you won't notice if you're making something worse. After only.</div>
+  </div>
+
+  <div class="slabel">DAILY — 5 MINUTES</div>
+  <div class="hc-card">
+    <div class="hc-icon">🤲</div>
+    <div class="hc-title">Wrist Circles</div>
+    <div class="hc-body">10 slow circles each direction, each wrist. Do this when you wake up and before bed. Keep the movement smooth and full range — don't push into pain, just move through the range you have.</div>
+  </div>
+  <div class="hc-card">
+    <div class="hc-icon">✋</div>
+    <div class="hc-title">Finger Extensions</div>
+    <div class="hc-body">Spread your fingers as wide as possible, hold 5 seconds, relax. Repeat 10 times each hand. This counters the constant gripping position and stretches the tendons on the palm side of the hand.</div>
+  </div>
+  <div class="hc-card">
+    <div class="hc-icon">🙏</div>
+    <div class="hc-title">Prayer Stretch</div>
+    <div class="hc-body">Press palms together in front of your chest, fingers pointing up. Slowly lower the hands toward your waist while keeping palms pressed together. Hold at the point of stretch for 30 seconds. Targets the wrist flexors that get overworked gripping.</div>
+  </div>
+  <div class="hc-card">
+    <div class="hc-icon">👇</div>
+    <div class="hc-title">Reverse Prayer Stretch</div>
+    <div class="hc-body">Backs of hands together, fingers pointing down, same motion. 30 seconds. Hits the extensors on the back of the wrist and forearm. Do both prayer stretches together — 1 minute total.</div>
+  </div>
+  <div class="hc-card">
+    <div class="hc-icon">⚠️</div>
+    <div class="hc-title">When to see a doctor</div>
+    <div class="hc-body">If pain doesn't improve after 3 weeks, gets significantly worse, or you notice swelling that doesn't go down after ice — get it looked at. Early repetitive strain caught early is nothing. Ignored for months it becomes a real problem.</div>
+  </div>
+
+  <div class="slabel">AT THE GYM</div>
+  <div class="hc-card">
+    <div class="hc-icon">🔗</div>
+    <div class="hc-title">Use Straps on All Pull Movements</div>
+    <div class="hc-body">Lat pulldown, cable row, pull-ups — use straps every time. Your back will still get a full workout. Your hands get a rest. This is not a weakness, it's basic injury management.</div>
+  </div>
+  <div class="hc-card">
+    <div class="hc-icon">💪</div>
+    <div class="hc-title">Cable Curls Over Barbell Curls</div>
+    <div class="hc-body">Cable curls allow a more neutral wrist position and less torque on the joints than a fixed barbell. Hammer curls with DBs are also fine. Avoid straight barbell curls until the hands have settled down.</div>
+  </div>
+  <div class="hc-card">
+    <div class="hc-icon">🚫</div>
+    <div class="hc-title">No Direct Grip or Forearm Training</div>
+    <div class="hc-body">Your job is already training your grip and forearms at high volume every single night. Adding more at the gym is how you get tendinitis. Skip all forearm-specific work until you've been on the job at least 6–8 weeks and the pain has fully resolved.</div>
+  </div>
+</div>
+
+<script>
+function E(n,d,note,warn){return{name:n,detail:d,note:note||null,warn:warn||null};}
+function B(n,s,exs){return{name:n,sub:s,exs:exs};}
+
+var WK={
+push:[
+  B("Warm-Up","8 min",[
+    E("Treadmill or Bike","4 min easy — not intense, just get warm"),
+    E("Arm Circles","15 each direction — loosen the shoulder joint before loading"),
+    E("Band Pull-Aparts","15 reps — towel or band, squeeze shoulder blades. Activates rear delts."),
+    E("Cat-Cow","10 slow reps — on hands and knees, arch and round the back. Spine warm-up.",null,"Do this slowly — this is preparing your back for the shift, not just a gym warm-up."),
+  ]),
+  B("Chest","15 min",[
+    E("Dumbbell Bench Press","3×10 — moderate weight, controlled 2-sec descent, press up",
+      "3 sets not 4 — this is pre-shift. Feel the chest, don't max out."),
+    E("Incline Dumbbell Press","3×10 — upper chest focus, 30-45° incline",
+      "Dumbbells over barbell — neutral wrist position is easier on the hands."),
+    E("Cable Fly","3×12 — full stretch at bottom, slow squeeze at top",
+      "No grip stress here — the cable handle sits in the palm, not a tight grip."),
+  ]),
+  B("Shoulders","12 min",[
+    E("Dumbbell Shoulder Press","3×10 — seated or standing, full overhead lockout",
+      "Overhead strength = more reach at peak jump. Keep this in even on shift weeks."),
+    E("Lateral Raises","3×12 — slow up, slow down",
+      "2-3kg is fine for laterals — the muscle is small, slow beats heavy every time."),
+    E("Dips","2×12 — bodyweight, full depth, upright torso for chest focus",
+      "Bodyweight only — no added weight pre-shift. Grip is open palm on the bars, easier on joints."),
+  ]),
+  B("Triceps","8 min",[
+    E("Tricep Pushdown (cable rope)","3×12 — rope attachment, neutral wrist, full extension at bottom",
+      "Rope over bar attachment — neutral wrist position throughout, no torque on the joint."),
+    E("Overhead Tricep Extension (cable)","2×12 — cable, both hands on rope, full stretch at top",
+      "Cable keeps constant tension. Easier on the wrist than a DB overhead."),
+  ]),
+  B("Back Mobility — Non-Negotiable","8 min",[
+    E("Cat-Cow","2×10 slow reps — full range each way",null,
+      "This is shift prep, not a cool-down optional extra. Your spine needs this before 8 hours of loading."),
+    E("Child's Pose","90 sec — arms forward, sink hips to heels",
+      "Decompresses the lumbar spine. Do this every single session."),
+    E("Thoracic Rotation in Quadruped","10 each side — on hands and knees, hand behind head, rotate elbow to ceiling",
+      "Warehouse lifting rounds the upper back. This opens the thoracic spine and counters that."),
+    E("Hip Flexor Stretch","60 sec each side — lunge position, tuck pelvis under",
+      "Hip flexors tighten from standing and lifting all shift. Stretch them before you start."),
+    E("Supine Twist","30 sec each side — lie on back, knee drops across, shoulders flat",
+      "Rotational stretch for the lower back — gentle decompression."),
+  ]),
+],
+pull:[
+  B("Warm-Up","8 min",[
+    E("Rowing Machine","3 min easy — posterior chain specific warm-up, gets the back working"),
+    E("Scapular Pull-Ups","8 reps — hang from bar, just depress and retract shoulder blades, no arm bend",
+      "Teaches the shoulder blade to move before you load it."),
+    E("Band Pull-Aparts","15 reps — squeeze blades back and together"),
+    E("Cat-Cow","10 slow reps — spine warm-up before loading",null,
+      "Do this before every session. Your back thanks you on shift."),
+  ]),
+  B("Back — With Straps","18 min",[
+    E("Pull-Ups or Lat Pulldown","3×8 — full range, controlled lowering",
+      "USE STRAPS. Loop them around the bar — your back does the work, hands just hold on."),
+    E("Seated Cable Row","3×10 — retract shoulder blades at the end, hold 1 sec",
+      "Use a D-handle or neutral grip bar. Straps on if needed. Focus on the back, not the grip."),
+    E("Lat Pulldown (wide grip)","3×10 — pull to upper chest, slow return",
+      "Straps again. The lat pulldown directly builds the posture muscles that get compressed on shift."),
+    E("Face Pulls","3×15 — rope attachment, pull to face, elbows high",
+      "This is the most important posture exercise in the programme. Counteracts forward-hunch from warehouse work. Do this every pull day without exception."),
+  ]),
+  B("Biceps — Hand Friendly","10 min",[
+    E("Cable Curl","3×12 — cable machine, straight bar or EZ attachment",
+      "Cable over barbell — the angle of pull is easier on the wrist joint. Use straps if the grip still hurts."),
+    E("Hammer Curl","3×12 each — neutral grip DB, controlled",
+      "Neutral wrist position — this is the safest curl variation for hand pain. Keep doing this one even when hands improve."),
+  ]),
+  B("Posture & Thoracic Mobility","10 min",[
+    E("Thoracic Extension over Foam Roller","60 sec — sit on floor, roller horizontal behind you at upper back, arms crossed, let upper back extend over it",
+      "Directly counteracts the forward-hunch of warehouse lifting. Your upper back will crack — that's fine.",null),
+    E("Wall Angels","10 slow reps — stand with back flat against wall, arms in goalpost position, slide arms overhead and back",
+      "Trains the shoulder blades to move correctly. Improves posture and shoulder health simultaneously.",null),
+    E("Doorframe Lat Stretch","30 sec each — hold frame, sink hips back, feel the lat and side",null,null),
+    E("Child's Pose","90 sec — arms forward",
+      "End every session with this. Decompress the lumbar spine before you go stand on a warehouse floor all night.",null),
+    E("Neck Side Stretch","30 sec each side — ear to shoulder, slow and gentle",
+      "Warehouse lifting creates neck and trap tension. A minute of this before shift makes a real difference.",null),
+  ]),
+],
+legs:[
+  B("Warm-Up","8 min",[
+    E("Light Bike or Walk","5 min easy — no intensity, just circulation"),
+    E("Hip Circles","10 each direction — full range, release the hip joint"),
+    E("Glute Bridge (bodyweight)","15 reps — activate the posterior chain before any loading"),
+    E("Ankle Hops","2×10 — light, easy, just warming the tendons"),
+  ]),
+  B("Hip Flexor & Mobility Priority","15 min",[
+    E("Hip Flexor Stretch","2 min each side — deep lunge, tuck pelvis, sink and breathe",
+      "The single most important stretch for warehouse workers. Hip flexors shorten from constant forward-loaded lifting. This directly reduces lower back pain on shift."),
+    E("Couch Stretch","90 sec each side — rear foot on bench or sofa, sink hips down",
+      "Quad and hip flexor opener. Takes pressure off the lower back."),
+    E("90/90 Hip Stretch","90 sec each side — sit on floor, both knees at 90°, sit tall",
+      "Opens the hip rotators — these tighten with heavy lifting and cause referred back pain if neglected."),
+    E("Pigeon Pose","90 sec each side — front shin across, back leg extended, breathe into it",
+      "Deep glute and hip opener. Do this slowly — don't force it."),
+  ]),
+  B("Light Leg Strength","18 min",[
+    E("Goblet Squat","3×10 — DB at chest, full depth, heels flat",
+      "Moderate weight only. The goal is movement quality and maintaining strength — not maxing out."),
+    E("Bulgarian Split Squat","3×8 each — rear foot on bench, controlled, bodyweight or light DBs",
+      "Single-leg work maintains jump strength without hammering the legs the way a barbell squat would."),
+    E("Glute Bridge (weighted)","3×12 — DB across hips, drive up, squeeze 1 sec at top",
+      "Posterior chain strength without loading the spine. Good for lower back health."),
+    E("Nordic Hamstring Curl","2×5 — 4 count slow eccentric only, partner or machine",
+      "Low volume — just maintaining the hamstring strength that protects the knee. Not a full set.",null),
+    E("Single-Leg Calf Raise","3×15 each — step edge, full range, pause at top",
+      "Calf strength supports ankle stability during the constant movement of warehouse work."),
+  ]),
+  B("Vert Work — Light","6 min",[
+    E("Max Vertical Jumps","2×5 — full effort, 90 sec rest. Low volume — just maintaining the pattern.",
+      "Don't skip this entirely — maintaining the nervous system pattern matters even on lighter weeks."),
+    E("Approach Jump Practice","4 reps — 3-step run-up, reach max",
+      "Quality over quantity. 4 perfect reps beats 10 tired ones."),
+  ]),
+  B("Full Lower Body Stretch","10 min",[
+    E("Hip Flexor Stretch","60 sec each — yes, again. You need this twice in this session.",null,null),
+    E("Pigeon Pose","60 sec each",null,null),
+    E("Lying Hamstring Stretch","60 sec each — pull straight leg toward you",null,null),
+    E("Calf Stretch on Step","45 sec each — heel drops below step level",null,null),
+    E("Supine Twist","30 sec each side — shoulders flat, knee drops across",null,null),
+    E("Child's Pose","90 sec — final decompress",null,null),
+  ]),
+],
+};
+
+var checks={push:{},pull:{},legs:{}};
+
+function renderWorkout(key){
+  var data=WK[key];
+  var bl=document.getElementById('bl-'+key);
+  if(!bl||!data) return;
+  bl.innerHTML=data.map(function(block,bi){
+    var exHTML=block.exs.map(function(ex,ei){
+      var k=bi+'-'+ei;
+      var done=checks[key][k]?' done':'';
+      var noteEl=ex.note?'<div class="ex-note">'+ex.note+'</div>':'';
+      var warnEl=ex.warn?'<div class="ex-warn">⚠️ '+ex.warn+'</div>':'';
+      return '<div class="ex-item'+done+'" onclick="toggleCheck(\''+key+'\',\''+k+'\',event)" id="ei-'+key+'-'+k+'">'
+        +'<div class="ex-chk" id="ec-'+key+'-'+k+'">'+(checks[key][k]?'✓':'')+'</div>'
+        +'<div class="ex-cnt">'
+        +'<div class="ex-name">'+ex.name+'</div>'
+        +'<div class="ex-detail">'+ex.detail+'</div>'
+        +noteEl+warnEl
+        +'</div></div>';
+    }).join('');
+    return '<div class="block" id="blk-'+key+'-'+bi+'">'
+      +'<button class="block-hdr" onclick="togBlk(\''+key+'\','+bi+')">'
+      +'<div class="b-left"><div class="b-num">'+String(bi+1).padStart(2,'0')+'</div>'
+      +'<div><div class="b-name">'+block.name+'</div><div class="b-sub">'+block.sub+'</div></div></div>'
+      +'<div class="b-chev">▼</div></button>'
+      +'<div class="block-body"><div class="ex-list">'+exHTML+'</div></div>'
+      +'</div>';
+  }).join('');
+  setTimeout(function(){togBlk(key,0,true);},30);
+  updateProg(key);
+}
+
+function togBlk(key,i,forceOpen){
+  var el=document.getElementById('blk-'+key+'-'+i);
+  if(!el) return;
+  if(forceOpen) el.classList.add('open');
+  else el.classList.toggle('open');
+}
+
+function toggleCheck(key,k,e){
+  e.stopPropagation();
+  checks[key][k]=!checks[key][k];
+  var item=document.getElementById('ei-'+key+'-'+k);
+  var chk=document.getElementById('ec-'+key+'-'+k);
+  if(item) item.classList.toggle('done',!!checks[key][k]);
+  if(chk) chk.textContent=checks[key][k]?'✓':'';
+  updateProg(key);
+}
+
+function updateProg(key){
+  var data=WK[key];
+  if(!data) return;
+  var total=0,done=0;
+  data.forEach(function(b,bi){b.exs.forEach(function(_,ei){total++;if(checks[key][bi+'-'+ei])done++;});});
+  var pct=total?Math.round(done/total*100):0;
+  var pf=document.getElementById('prog-'+key);
+  var pt=document.getElementById('pt-'+key);
+  if(pf) pf.style.width=pct+'%';
+  if(pt) pt.textContent=done+' of '+total+' done';
+  if(done===total&&total>0){var db=document.getElementById('db-'+key);if(db)db.classList.add('show');}
+}
+
+var TABS=['home','push','pull','legs','hands'];
+function showTab(id){
+  TABS.forEach(function(t){
+    var s=document.getElementById('screen-'+t);
+    var b=document.querySelector('.nav-btn[onclick="showTab(\''+t+'\')"]');
+    if(s) s.classList.remove('active');
+    if(b) b.classList.remove('active');
+  });
+  var sc=document.getElementById('screen-'+id);
+  var bn=document.querySelector('.nav-btn[onclick="showTab(\''+id+'\')"]');
+  if(sc) sc.classList.add('active');
+  if(bn) bn.classList.add('active');
+  window.scrollTo(0,0);
+  if(WK[id]) setTimeout(function(){renderWorkout(id);},30);
+}
+
+['push','pull','legs'].forEach(renderWorkout);
+</script>
+</body>
+</html>

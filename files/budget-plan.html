@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Budget Plan</title>
+<meta name="theme-color" content="#b8611f">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,450;9..144,550;9..144,650&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ground:#f6f3ec; --surface:#ffffff; --surface-2:#f0ece1; --line:#e2dbc8;
+    --ink:#221d16; --ink-dim:#675e4c; --ink-faint:#9a917a;
+    --copper:#b8611f; --copper-ink:#8f4a17;
+    --good:#2f7a44; --good-tint:#e9f3ec;
+    --crit:#a83f2f; --crit-tint:#f8ebe6;
+    --gold:#8a6a12; --gold-tint:#f7f0dc;
+    --shadow:0 1px 2px rgba(30,22,10,.07);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ground:#14161b; --surface:#1a1d24; --surface-2:#20232b; --line:#2c313a;
+      --ink:#edeff2; --ink-dim:#9aa1ad; --ink-faint:#666d79;
+      --copper:#dd9451; --copper-ink:#eaad76;
+      --good:#68b77c; --good-tint:#1b2a20;
+      --crit:#df8272; --crit-tint:#2e1d1b;
+      --gold:#d9b448; --gold-tint:#2b2617;
+      --shadow:0 1px 2px rgba(0,0,0,.4);
+      color-scheme:dark;
+    }
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:15px;line-height:1.6;
+    padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+  .mono{font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace}
+  h1,h2{font-family:'Fraunces',Georgia,serif;color:var(--ink);margin:0}
+  a{color:var(--copper-ink)}
+  .wrap{max-width:640px;margin:0 auto;padding:22px 20px 60px}
+
+  .back{font-size:12.5px;color:var(--ink-faint);text-decoration:none;display:inline-block;margin-bottom:14px}
+  .hero h1{font-size:1.7rem;font-weight:650}
+  .hero p{color:var(--ink-dim);font-size:13.5px;margin-top:6px}
+
+  .banner{background:var(--crit-tint);color:var(--crit);border-radius:10px;padding:12px 14px;font-size:12.5px;margin:16px 0;display:none}
+  .banner.show{display:block}
+
+  .totals{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:20px 0}
+  .stat{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;box-shadow:var(--shadow)}
+  .stat-label{font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint);margin-bottom:6px}
+  .stat-value{font-family:'IBM Plex Mono',monospace;font-size:19px;font-weight:600}
+  .stat-value.good{color:var(--good)} .stat-value.crit{color:var(--crit)}
+  @media (max-width:460px){ .totals{grid-template-columns:1fr} }
+
+  form.entry-form{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;margin:18px 0;display:grid;gap:10px}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media (max-width:460px){ .field-row{grid-template-columns:1fr} }
+  .entry-form label{font-size:11px;color:var(--ink-faint);font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:4px}
+  .entry-form input, .entry-form select{
+    width:100%;background:var(--surface-2);border:1px solid var(--line);border-radius:7px;color:var(--ink);
+    padding:8px 10px;font-family:'IBM Plex Sans',sans-serif;font-size:13.5px
+  }
+  .entry-form button{
+    background:var(--copper);color:#fff;border:none;border-radius:7px;padding:10px;font-weight:600;
+    font-size:13.5px;cursor:pointer;font-family:'IBM Plex Sans',sans-serif
+  }
+  .entry-form button:hover{background:var(--copper-ink)}
+
+  .section-label{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);margin:26px 0 10px}
+
+  .entries{display:flex;flex-direction:column;gap:8px}
+  .entry{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow)}
+  .entry-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+  .entry-dot.income{background:var(--good)} .entry-dot.outgoing{background:var(--crit)}
+  .entry-body{flex:1;min-width:0}
+  .entry-label{font-size:13.5px;font-weight:600;color:var(--ink)}
+  .entry-meta{font-size:11.5px;color:var(--ink-faint);font-family:'IBM Plex Mono',monospace;margin-top:2px}
+  .entry-amount{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;white-space:nowrap}
+  .entry-amount.income{color:var(--good)} .entry-amount.outgoing{color:var(--crit)}
+  .entry-actions{display:flex;gap:8px;flex-shrink:0}
+  .entry-actions button{background:none;border:none;color:var(--ink-faint);font-size:11px;text-decoration:underline;cursor:pointer;padding:0;font-family:'IBM Plex Sans',sans-serif}
+  .empty{color:var(--ink-faint);font-size:13px;text-align:center;padding:24px;border:1px dashed var(--line);border-radius:10px}
+  .loading{color:var(--ink-faint);font-size:13px;text-align:center;padding:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="../index.html">← Training Hub</a>
+
+  <div class="hero">
+    <h1>Budget Plan</h1>
+    <p>Income, outgoings, and what's actually left — edited directly, saved as you go.</p>
+  </div>
+
+  <div class="banner" id="not-configured-banner">
+    Not connected to your database yet — nothing you enter below will be saved until Supabase is set up.
+    See <span class="mono">README.md</span> → "Connect the backend".
+  </div>
+
+  <div class="totals">
+    <div class="stat">
+      <div class="stat-label">Income</div>
+      <div class="stat-value good mono" id="total-income">£0</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Outgoings</div>
+      <div class="stat-value crit mono" id="total-outgoings">£0</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Net</div>
+      <div class="stat-value mono" id="total-net">£0</div>
+    </div>
+  </div>
+
+  <form class="entry-form" id="entry-form">
+    <div class="field-row">
+      <div>
+        <label>Type</label>
+        <select id="f-type">
+          <option value="income">Income</option>
+          <option value="outgoing">Outgoing</option>
+        </select>
+      </div>
+      <div>
+        <label>Date</label>
+        <input type="date" id="f-date" required>
+      </div>
+    </div>
+    <div class="field-row">
+      <div>
+        <label>Label</label>
+        <input type="text" id="f-label" placeholder="e.g. Evri pay, rent, tutoring session" required>
+      </div>
+      <div>
+        <label>Amount (£)</label>
+        <input type="number" id="f-amount" step="0.01" min="0" placeholder="0.00" required>
+      </div>
+    </div>
+    <div>
+      <label>Category (optional)</label>
+      <input type="text" id="f-category" placeholder="e.g. wages, rent, food, basketball">
+    </div>
+    <button type="submit">Add entry</button>
+  </form>
+
+  <div class="section-label">Entries</div>
+  <div class="loading" id="loading">Loading…</div>
+  <div class="entries" id="entries"></div>
+  <div class="empty" id="empty" hidden>No entries yet. Add your first one above.</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../config.js"></script>
+<script src="../hub-data.js"></script>
+<script>
+  function fmtMoney(n) {
+    var v = Number(n) || 0;
+    return '£' + v.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+  function todayStr() { return new Date().toISOString().slice(0, 10); }
+
+  document.getElementById('f-date').value = todayStr();
+
+  var entries = [];
+
+  function computeTotals() {
+    var income = 0, outgoing = 0;
+    entries.forEach(function (e) {
+      if (e.type === 'income') income += Number(e.amount);
+      else outgoing += Number(e.amount);
+    });
+    document.getElementById('total-income').textContent = fmtMoney(income);
+    document.getElementById('total-outgoings').textContent = fmtMoney(outgoing);
+    var net = income - outgoing;
+    var netEl = document.getElementById('total-net');
+    netEl.textContent = (net < 0 ? '-' : '') + fmtMoney(Math.abs(net));
+    netEl.className = 'stat-value mono ' + (net >= 0 ? 'good' : 'crit');
+  }
+
+  function renderEntries() {
+    var list = document.getElementById('entries');
+    var empty = document.getElementById('empty');
+    var sorted = entries.slice().sort(function (a, b) { return b.date.localeCompare(a.date); });
+    list.innerHTML = '';
+    empty.hidden = sorted.length > 0;
+    sorted.forEach(function (e) {
+      var row = document.createElement('div');
+      row.className = 'entry';
+      row.innerHTML =
+        '<span class="entry-dot ' + e.type + '"></span>' +
+        '<div class="entry-body">' +
+          '<div class="entry-label">' + escapeHtml(e.label) + '</div>' +
+          '<div class="entry-meta">' + e.date + (e.category ? ' · ' + escapeHtml(e.category) : '') + '</div>' +
+        '</div>' +
+        '<div class="entry-amount ' + e.type + '">' + (e.type === 'outgoing' ? '-' : '+') + fmtMoney(e.amount) + '</div>' +
+        '<div class="entry-actions"><button type="button" class="del-btn">delete</button></div>';
+      row.querySelector('.del-btn').addEventListener('click', async function () {
+        row.style.opacity = '0.4';
+        await HubData.deleteBudgetEntry(e.id);
+        entries = entries.filter(function (x) { return x.id !== e.id; });
+        renderEntries();
+        computeTotals();
+      });
+      list.appendChild(row);
+    });
+  }
+
+  async function loadEntries() {
+    document.getElementById('loading').style.display = 'block';
+    entries = await HubData.getBudgetEntries();
+    document.getElementById('loading').style.display = 'none';
+    renderEntries();
+    computeTotals();
+  }
+
+  document.getElementById('entry-form').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var entry = {
+      type: document.getElementById('f-type').value,
+      date: document.getElementById('f-date').value || todayStr(),
+      label: document.getElementById('f-label').value.trim(),
+      amount: parseFloat(document.getElementById('f-amount').value) || 0,
+      category: document.getElementById('f-category').value.trim() || null
+    };
+    if (!entry.label || !entry.amount) return;
+    var result = await HubData.addBudgetEntry(entry);
+    if (result && result.error) {
+      // not_configured or a real Supabase error — either way, don't lose what was typed silently
+      console.error(result.error);
+    } else {
+      await loadEntries();
+    }
+    e.target.reset();
+    document.getElementById('f-date').value = todayStr();
+  });
+
+  if (!HubData.isConfigured()) {
+    document.getElementById('not-configured-banner').classList.add('show');
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('empty').hidden = false;
+  } else {
+    loadEntries();
+  }
+</script>
+</body>
+</html>
