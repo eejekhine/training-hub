@@ -23,6 +23,13 @@
     "href": "files/couples-routine.html"
   },
   {
+    "id": "daily-stretch",
+    "name": "Daily Stretch",
+    "desc": "Morning, evening and post-hoops mobility — pick your time, band/gun/roller built in.",
+    "category": "body",
+    "href": "files/daily-stretch.html"
+  },
+  {
     "id": "budget-plan",
     "name": "Budget Plan",
     "desc": "12-month budget, editable — income, outgoings, and the £10k countdown.",

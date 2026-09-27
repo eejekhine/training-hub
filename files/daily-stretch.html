@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DAILY STRETCH</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#0c0c0c;--bg2:#141414;--bg3:#1c1c1c;--border:#222;--border2:#2c2c2c;
+  --text:#f0f0f0;--muted:#666;--muted2:#3a3a3a;
+  --gold:#e2b96b;--gold2:#f0c97a;--green:#52d98a;
+  --blue:#5a9fe0;--orange:#e07a3a;--teal:#3ab8c8;--purple:#a06ae0;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+.nav{background:#080808;border-bottom:1px solid var(--border);padding:0 16px;display:flex;align-items:center;overflow-x:auto;position:sticky;top:0;z-index:100}
+.nav::-webkit-scrollbar{height:0}
+.nav-brand{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--gold);white-space:nowrap;padding:16px 14px 16px 0;border-right:1px solid var(--border);margin-right:4px;flex-shrink:0}
+.nav-btn{background:none;border:none;color:var(--muted);font-family:'Barlow',sans-serif;font-size:13px;font-weight:700;letter-spacing:.5px;padding:18px 11px;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;transition:color .15s,border-color .15s;flex-shrink:0}
+.nav-btn:hover{color:var(--text)}
+.nav-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
+
+.screen{display:none;max-width:620px;margin:0 auto;padding:24px 18px 80px}
+.screen.active{display:block}
+
+.hero{padding:28px 0 22px;border-bottom:1px solid var(--border);margin-bottom:24px}
+.hero-eyebrow{font-size:10px;letter-spacing:4px;color:var(--gold);font-weight:700;margin-bottom:6px}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:52px;line-height:.9;letter-spacing:2px;margin-bottom:10px}
+.hero-sub{font-size:13px;color:var(--muted);line-height:1.6}
+
+.slabel{font-size:10px;letter-spacing:4px;color:var(--muted2);margin-bottom:14px;font-weight:700;margin-top:20px}
+
+/* SESSION SELECTOR CARDS */
+.sess-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.sess-btn{border:1px solid var(--border);border-radius:12px;padding:16px 14px;background:var(--bg2);cursor:pointer;text-align:left;transition:transform .15s,border-color .15s;color:var(--text);font-family:'Barlow',sans-serif}
+.sess-btn:hover{transform:translateY(-2px);border-color:var(--border2)}
+.sess-btn.morning-short{border-top:3px solid var(--gold)}
+.sess-btn.morning-long{border-top:3px solid var(--gold2)}
+.sess-btn.evening-short{border-top:3px solid var(--teal)}
+.sess-btn.evening-long{border-top:3px solid var(--blue)}
+.sess-btn.hoops{border-top:3px solid var(--orange)}
+.sb-time{font-size:9px;letter-spacing:2px;color:var(--muted);font-weight:700;margin-bottom:4px}
+.sb-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;margin-bottom:3px;line-height:1}
+.sb-meta{font-size:11px;color:var(--muted)}
+.sb-arrow{font-size:9px;color:var(--muted2);letter-spacing:2px;font-weight:700;margin-top:8px}
+
+/* WORKOUT */
+.back-btn{background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:0 0 18px;display:flex;align-items:center;gap:6px;font-family:'Barlow',sans-serif;font-weight:600;transition:color .15s}
+.back-btn:hover{color:var(--text)}
+.w-hdr{margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.w-eyebrow{font-size:10px;letter-spacing:3px;color:var(--muted);font-weight:700;margin-bottom:4px}
+.w-title{font-family:'Bebas Neue',sans-serif;font-size:38px;letter-spacing:1px;line-height:1;margin-bottom:4px}
+.w-meta{font-size:12px;color:var(--muted);margin-bottom:12px}
+.prog-wrap{background:var(--border);border-radius:4px;height:3px;overflow:hidden}
+.prog-fill{height:100%;border-radius:4px;transition:width .4s;width:0%}
+.prog-text{font-size:11px;color:var(--muted);margin-top:5px;letter-spacing:.5px}
+
+.tip-box{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:14px}
+.tip-label{font-size:10px;font-weight:700;letter-spacing:1px;margin-bottom:4px;color:var(--gold)}
+.tip-text{font-size:12px;color:var(--muted);line-height:1.6}
+
+/* BLOCKS */
+.block-list{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.block{border-radius:12px;overflow:hidden;border:1px solid var(--border);background:var(--bg2)}
+.block-hdr{width:100%;background:none;border:none;padding:13px 15px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;color:var(--text);font-family:'Barlow',sans-serif;text-align:left;transition:background .15s}
+.block-hdr:hover{background:var(--bg3)}
+.b-left{display:flex;align-items:center;gap:11px}
+.b-num{font-family:'Bebas Neue',sans-serif;font-size:21px;color:var(--border2);min-width:22px;line-height:1}
+.b-name{font-size:14px;font-weight:700}
+.b-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.b-chev{font-size:10px;color:var(--muted2);transition:transform .2s}
+.block.open .b-chev{transform:rotate(180deg)}
+.block-body{display:none;border-top:1px solid var(--border)}
+.block.open .block-body{display:block}
+
+/* EXERCISES */
+.ex-list{display:flex;flex-direction:column;padding:4px 14px 12px 48px}
+.ex-item{display:flex;align-items:flex-start;gap:11px;padding:10px 4px;border-bottom:1px solid var(--border);cursor:pointer;border-radius:6px;transition:background .1s}
+.ex-item:last-child{border-bottom:none}
+.ex-item:hover{background:var(--bg3)}
+.ex-chk{width:19px;height:19px;border-radius:5px;border:2px solid var(--border2);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.ex-item.done .ex-chk{background:var(--green);border-color:var(--green)}
+.ex-item.done .ex-chk::after{content:'✓';font-size:10px;color:#000;font-weight:900}
+.ex-item.done .ex-name{text-decoration:line-through;color:var(--muted)}
+.ex-item.done .ex-detail{opacity:.35}
+.ex-cnt{flex:1}
+.ex-top{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:3px}
+.ex-name{font-size:13px;font-weight:700}
+.ex-eq{font-size:9px;padding:2px 7px;border-radius:20px;font-weight:700;white-space:nowrap}
+.ex-eq.band{background:#5a9fe015;color:var(--blue)}
+.ex-eq.gun{background:#e07a3a15;color:var(--orange)}
+.ex-eq.roller{background:#a06ae015;color:var(--purple)}
+.ex-eq.bw{background:#ffffff0a;color:#888}
+.ex-detail{font-size:11px;color:var(--muted);line-height:1.5}
+
+.done-banner{background:linear-gradient(135deg,#0e1a0e,#162016);border:1px solid #2a5a2a;border-radius:12px;padding:20px;text-align:center;display:none;margin-top:8px}
+.done-banner.show{display:block}
+.done-emoji{font-size:30px;margin-bottom:6px}
+.done-title{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--green);letter-spacing:2px}
+.done-sub{font-size:12px;color:#4a8a4a;margin-top:3px}
+
+@media(max-width:420px){.hero-title{font-size:40px}.sess-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">DAILY STRETCH</div>
+  <button class="nav-btn active" onclick="showTab('home')">Home</button>
+  <button class="nav-btn" onclick="showTab('picker-morning')">Morning</button>
+  <button class="nav-btn" onclick="showTab('picker-evening')">Evening</button>
+</nav>
+
+<!-- HOME -->
+<div class="screen active" id="screen-home">
+  <div class="hero">
+    <div class="hero-eyebrow">Daily Routine · Short + Long Versions</div>
+    <div class="hero-title">DAILY<br>STRETCH</div>
+    <div class="hero-sub">Pick morning or evening, then pick how much time you have. Every session uses your resistance bands, massage gun, and foam roller. Evening sessions have a post-hoops version built in.</div>
+  </div>
+
+  <div class="slabel">MORNING — PICK YOUR TIME</div>
+  <div class="sess-grid">
+    <div class="sess-btn morning-short" onclick="startSession('ms')">
+      <div class="sb-time">SHORT</div>
+      <div class="sb-title">Morning Quick</div>
+      <div class="sb-meta">~7 min · Spine + hips</div>
+      <div class="sb-arrow">START →</div>
+    </div>
+    <div class="sess-btn morning-long" onclick="startSession('ml')">
+      <div class="sb-time">FULL</div>
+      <div class="sb-title">Morning Full</div>
+      <div class="sb-meta">~14 min · Full mobilisation</div>
+      <div class="sb-arrow">START →</div>
+    </div>
+  </div>
+
+  <div class="slabel">EVENING — PICK YOUR SITUATION</div>
+  <div class="sess-grid">
+    <div class="sess-btn evening-short" onclick="startSession('es')">
+      <div class="sb-time">SHORT · NO HOOPS</div>
+      <div class="sb-title">Evening Quick</div>
+      <div class="sb-meta">~10 min · Release + wind down</div>
+      <div class="sb-arrow">START →</div>
+    </div>
+    <div class="sess-btn evening-long" onclick="startSession('el')">
+      <div class="sb-time">FULL · NO HOOPS</div>
+      <div class="sb-title">Evening Full</div>
+      <div class="sb-meta">~20 min · Deep recovery</div>
+      <div class="sb-arrow">START →</div>
+    </div>
+  </div>
+  <div class="sess-grid">
+    <div class="sess-btn hoops" onclick="startSession('ph')">
+      <div class="sb-time">POST HOOPS · SHORT</div>
+      <div class="sb-title">Hoops Quick</div>
+      <div class="sb-meta">~10 min · Ankles + knees + hips</div>
+      <div class="sb-arrow">START →</div>
+    </div>
+    <div class="sess-btn hoops" onclick="startSession('phl')">
+      <div class="sb-time">POST HOOPS · FULL</div>
+      <div class="sb-title">Hoops Full</div>
+      <div class="sb-meta">~22 min · Full court recovery</div>
+      <div class="sb-arrow">START →</div>
+    </div>
+  </div>
+
+  <div class="tip-box" style="margin-top:20px">
+    <div class="tip-label">🔠 EQUIPMENT KEY</div>
+    <div class="tip-text">
+      <span class="ex-eq band">BAND</span> resistance band &nbsp;
+      <span class="ex-eq gun">GUN</span> massage gun &nbsp;
+      <span class="ex-eq roller">ROLLER</span> foam roller &nbsp;
+      <span class="ex-eq bw">BW</span> bodyweight
+    </div>
+  </div>
+</div>
+
+<!-- PICKERS -->
+<div class="screen" id="screen-picker-morning">
+  <button class="back-btn" onclick="showTab('home')">← Back</button>
+  <div class="slabel">MORNING — CHOOSE LENGTH</div>
+  <div class="sess-grid">
+    <div class="sess-btn morning-short" onclick="startSession('ms')">
+      <div class="sb-time">SHORT</div>
+      <div class="sb-title">Morning Quick</div>
+      <div class="sb-meta">~7 min · Spine + hips only</div>
+      <div class="sb-arrow">START →</div>
+    </div>
+    <div class="sess-btn morning-long" onclick="startSession('ml')">
+      <div class="sb-time">FULL</div>
+      <div class="sb-title">Morning Full</div>
+      <div class="sb-meta">~14 min · Full mobilisation</div>
+      <div class="sb-arrow">START →</div>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="screen-picker-evening">
+  <button class="back-btn" onclick="showTab('home')">← Back</button>
+  <div class="slabel">EVENING — CHOOSE SITUATION</div>
+  <div class="sess-grid">
+    <div class="sess-btn evening-short" onclick="startSession('es')">
+      <div class="sb-time">SHORT · NO HOOPS</div>
+      <div class="sb-title">Evening Quick</div>
+      <div class="sb-meta">~10 min</div>
+      <div class="sb-arrow">START →</div>
+    </div>
+    <div class="sess-btn evening-long" onclick="startSession('el')">
+      <div class="sb-time">FULL · NO HOOPS</div>
+      <div class="sb-title">Evening Full</div>
+      <div class="sb-meta">~20 min</div>
+      <div class="sb-arrow">START →</div>
+    </div>
+  </div>
+  <div class="sess-grid">
+    <div class="sess-btn hoops" onclick="startSession('ph')">
+      <div class="sb-time">POST HOOPS · SHORT</div>
+      <div class="sb-title">Hoops Quick</div>
+      <div class="sb-meta">~10 min</div>
+      <div class="sb-arrow">START →</div>
+    </div>
+    <div class="sess-btn hoops" onclick="startSession('phl')">
+      <div class="sb-time">POST HOOPS · FULL</div>
+      <div class="sb-title">Hoops Full</div>
+      <div class="sb-meta">~22 min</div>
+      <div class="sb-arrow">START →</div>
+    </div>
+  </div>
+</div>
+
+<!-- WORKOUT SCREEN -->
+<div class="screen" id="screen-workout">
+  <button class="back-btn" onclick="showTab('home')">← Back</button>
+  <div class="w-hdr">
+    <div class="w-eyebrow" id="w-eyebrow"></div>
+    <div class="w-title" id="w-title"></div>
+    <div class="w-meta" id="w-meta"></div>
+    <div class="prog-wrap"><div class="prog-fill" id="prog-fill"></div></div>
+    <div class="prog-text" id="prog-text">0 of 0 done</div>
+  </div>
+  <div class="tip-box" id="tip-box" style="display:none">
+    <div class="tip-label">💡 NOTE</div>
+    <div class="tip-body" id="tip-body"></div>
+  </div>
+  <div class="block-list" id="bl-workout"></div>
+  <div class="done-banner" id="db-workout">
+    <div class="done-emoji" id="done-emoji">✅</div>
+    <div class="done-title" id="done-title">DONE</div>
+    <div class="done-sub" id="done-sub"></div>
+  </div>
+</div>
+
+<script>
+function E(n,d,eq){return{name:n,detail:d,eq:eq||'bw'};}
+function B(n,s,exs){return{name:n,sub:s,exs:exs};}
+
+var SESSIONS={
+  ms:{
+    eyebrow:"MORNING · SHORT",title:"Morning Quick",meta:"~7 min · Spine wake-up + hip activation",
+    color:"#e2b96b",emoji:"🌅",sub:"Body awake. Go handle the day.",
+    tip:"Just woke up and tight on time. This hits the spine and hips — the two things that stiffen most overnight and from the shift.",
+    blocks:[
+      B("Spine Wake-Up","4 min",[
+        E("Cat-Cow","10 slow reps — full range, breathe in on arch, out on round",'bw'),
+        E("Child's Pose","45 sec — arms forward, decompress the lumbar",'bw'),
+        E("Supine Twist","30 sec each side — shoulders flat, knee drops across",'bw'),
+      ]),
+      B("Hip Activation","3 min",[
+        E("Hip Circles","10 each direction, each leg — big slow circles",'bw'),
+        E("Leg Swings","10 forward/back + 10 lateral each leg",'bw'),
+        E("Ankle Circles","10 each direction, each foot",'bw'),
+      ]),
+    ]
+  },
+  ml:{
+    eyebrow:"MORNING · FULL",title:"Morning Full",meta:"~14 min · Full body mobilisation",
+    color:"#f0c97a",emoji:"🌅",sub:"Body is properly awake. Go train or go to work.",
+    tip:"Full routine — spine, hips, ankles, shoulders, and massage gun for warehouse tension. Best done on gym days or after a rough shift.",
+    blocks:[
+      B("Massage Gun — Quick Release","3 min",[
+        E("Quads","45 sec each leg — slow passes, pause on tight spots",'gun'),
+        E("Calves","30 sec each — Achilles area especially",'gun'),
+        E("Upper Traps + Neck Base","60 sec — warehouse tension lives here",'gun'),
+      ]),
+      B("Spine Wake-Up","4 min",[
+        E("Cat-Cow","10 slow reps — full range, breathe in on arch, out on round",'bw'),
+        E("Child's Pose","60 sec — arms forward, sink hips to heels",'bw'),
+        E("Thoracic Rotation in Quadruped","8 each side — hand behind head, rotate elbow to ceiling",'bw'),
+        E("Supine Twist","30 sec each side — shoulders flat",'bw'),
+      ]),
+      B("Hip, Ankle & Shoulder","7 min",[
+        E("Hip Circles","10 each direction, each leg",'bw'),
+        E("Leg Swings","10 forward/back + 10 lateral each leg",'bw'),
+        E("90/90 Hip Stretch","45 sec each side — sit tall, transition slowly",'bw'),
+        E("Ankle Circles + Dorsiflexion Stretch","10 circles each, then 30 sec stretch each — knee past toe, heel flat",'bw'),
+        E("Resistance Band Chest Opener","30 sec — hold band behind back, arms straight, lift and squeeze blades",'band'),
+        E("Resistance Band Hip Abduction","15 reps — band around knees, push out against it",'band'),
+      ]),
+    ]
+  },
+  es:{
+    eyebrow:"EVENING · SHORT · NO HOOPS",title:"Evening Quick",meta:"~10 min · Release tension + nervous system down",
+    color:"#3ab8c8",emoji:"🌙",sub:"Take your Magnesium. Sleep well.",
+    tip:"Short on time or energy. Hits the spine, hips, and winds down the nervous system for sleep. Stack with Magnesium and Melatonin after.",
+    blocks:[
+      B("Foam Roller — Spine & Back","3 min",[
+        E("Thoracic Spine","90 sec — roller horizontal at upper back, arms crossed, extend over it",'roller'),
+        E("Lower Back (sides only)","60 sec — either side of spine, not directly on it",'roller'),
+      ]),
+      B("Key Stretches","5 min",[
+        E("Hip Flexor Stretch","60 sec each — lunge, tuck pelvis, feel the front of hip",'bw'),
+        E("Pigeon Pose","60 sec each — breathe into it",'bw'),
+        E("Child's Pose","60 sec — decompress",'bw'),
+      ]),
+      B("Wind Down","2 min",[
+        E("Box Breathing","8 rounds — 4 sec in, 4 hold, 4 out, 4 hold. Drops heart rate, primes deep sleep.",'bw'),
+      ]),
+    ]
+  },
+  el:{
+    eyebrow:"EVENING · FULL · NO HOOPS",title:"Evening Full",meta:"~20 min · Deep recovery + full body release",
+    color:"#5a9fe0",emoji:"🌙",sub:"Take your Magnesium. You earned the sleep.",
+    tip:"Full recovery session. Foam roller first while muscles are warm from the day, then stretch, then breathwork. Do this after shift or after gym.",
+    blocks:[
+      B("Foam Roller — Full Body","6 min",[
+        E("Thoracic Spine","90 sec — horizontal roller, arms crossed, extend over it. Most important spot.",'roller'),
+        E("Quads","45 sec each — slow roll hip to knee, pause on tight areas",'roller'),
+        E("IT Band","45 sec each — side of thigh, awkward but worth it",'roller'),
+        E("Hamstrings","45 sec each — roll glute to knee",'roller'),
+        E("Calves","30 sec each — cross one leg over to add pressure",'roller'),
+      ]),
+      B("Massage Gun — Targeted","3 min",[
+        E("Lower Back","60 sec — slow passes either side of spine",'gun'),
+        E("Glutes","45 sec each — deep tissue",'gun'),
+        E("Forearms + Hands","60 sec — palm side and knuckle area for joint pain",'gun'),
+      ]),
+      B("Full Body Stretch","8 min",[
+        E("Hip Flexor Stretch","60 sec each — lunge, tuck pelvis under",'bw'),
+        E("Pigeon Pose","60 sec each — breathe and relax",'bw'),
+        E("Resistance Band Hamstring Stretch","45 sec each — on back, band around foot, pull straight leg",'band'),
+        E("Couch Stretch","60 sec each — rear foot on sofa, sink hips",'bw'),
+        E("Resistance Band Chest Opener","30 sec — band behind back, lift and squeeze",'band'),
+        E("Calf Stretch","45 sec each — against wall, back leg straight, heel flat",'bw'),
+      ]),
+      B("Wind Down","3 min",[
+        E("Child's Pose","60 sec — long slow exhales",'bw'),
+        E("Box Breathing","10 rounds — 4 sec in, 4 hold, 4 out, 4 hold",'bw'),
+      ]),
+    ]
+  },
+  ph:{
+    eyebrow:"POST HOOPS · SHORT",title:"Hoops Quick",meta:"~10 min · Ankles · Knees · Hips · Calves",
+    color:"#e07a3a",emoji:"🏀",sub:"Body taken care of. Rest up.",
+    tip:"You just played — ankles and knees took impact, calves are tight, hips are stiff from lateral movement. This hits the most important spots fast.",
+    blocks:[
+      B("Massage Gun — Court Damage","3 min",[
+        E("Calves","60 sec each — slow passes, focus on the Achilles tendon area",'gun'),
+        E("Quads","45 sec each — landing impact lives here",'gun'),
+        E("Ankles + Shins","30 sec each — around the ankle joint, not directly on bone",'gun'),
+      ]),
+      B("Key Court Stretches","5 min",[
+        E("Calf Stretch","60 sec each — wall, back leg straight, then bent for soleus",'bw'),
+        E("Hip Flexor Stretch","60 sec each — hooping loads the hip flexors every jump",'bw'),
+        E("Pigeon Pose","60 sec each — lateral movement tightens the glutes and hip rotators",'bw'),
+      ]),
+      B("Wind Down","2 min",[
+        E("Ankle Circles","15 each direction, each foot — reduce post-game stiffness",'bw'),
+        E("Box Breathing","6 rounds — 4 sec in, 4 hold, 4 out, 4 hold",'bw'),
+      ]),
+    ]
+  },
+  phl:{
+    eyebrow:"POST HOOPS · FULL",title:"Hoops Full",meta:"~22 min · Complete court recovery",
+    color:"#e07a3a",emoji:"🏀",sub:"Full recovery done. Magnesium and sleep.",
+    tip:"The full post-hoops routine. Covers everything — ankles, knees, calves, hips, lower back, and the thoracic spine. Do this after every full court session if time allows.",
+    blocks:[
+      B("Massage Gun — Court Damage","4 min",[
+        E("Calves","60 sec each — slow, focus on Achilles",'gun'),
+        E("Quads","60 sec each — landing and jumping impact",'gun'),
+        E("Ankles + Shins","30 sec each — around the joint",'gun'),
+        E("Hamstrings","45 sec each — sprint and jump load",'gun'),
+        E("Lower Back","60 sec — either side of spine",'gun'),
+      ]),
+      B("Foam Roller — Court Muscles","4 min",[
+        E("Calves","45 sec each — cross leg for added pressure",'roller'),
+        E("Quads","45 sec each — slow roll hip to knee",'roller'),
+        E("IT Band","45 sec each — lateral movement tightens this",'roller'),
+        E("Thoracic Spine","90 sec — arms crossed, extend over roller",'roller'),
+      ]),
+      B("Court-Specific Stretches","10 min",[
+        E("Calf Stretch — Straight Leg","60 sec each — wall, back leg straight, heel flat",'bw'),
+        E("Calf Stretch — Bent Leg (Soleus)","45 sec each — same position, slight bend in back knee",'bw'),
+        E("Hip Flexor Stretch","90 sec each — deep lunge, tuck pelvis",'bw'),
+        E("Pigeon Pose","90 sec each — full relaxation, breathe into it",'bw'),
+        E("Resistance Band Hamstring Stretch","60 sec each — on back, band around foot, pull straight leg",'band'),
+        E("90/90 Hip Stretch","60 sec each — lateral movement loads the hip rotators",'bw'),
+        E("Ankle Dorsiflexion Stretch","45 sec each — knee past toe, heel flat against wall",'bw'),
+      ]),
+      B("Wind Down","4 min",[
+        E("Child's Pose","90 sec — full decompression, long exhales",'bw'),
+        E("Supine Twist","30 sec each side — final spinal release",'bw'),
+        E("Box Breathing","10 rounds — 4 sec in, 4 hold, 4 out, 4 hold",'bw'),
+      ]),
+    ]
+  },
+};
+
+var checks={};
+var curKey=null;
+
+function startSession(key){
+  curKey=key;
+  checks[key]=checks[key]||{};
+  var s=SESSIONS[key];
+  document.getElementById('w-eyebrow').textContent=s.eyebrow;
+  document.getElementById('w-title').textContent=s.title;
+  document.getElementById('w-meta').textContent=s.meta;
+  document.getElementById('prog-fill').style.background='linear-gradient(90deg,'+s.color+','+s.color+'aa)';
+  document.getElementById('done-emoji').textContent=s.emoji;
+  document.getElementById('done-title').textContent='DONE';
+  document.getElementById('done-sub').textContent=s.sub;
+  document.getElementById('db-workout').classList.remove('show');
+  var tb=document.getElementById('tip-box');
+  var tbody=document.getElementById('tip-body');
+  if(s.tip){tb.style.display='block';tbody.textContent=s.tip;}
+  else{tb.style.display='none';}
+  renderWorkout(key);
+  showTab('workout');
+}
+
+function renderWorkout(key){
+  var s=SESSIONS[key];
+  var bl=document.getElementById('bl-workout');
+  if(!bl||!s) return;
+  var ch=checks[key]||{};
+  bl.innerHTML=s.blocks.map(function(block,bi){
+    var exHTML=block.exs.map(function(ex,ei){
+      var k=bi+'-'+ei;
+      var done=ch[k]?' done':'';
+      var eqMap={band:'BAND',gun:'GUN',roller:'ROLLER',bw:'BW'};
+      var eqEl='<span class="ex-eq '+ex.eq+'">'+eqMap[ex.eq]+'</span>';
+      return '<div class="ex-item'+done+'" onclick="toggleCheck(\''+key+'\',\''+k+'\',event)" id="ei-'+key+'-'+k+'">'
+        +'<div class="ex-chk" id="ec-'+key+'-'+k+'">'+(ch[k]?'✓':'')+'</div>'
+        +'<div class="ex-cnt"><div class="ex-top"><span class="ex-name">'+ex.name+'</span>'+eqEl+'</div>'
+        +'<div class="ex-detail">'+ex.detail+'</div></div></div>';
+    }).join('');
+    return '<div class="block" id="blk-'+key+'-'+bi+'">'
+      +'<button class="block-hdr" onclick="togBlk(\''+key+'\','+bi+')">'
+      +'<div class="b-left"><div class="b-num">'+String(bi+1).padStart(2,'0')+'</div>'
+      +'<div><div class="b-name">'+block.name+'</div><div class="b-sub">'+block.sub+'</div></div></div>'
+      +'<div class="b-chev">▼</div></button>'
+      +'<div class="block-body"><div class="ex-list">'+exHTML+'</div></div></div>';
+  }).join('');
+  setTimeout(function(){togBlk(key,0,true);},30);
+  updateProg(key);
+}
+
+function togBlk(key,i,forceOpen){
+  var el=document.getElementById('blk-'+key+'-'+i);
+  if(!el) return;
+  if(forceOpen) el.classList.add('open');
+  else el.classList.toggle('open');
+}
+
+function toggleCheck(key,k,e){
+  e.stopPropagation();
+  checks[key]=checks[key]||{};
+  checks[key][k]=!checks[key][k];
+  var item=document.getElementById('ei-'+key+'-'+k);
+  var chk=document.getElementById('ec-'+key+'-'+k);
+  if(item) item.classList.toggle('done',!!checks[key][k]);
+  if(chk) chk.textContent=checks[key][k]?'✓':'';
+  updateProg(key);
+}
+
+function updateProg(key){
+  var s=SESSIONS[key];if(!s) return;
+  var ch=checks[key]||{};
+  var total=0,done=0;
+  s.blocks.forEach(function(b,bi){b.exs.forEach(function(_,ei){total++;if(ch[bi+'-'+ei])done++;});});
+  var pct=total?Math.round(done/total*100):0;
+  var pf=document.getElementById('prog-fill');
+  var pt=document.getElementById('prog-text');
+  if(pf) pf.style.width=pct+'%';
+  if(pt) pt.textContent=done+' of '+total+' done';
+  if(done===total&&total>0){var db=document.getElementById('db-workout');if(db)db.classList.add('show');}
+}
+
+var TABS=['home','picker-morning','picker-evening','workout'];
+function showTab(id){
+  TABS.forEach(function(t){
+    var s=document.getElementById('screen-'+t);
+    if(s) s.classList.remove('active');
+  });
+  document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
+  var sc=document.getElementById('screen-'+id);
+  if(sc) sc.classList.add('active');
+  var nb=document.querySelector('.nav-btn[onclick="showTab(\''+id+'\')"]');
+  if(nb) nb.classList.add('active');
+  else{
+    if(id==='picker-morning'||id==='workout'){
+      var mb=document.querySelector('.nav-btn[onclick="showTab(\'picker-morning\')"]');
+      if(mb&&id==='picker-morning') mb.classList.add('active');
+    }
+    if(id==='picker-evening'){
+      var eb=document.querySelector('.nav-btn[onclick="showTab(\'picker-evening\')"]');
+      if(eb) eb.classList.add('active');
+    }
+  }
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
