@@ -41,13 +41,23 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 
 .slabel{font-size:10px;letter-spacing:4px;color:var(--muted2);margin-bottom:18px;font-weight:700}
 
+.rotation-strip{display:flex;align-items:center;gap:6px;margin-bottom:28px;flex-wrap:wrap}
+.rot-step{flex:1;min-width:70px;text-align:center;padding:12px 6px;border-radius:10px;border:1px solid var(--border);background:var(--bg2)}
+.rot-step .rs-label{font-size:9px;letter-spacing:1px;color:var(--muted);font-weight:700;margin-bottom:4px}
+.rot-step .rs-name{font-size:12px;font-weight:700}
+.rot-arrow{color:var(--muted2);font-size:14px;flex-shrink:0}
+.rs-ua .rs-name{color:var(--red)}
+.rs-la .rs-name{color:var(--blue)}
+.rs-ub .rs-name{color:var(--orange)}
+.rs-lb .rs-name{color:var(--teal)}
+
 .split-grid{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
 .split-card{border:1px solid var(--border);border-radius:14px;padding:18px 20px;background:var(--bg2);cursor:pointer;transition:transform .15s,border-color .15s,box-shadow .15s;position:relative;overflow:hidden}
 .split-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px}
-.split-card.push::before{background:var(--red)}
-.split-card.pull::before{background:var(--blue)}
-.split-card.legs::before{background:var(--teal)}
-.split-card.phil::before{background:var(--purple)}
+.split-card.ua::before{background:var(--red)}
+.split-card.la::before{background:var(--blue)}
+.split-card.ub::before{background:var(--orange)}
+.split-card.lb::before{background:var(--teal)}
 .split-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.4);border-color:var(--border2)}
 .split-day{font-size:10px;letter-spacing:3px;color:var(--muted);font-weight:700;margin-bottom:5px}
 .split-name{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;margin-bottom:4px;line-height:1}
@@ -55,16 +65,6 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 .split-pills{display:flex;flex-wrap:wrap;gap:6px}
 .split-pill{font-size:10px;padding:3px 8px;border-radius:20px;background:var(--border);color:var(--muted);font-weight:600}
 .split-arrow{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--muted2);letter-spacing:2px;font-weight:700}
-
-.week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:28px}
-.wk-cell{text-align:center;padding:10px 4px;border-radius:8px;border:1px solid var(--border);background:var(--bg2)}
-.wk-name{font-size:9px;letter-spacing:1px;color:var(--muted);font-weight:700;margin-bottom:4px}
-.wk-type{font-size:10px;font-weight:700}
-.wk-push{color:var(--red)}
-.wk-pull{color:var(--blue)}
-.wk-legs{color:var(--teal)}
-.wk-rest{color:var(--muted2)}
-.wk-court{color:var(--green)}
 
 .back-btn{background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:0 0 20px;display:flex;align-items:center;gap:6px;font-family:'Barlow',sans-serif;font-weight:600;transition:color .15s}
 .back-btn:hover{color:var(--text)}
@@ -74,27 +74,28 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 .w-meta{font-size:13px;color:var(--muted);margin-bottom:14px}
 .prog-wrap{background:var(--border);border-radius:4px;height:3px;overflow:hidden}
 .prog-fill{height:100%;border-radius:4px;transition:width .4s;width:0%}
-.prog-fill.push{background:linear-gradient(90deg,var(--red),#f07a7a)}
-.prog-fill.pull{background:linear-gradient(90deg,var(--blue),#7ab8f0)}
-.prog-fill.legs{background:linear-gradient(90deg,var(--teal),#6ad8e8)}
+.prog-fill.ua{background:linear-gradient(90deg,var(--red),#f07a7a)}
+.prog-fill.la{background:linear-gradient(90deg,var(--blue),#7ab8f0)}
+.prog-fill.ub{background:linear-gradient(90deg,var(--orange),#f0a05a)}
+.prog-fill.lb{background:linear-gradient(90deg,var(--teal),#6ad8e8)}
 .prog-text{font-size:11px;color:var(--muted);margin-top:6px;letter-spacing:.5px}
 
 .tip-box{border-radius:10px;padding:13px 15px;margin-bottom:18px;border:1px solid}
-.tip-box.push{background:#1e1010;border-color:#e0525222}
-.tip-box.pull{background:#101520;border-color:#5a9fe022}
-.tip-box.legs{background:#0e1a1c;border-color:#3ab8c822}
+.tip-box.ua{background:#1e1010;border-color:#e0525222}
+.tip-box.la{background:#101520;border-color:#5a9fe022}
+.tip-box.ub{background:#1e1508;border-color:#e07a3a22}
+.tip-box.lb{background:#0e1a1c;border-color:#3ab8c822}
 .tip-label{font-size:10px;font-weight:700;letter-spacing:1px;margin-bottom:4px}
-.tip-label.push{color:var(--red)}
-.tip-label.pull{color:var(--blue)}
-.tip-label.legs{color:var(--teal)}
+.tip-label.ua{color:var(--red)}
+.tip-label.la{color:var(--blue)}
+.tip-label.ub{color:var(--orange)}
+.tip-label.lb{color:var(--teal)}
 .tip-text{font-size:12px;color:var(--muted);line-height:1.6}
 
 .shift-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;padding:4px 10px;border-radius:20px;font-weight:700;letter-spacing:.5px;background:#1e1508;color:var(--orange);border:1px solid var(--orange)44;margin-bottom:16px}
 
 .block-list{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
 .block{border-radius:12px;overflow:hidden;border:1px solid var(--border);background:var(--bg2)}
-.block.shift-block{border-color:var(--orange)44}
-.block.shift-block .block-hdr{background:#1a1208}
 .block-hdr{width:100%;background:none;border:none;padding:14px 15px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;color:var(--text);font-family:'Barlow',sans-serif;text-align:left;transition:background .15s}
 .block-hdr:hover{opacity:.85}
 .b-left{display:flex;align-items:center;gap:11px}
@@ -162,9 +163,10 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 <nav class="nav">
   <div class="nav-brand">HOOPER PROGRAMME</div>
   <button class="nav-btn active" onclick="showTab('home')">Overview</button>
-  <button class="nav-btn" onclick="showTab('push')">Push</button>
-  <button class="nav-btn" onclick="showTab('pull')">Pull</button>
-  <button class="nav-btn" onclick="showTab('legs')">Legs</button>
+  <button class="nav-btn" onclick="showTab('ua')">Upper A</button>
+  <button class="nav-btn" onclick="showTab('la')">Lower A</button>
+  <button class="nav-btn" onclick="showTab('ub')">Upper B</button>
+  <button class="nav-btn" onclick="showTab('lb')">Lower B</button>
   <button class="nav-btn" onclick="showTab('phil')">Notes</button>
   <button class="nav-btn" onclick="showTab('log')">Log</button>
 </nav>
@@ -172,67 +174,78 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 <!-- OVERVIEW -->
 <div class="screen active" id="screen-home">
   <div class="hero">
-    <div class="hero-eyebrow">Night Shift Edition — Beloti × ZeroBounce</div>
+    <div class="hero-eyebrow">Rebuilt Sept '26 — Upper/Lower, 4 days</div>
     <div class="hero-title">HOOPER<br>PROGRAMME</div>
-    <div class="hero-sub">Rebuilt around your Evri night shift. Shorter sessions, no heavy spinal loading before work, mobility baked into every session to keep your back and hips healthy across a physical shift.</div>
+    <div class="hero-sub">Built for a schedule that's actually moving — Evri's gone, a new 10pm–6am night job is coming in, uni's got fixed slots, and basketball's probably a night thing too. So this isn't pinned to Mon/Tue/Wed anymore. It's a 4-day Upper/Lower rotation you slot into whatever week you actually get.</div>
   </div>
 
   <div style="max-width:620px;margin:0 auto;padding:0 18px">
     <div class="warning-box">
-      <div class="warning-title">⚠️ PRE-SHIFT RULES</div>
+      <div class="warning-title">⚠️ HOW THIS FITS THE WEEK</div>
       <div class="warning-text">
-        Push and Pull are safe before shift — upper body work won't compromise 8 hours of warehouse lifting.<br><br>
-        <strong style="color:#e07a3a">Legs day only on days off.</strong> Heavy squats, deadlifts, and plyos before a manual shift is how you get injured. Don't negotiate on this.
+        Train the 4 days in order — <strong style="color:#f0c97a">Upper A → Lower A → Upper B → Lower B</strong> — then repeat. Don't chase fixed weekdays; chase the rotation. Wednesday's free most weeks, so that's a natural anchor — build the other 3 around whatever uni, the night job, and ball actually leave open that week.<br><br>
+        Rule of thumb with the night shift: if a session's happening before you sleep for a 10pm start, keep it at 7/10 effort, not a max-out. Save the heaviest attempts (top sets, PR pushes) for a day you've slept a full night before.
       </div>
     </div>
     <div class="info-box">
-      <div class="info-title">🔵 EVERY SESSION ENDS WITH A SHIFT PREP BLOCK</div>
-      <div class="info-text">The last block of every workout is a 8–10 min mobility sequence targeting your lower back, hips, and thoracic spine — the three areas that take the most load during warehouse work. Do not skip it.</div>
+      <div class="info-title">🔵 WHAT THIS PROGRAMME IS ACTUALLY FOR</div>
+      <div class="info-text">Two numbers to move: bench toward <strong>100kg</strong> (last confirmed PR 85kg, so this rebuilds that number properly rather than assuming it's still there), and body comp toward <strong>87–88kg</strong> in 3 months / a leaner <strong>~80kg</strong> within the year, off a starting point of 91.8kg at 22.8% body fat. Training holds onto your 40.7kg of skeletal muscle while that happens — the Food Plan tool is what actually drives the fat loss, this just makes sure you don't lose muscle doing it. Vertical power work is built into both lower days for the dunk goal.</div>
     </div>
 
-    <div class="slabel" style="margin-top:24px">THE WEEK — 3 TO 4 DAYS</div>
-    <div class="week-grid">
-      <div class="wk-cell"><div class="wk-name">MON</div><div class="wk-type wk-push">PUSH</div></div>
-      <div class="wk-cell"><div class="wk-name">TUE</div><div class="wk-type wk-pull">PULL</div></div>
-      <div class="wk-cell"><div class="wk-name">WED</div><div class="wk-type wk-rest">REST</div></div>
-      <div class="wk-cell"><div class="wk-name">THU</div><div class="wk-type wk-push">PUSH</div></div>
-      <div class="wk-cell"><div class="wk-name">FRI</div><div class="wk-type wk-pull">PULL</div></div>
-      <div class="wk-cell"><div class="wk-name">SAT</div><div class="wk-type wk-legs" style="font-size:9px">LEGS<br><span style="color:var(--muted);font-size:8px">day off only</span></div></div>
-      <div class="wk-cell"><div class="wk-name">SUN</div><div class="wk-type wk-court">COURT</div></div>
+    <div class="slabel" style="margin-top:24px">THE ROTATION — REPEAT THIS 4-DAY BLOCK</div>
+    <div class="rotation-strip">
+      <div class="rot-step rs-ua"><div class="rs-label">DAY 1</div><div class="rs-name">Upper A</div></div>
+      <div class="rot-arrow">→</div>
+      <div class="rot-step rs-la"><div class="rs-label">DAY 2</div><div class="rs-name">Lower A</div></div>
+      <div class="rot-arrow">→</div>
+      <div class="rot-step rs-ub"><div class="rs-label">DAY 3</div><div class="rs-name">Upper B</div></div>
+      <div class="rot-arrow">→</div>
+      <div class="rot-step rs-lb"><div class="rs-label">DAY 4</div><div class="rs-name">Lower B</div></div>
     </div>
 
     <div class="slabel">SESSION OVERVIEW</div>
     <div class="split-grid">
-      <div class="split-card push" onclick="showTab('push')">
-        <div class="split-day">MON + THU — BEFORE SHIFT</div>
-        <div class="split-name">Push Day</div>
-        <div class="split-meta">~55 min · Upper body only · No spinal loading</div>
+      <div class="split-card ua" onclick="showTab('ua')">
+        <div class="split-day">DAY 1 — STRENGTH</div>
+        <div class="split-name">Upper A</div>
+        <div class="split-meta">~55 min · Bench-focused · Building toward 100kg</div>
         <div class="split-pills">
-          <span class="split-pill">Bench 5×5</span><span class="split-pill">Incline DB</span>
-          <span class="split-pill">OHP</span><span class="split-pill">Wall-Sit Raise</span>
-          <span class="split-pill">Dips</span><span class="split-pill">Shift Prep</span>
+          <span class="split-pill">Bench 5×5</span><span class="split-pill">OHP</span>
+          <span class="split-pill">Weighted Pull-Ups</span><span class="split-pill">Cable Row</span>
+          <span class="split-pill">Dips</span><span class="split-pill">Recovery Flow</span>
         </div>
         <div class="split-arrow">VIEW →</div>
       </div>
-      <div class="split-card pull" onclick="showTab('pull')">
-        <div class="split-day">TUE + FRI — BEFORE SHIFT</div>
-        <div class="split-name">Pull Day</div>
-        <div class="split-meta">~55 min · Back + Biceps · Mobility first</div>
+      <div class="split-card la" onclick="showTab('la')">
+        <div class="split-day">DAY 2 — STRENGTH</div>
+        <div class="split-name">Lower A</div>
+        <div class="split-meta">~60 min · Squat-focused · Vert power built in</div>
         <div class="split-pills">
-          <span class="split-pill">Pull-Ups</span><span class="split-pill">Cable Row</span>
-          <span class="split-pill">Lat Pulldown</span><span class="split-pill">Curls</span>
-          <span class="split-pill">VMO Step-Ups</span><span class="split-pill">Shift Prep</span>
+          <span class="split-pill">Back Squat 5×5</span><span class="split-pill">RDL</span>
+          <span class="split-pill">Nordic Curl</span><span class="split-pill">Approach Jumps</span>
+          <span class="split-pill">Core</span><span class="split-pill">Recovery Flow</span>
         </div>
         <div class="split-arrow">VIEW →</div>
       </div>
-      <div class="split-card legs" onclick="showTab('legs')">
-        <div class="split-day">SATURDAY — DAY OFF ONLY</div>
-        <div class="split-name">Leg Day</div>
-        <div class="split-meta">~65 min · Vert + mobility focused · No heavy deadlifts</div>
+      <div class="split-card ub" onclick="showTab('ub')">
+        <div class="split-day">DAY 3 — VOLUME</div>
+        <div class="split-name">Upper B</div>
+        <div class="split-meta">~55 min · Chest/back/shoulder volume</div>
         <div class="split-pills">
-          <span class="split-pill">Front Squat</span><span class="split-pill">BSS Eccentric</span>
-          <span class="split-pill">Nordics</span><span class="split-pill">VMO Hold</span>
-          <span class="split-pill">Plyos</span><span class="split-pill">Hip Flow</span>
+          <span class="split-pill">Incline DB Press</span><span class="split-pill">Lat Pulldown</span>
+          <span class="split-pill">Wall-Sit Raise</span><span class="split-pill">Cable Row</span>
+          <span class="split-pill">Arms</span><span class="split-pill">Recovery Flow</span>
+        </div>
+        <div class="split-arrow">VIEW →</div>
+      </div>
+      <div class="split-card lb" onclick="showTab('lb')">
+        <div class="split-day">DAY 4 — VERT POWER</div>
+        <div class="split-name">Lower B</div>
+        <div class="split-meta">~65 min · ZeroBounce method · Max jumps</div>
+        <div class="split-pills">
+          <span class="split-pill">Front Squat</span><span class="split-pill">VMO Step-Ups</span>
+          <span class="split-pill">Max Vert Jumps</span><span class="split-pill">Depth Jumps</span>
+          <span class="split-pill">Nordic Curl</span><span class="split-pill">Recovery Flow</span>
         </div>
         <div class="split-arrow">VIEW →</div>
       </div>
@@ -240,95 +253,114 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
   </div>
 </div>
 
-<!-- PUSH -->
-<div class="screen" id="screen-push">
+<!-- UPPER A -->
+<div class="screen" id="screen-ua">
   <button class="back-btn" onclick="showTab('home')">← Back</button>
   <div class="w-hdr">
-    <div class="w-day-label">MONDAY + THURSDAY — BEFORE SHIFT</div>
-    <div class="w-title">PUSH DAY</div>
-    <div class="w-meta">~55 min · Chest · Shoulders · Triceps</div>
-    <div class="shift-badge">⚡ PRE-SHIFT SAFE — upper body only, no spinal loading</div>
-    <div class="prog-wrap"><div class="prog-fill push" id="prog-push"></div></div>
-    <div class="prog-text" id="pt-push">0 of 0 done</div>
+    <div class="w-day-label">ROTATION DAY 1 — STRENGTH</div>
+    <div class="w-title">UPPER A</div>
+    <div class="w-meta">~55 min · Chest · Shoulders · Back · Triceps</div>
+    <div class="shift-badge">🎯 MAIN LIFT: BENCH PRESS — this is the day 100kg gets built</div>
+    <div class="prog-wrap"><div class="prog-fill ua" id="prog-ua"></div></div>
+    <div class="prog-text" id="pt-ua">0 of 0 done</div>
   </div>
-  <div class="tip-box push">
-    <div class="tip-label push">💬 THE PLAN</div>
-    <div class="tip-text">Keep intensity moderate — 7/10, not 10/10. You need energy left for 8 hours of physical work. The shift prep block at the end is non-negotiable — it protects your lower back and hips for the night.</div>
+  <div class="tip-box ua">
+    <div class="tip-label ua">💬 THE PLAN</div>
+    <div class="tip-text">Bench is your priority lift on this programme — last confirmed PR was 85kg, but training's been inconsistent since, so start a couple sets below what feels like 85kg for two weeks, then push the top set up once form and bar speed are both solid. Add 2.5kg once you hit all 5×5 clean; if you miss a rep, repeat the weight next time rather than pushing through. If this session lands right before a night shift, keep the top set at 7/10 and take the PR attempt on a day you've had a full sleep.</div>
   </div>
-  <div class="block-list" id="bl-push"></div>
-  <div class="done-banner" id="db-push"><div class="done-emoji">💪</div><div class="done-title">PUSH DONE</div><div class="done-sub">Good session. You're ready for shift — back's mobile, body's warm.</div></div>
+  <div class="block-list" id="bl-ua"></div>
+  <div class="done-banner" id="db-ua"><div class="done-emoji">💪</div><div class="done-title">UPPER A DONE</div><div class="done-sub">Bench work in the bank. Next up: Lower A.</div></div>
 </div>
 
-<!-- PULL -->
-<div class="screen" id="screen-pull">
+<!-- LOWER A -->
+<div class="screen" id="screen-la">
   <button class="back-btn" onclick="showTab('home')">← Back</button>
   <div class="w-hdr">
-    <div class="w-day-label">TUESDAY + FRIDAY — BEFORE SHIFT</div>
-    <div class="w-title">PULL DAY</div>
-    <div class="w-meta">~55 min · Back · Biceps · Rear Delts</div>
-    <div class="shift-badge">⚡ PRE-SHIFT SAFE — no heavy floor pulls, cable and machine focus</div>
-    <div class="prog-wrap"><div class="prog-fill pull" id="prog-pull"></div></div>
-    <div class="prog-text" id="pt-pull">0 of 0 done</div>
+    <div class="w-day-label">ROTATION DAY 2 — STRENGTH</div>
+    <div class="w-title">LOWER A</div>
+    <div class="w-meta">~60 min · Squat · Posterior Chain · Vert Power</div>
+    <div class="shift-badge" style="background:#101520;color:var(--blue);border-color:var(--blue)44">🎯 MAIN LIFT: BACK SQUAT — builds the base the jump work sits on top of</div>
+    <div class="prog-wrap"><div class="prog-fill la" id="prog-la"></div></div>
+    <div class="prog-text" id="pt-la">0 of 0 done</div>
   </div>
-  <div class="tip-box pull">
-    <div class="tip-label pull">💬 THE PLAN</div>
-    <div class="tip-text">Pull-ups, cable rows, and lat pulldowns — all pulling from vertical or horizontal angles, no heavy barbell deadlifts off the floor. Your lower back stays fresh for the shift. VMO step-ups are in here for vert work without taxing the posterior chain.</div>
+  <div class="tip-box la">
+    <div class="tip-label la">💬 THE PLAN</div>
+    <div class="tip-text">Squat is the strength anchor here, RDL and Nordics build the hamstring/glute side that actually decides how high you jump, and the approach jump work at the end is pure vertical skill practice — not conditioning, don't rush it. If sleep's been rough off the night shift, this is the session to drop the squat top set intensity on before you drop the jump quality.</div>
   </div>
-  <div class="block-list" id="bl-pull"></div>
-  <div class="done-banner" id="db-pull"><div class="done-emoji">🧲</div><div class="done-title">PULL DONE</div><div class="done-sub">Back is strong and mobile. Go get that shift money.</div></div>
+  <div class="block-list" id="bl-la"></div>
+  <div class="done-banner" id="db-la"><div class="done-emoji">🦵</div><div class="done-title">LOWER A DONE</div><div class="done-sub">Legs and jumps both in. Next up: Upper B.</div></div>
 </div>
 
-<!-- LEGS -->
-<div class="screen" id="screen-legs">
+<!-- UPPER B -->
+<div class="screen" id="screen-ub">
   <button class="back-btn" onclick="showTab('home')">← Back</button>
   <div class="w-hdr">
-    <div class="w-day-label">SATURDAY — DAY OFF ONLY</div>
-    <div class="w-title">LEG DAY</div>
-    <div class="w-meta">~65 min · Vert focused · ZeroBounce method</div>
-    <div class="shift-badge" style="background:#0e1a1c;color:var(--teal);border-color:var(--teal)44">🏀 DAY OFF ONLY — never before a shift</div>
-    <div class="prog-wrap"><div class="prog-fill legs" id="prog-legs"></div></div>
-    <div class="prog-text" id="pt-legs">0 of 0 done</div>
+    <div class="w-day-label">ROTATION DAY 3 — VOLUME</div>
+    <div class="w-title">UPPER B</div>
+    <div class="w-meta">~55 min · Chest · Shoulders · Back · Arms</div>
+    <div class="shift-badge" style="background:#1e1508;color:var(--orange);border-color:var(--orange)44">🔁 VOLUME DAY — higher reps, no max attempts</div>
+    <div class="prog-wrap"><div class="prog-fill ub" id="prog-ub"></div></div>
+    <div class="prog-text" id="pt-ub">0 of 0 done</div>
   </div>
-  <div class="tip-box legs">
-    <div class="tip-label legs">💬 THE PLAN</div>
-    <div class="tip-text">ZeroBounce method — front squats, eccentric BSS, Nordics, VMO holds, plyos. No heavy trap bar or barbell deadlifts today — your back gets enough loading during the week. Full hip mobility block at the end to recover from the week's shifts.</div>
+  <div class="tip-box ub">
+    <div class="tip-label ub">💬 THE PLAN</div>
+    <div class="tip-text">This is the day that builds the muscle around the bench number — higher reps, shorter rests, no ego lifting. The wall-sit lateral raise stays from the old programme because it's genuinely good: isometric quad hold plus shoulder work in one move, useful while you're in a calorie deficit and want every set to earn its place.</div>
   </div>
-  <div class="block-list" id="bl-legs"></div>
-  <div class="done-banner" id="db-legs"><div class="done-emoji">⚡</div><div class="done-title">LEG DAY DONE</div><div class="done-sub">Rim's getting closer. Rest up this weekend.</div></div>
+  <div class="block-list" id="bl-ub"></div>
+  <div class="done-banner" id="db-ub"><div class="done-emoji">🔥</div><div class="done-title">UPPER B DONE</div><div class="done-sub">Volume day done. Next up: Lower B.</div></div>
+</div>
+
+<!-- LOWER B -->
+<div class="screen" id="screen-lb">
+  <button class="back-btn" onclick="showTab('home')">← Back</button>
+  <div class="w-hdr">
+    <div class="w-day-label">ROTATION DAY 4 — VERT POWER</div>
+    <div class="w-title">LOWER B</div>
+    <div class="w-meta">~65 min · ZeroBounce method · Max jumps</div>
+    <div class="shift-badge" style="background:#0e1a1c;color:var(--teal);border-color:var(--teal)44">🏀 HIGHEST-DEMAND DAY — put this after a real night's sleep when you can</div>
+    <div class="prog-wrap"><div class="prog-fill lb" id="prog-lb"></div></div>
+    <div class="prog-text" id="pt-lb">0 of 0 done</div>
+  </div>
+  <div class="tip-box lb">
+    <div class="tip-label lb">💬 THE PLAN</div>
+    <div class="tip-text">ZeroBounce method — front squat, eccentric-loaded single-leg work, Nordics, then max-effort jumps once the nervous system's primed. Every jump rep is a real attempt, not a warm-up rep — that's what actually moves a vertical. This is the one day worth protecting from a rough sleep week if you have to choose.</div>
+  </div>
+  <div class="block-list" id="bl-lb"></div>
+  <div class="done-banner" id="db-lb"><div class="done-emoji">⚡</div><div class="done-title">LOWER B DONE</div><div class="done-sub">Rim's getting closer. Rotation complete — back to Upper A next.</div></div>
 </div>
 
 <!-- NOTES -->
 <div class="screen" id="screen-phil">
   <div class="slabel">PROGRAMME NOTES</div>
   <div class="phil-card">
-    <div class="pc-icon">🏭</div>
-    <div class="pc-title">Why this is different to the original programme</div>
-    <div class="pc-body">The original had heavy trap bar deadlifts, barbell squats, and depth jumps across every session. That's fine when you're recovering at home. Going into 8 hours of heavy warehouse lifting after those movements is a back injury waiting to happen. This version keeps the same philosophy — Beloti strength, ZeroBounce vert — but removes any exercise that compromises your shift or your recovery from it.</div>
+    <div class="pc-icon">🔄</div>
+    <div class="pc-title">Why Upper/Lower instead of Push/Pull/Legs</div>
+    <div class="pc-body">The old version was built around a fixed Evri shift pattern that no longer exists — Push and Pull were split apart mainly to keep leg day away from a specific job's demands. That constraint is gone, and PPL's real cost is that it wants a stable weekly slot to work well. Upper/Lower in a 4-day rotation doesn't care what day it lands on — it just needs the days to go in order, so it fits a schedule that's still moving between a new night job, uni, and basketball.</div>
   </div>
   <div class="phil-card">
-    <div class="pc-icon">🦴</div>
-    <div class="pc-title">What the shift does to your body</div>
-    <div class="pc-body">8 hours of heavy manual handling repeatedly loads your lumbar spine, compresses your hip flexors, and tightens your thoracic spine from carrying and bending. The shift prep block in every session directly counteracts this — cat-cow, hip flexor stretch, thoracic rotation, and child's pose reset the areas that accumulate the most load during warehouse work.</div>
+    <div class="pc-icon">📅</div>
+    <div class="pc-title">Why there's no weekday grid this time</div>
+    <div class="pc-body">Uni's only partly fixed right now (busy Monday and Tuesday, Wednesday free, a double session Thursday), the night job runs 10pm–6am and it's not yet clear which days ball lands on. Pinning sessions to specific weekdays would just get broken the first week something moves. Follow the rotation order instead — Upper A, Lower A, Upper B, Lower B, repeat — and slot each one into whatever gap that week actually has. Wednesday being free most weeks makes it a good default anchor.</div>
   </div>
   <div class="phil-card">
-    <div class="pc-icon">⚡</div>
-    <div class="pc-title">Intensity before shift — stay at 7/10</div>
-    <div class="pc-body">Don't go to failure on everything before an 8-hour physical shift. Leave 1–2 reps in the tank on every set. Your performance at work matters — going in wrecked every night will catch up with you. Save your absolute max effort for the leg day on your day off.</div>
+    <div class="pc-icon">🛏️</div>
+    <div class="pc-title">Training around a 10pm–6am shift</div>
+    <div class="pc-body">Whatever the new job turns out to involve, working through the night means your sleep is happening at an odd time relative to training. Keep sessions that fall in the few hours before a shift starts at 7/10 effort — controlled, not maxed. Save top-set attempts and PR pushes for a day you've had a proper night's sleep beforehand. This matters more on Lower B, the highest-demand session, than anywhere else.</div>
   </div>
   <div class="phil-card">
-    <div class="pc-icon">🍗</div>
-    <div class="pc-title">Eating around shift + training</div>
-    <div class="pc-body">Eat a proper meal 60–90 min before training — carbs and protein. Something like rice and chicken, or eggs on toast. Don't train on empty before a physical shift. During the shift, snack on something with protein and carbs on your break. Recover with a meal after shift before you sleep.</div>
+    <div class="pc-icon">🎯</div>
+    <div class="pc-title">The bench number, honestly</div>
+    <div class="pc-body">85kg was the last confirmed PR, but training's been inconsistent since, so treat that as history, not a floor. Upper A rebuilds it properly with a real 5×5 progression rather than assuming it's still there — once you're moving 85kg for clean 5×5, that's the real signal to start pushing toward 100kg, not before.</div>
   </div>
   <div class="phil-card">
-    <div class="pc-icon">😴</div>
-    <div class="pc-title">Sleep and recovery</div>
-    <div class="pc-body">Night shift disrupts your recovery rhythm. Prioritise sleep quality over quantity — dark room, cool temperature. On shift days, your body is doing double duty: training recovery and work recovery simultaneously. This is why the sessions are shorter and the intensity is managed — it's not soft, it's smart.</div>
+    <div class="pc-icon">⚖️</div>
+    <div class="pc-title">Training vs. the weight goal</div>
+    <div class="pc-body">87–88kg in 3 months and a leaner ~80kg within the year is a Food Plan job, not a training job — you don't out-train a deficit. What this programme does is protect the 40.7kg of skeletal muscle you've already built while that happens, by keeping the strength lifts progressing (Upper A, Lower A) even while Upper B and Lower B run in more of a maintenance-volume mode. Don't be surprised if the bar numbers rise slower during the leanest weeks — that's expected, not a sign the programme's not working.</div>
   </div>
   <div class="phil-card">
     <div class="pc-icon">🏀</div>
-    <div class="pc-title">Court day on Sunday</div>
-    <div class="pc-body">Sunday is your recovery day and court day. Light shooting, pickup games, skills work. Keep it fun — don't treat it as a conditioning session. It's active recovery that keeps your basketball feel sharp while your body recovers from the week.</div>
+    <div class="pc-title">The dunk goal</div>
+    <div class="pc-body">Vertical power work sits in both lower days on purpose rather than as a separate "vert day" — Lower A keeps it light (approach jump practice, skill-focused), Lower B is where the real max-effort jump work happens once the posterior chain and knees are warmed through squats and Nordics. A year is a realistic timeline for this if the jump work stays consistent, not just the lifting.</div>
   </div>
 </div>
 
@@ -346,9 +378,10 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
       <div>
         <label>Split</label>
         <select id="s-split">
-          <option value="push">Push</option>
-          <option value="pull">Pull</option>
-          <option value="legs">Legs</option>
+          <option value="ua">Upper A</option>
+          <option value="la">Lower A</option>
+          <option value="ub">Upper B</option>
+          <option value="lb">Lower B</option>
         </select>
       </div>
     </div>
@@ -491,121 +524,134 @@ function E(n,d,src,shift){return{name:n,detail:d,src:src||null,shift:shift||null
 function B(n,s,exs,isShift){return{name:n,sub:s,exs:exs,isShift:!!isShift};}
 
 var WK={
-push:[
+ua:[
   B("Warm-Up","8 min",[
-    E("Treadmill or Bike","4 min easy — just get warm, don't tire yourself out"),
+    E("Rowing Machine or Bike","4 min easy — just get warm, don't tire yourself out"),
     E("Arm Circles","15 each direction"),
     E("Scapular Push-Ups","10 reps — retract and protract, no arm bend, shoulder joint prep"),
     E("Band Pull-Aparts","15 reps — hold a band or towel, squeeze blades back"),
   ]),
-  B("Chest","18 min",[
-    E("Bench Press","5×5 — 75-80% max, leave 1-2 reps in the tank. Beloti's anchor lift.","beloti",
-      "Pre-shift: don't max out. Strong and controlled, not a PR attempt."),
-    E("Incline Dumbbell Press","3×10 — upper chest, controlled descent","beloti"),
-    E("Cable Fly or Pec Deck","3×12 — full stretch at bottom, squeeze at top. No spinal load."),
+  B("Chest & Triceps","18 min",[
+    E("Bench Press","5×5 — main lift. Rebuild toward 85kg clean before pushing for 100kg. Add 2.5kg once all 5×5 land; repeat the weight if you miss a rep.","beloti",
+      "If this session's before a night shift, keep the top set at 7/10 — take PR attempts on a slept day."),
+    E("Overhead Press","4×6 — standing if you can stabilise it, seated if not. Strict, full lockout."),
+    E("Bodyweight Dips","3×10 — full depth, chest forward.","beloti"),
   ]),
-  B("Shoulders","14 min",[
-    E("Dumbbell Shoulder Press","3×10 — seated, strict, full lockout. Arm swing reach for jumps.","beloti"),
-    E("Wall-Sit Lateral Raise","3×12 — sit against wall at parallel, raise DBs laterally. Beloti's signature.","beloti",
-      "The wall sit is isometric quad work — you're getting lower body stimulus without loading the spine."),
-    E("Rear Delt Fly","3×15 — cable or bent-over DB. Protects shoulder health for manual handling."),
+  B("Back","14 min",[
+    E("Weighted Pull-Ups","4×6 — belt or hold DB between feet. Full dead hang, chin over bar. Bodyweight-only reps if you're not there yet.","beloti"),
+    E("Seated Cable Row","3×10 — mid-back focus, full retraction, controlled release. No forward lean."),
   ]),
-  B("Triceps","8 min",[
-    E("Bodyweight Dips","3×12 — full depth, chest forward. Beloti staple.","beloti"),
-    E("Tricep Pushdown","3×12 — cable, full extension, squeeze at lockout","beloti"),
+  B("Shoulders & Arms","8 min",[
+    E("Face Pulls","3×15 — cable, elbows high, external rotation. Shoulder health for everything else on this list."),
+    E("Barbell Curl","3×10 — strict, no swinging.","beloti"),
   ]),
-  B("Shift Prep — Do Not Skip","8 min",[
-    E("Cat-Cow","2 min — slow, 10 reps. Mobilises the lumbar spine that the shift will load.",null,
-      "This directly undoes the compression your back takes during 8 hours of lifting."),
-    E("Hip Flexor Stretch","60 sec each side — lunge, tuck pelvis under",null,
-      "Warehouse work keeps your hips flexed for hours. This resets the hip flexors before they get stuck in that shortened position."),
-    E("Thoracic Rotation (in squat)","10 each side — deep squat hold, hand behind head, rotate toward knee",null,
-      "Thoracic mobility prevents your lower back compensating for rotation during lifting at work."),
-    E("Child's Pose","90 sec — arms forward, sink into it",null,
-      "Full spinal decompression. Do this slowly and breathe through it."),
-  ],true),
-],
-pull:[
-  B("Warm-Up","8 min",[
-    E("Rowing Machine","3 min easy — posterior chain specific, doesn't load spine heavily"),
-    E("Lat Activation","15 reps — band pulldown or straight-arm pushdown, feel the lat before loading it"),
-    E("Scapular Pull-Ups","8 reps — hang from bar, depress and retract shoulder blades only, no arm bend"),
-    E("Face Pull Warm-Up","15 reps light — rear delts and external rotators firing"),
-  ]),
-  B("Back","20 min",[
-    E("Weighted Pull-Ups","4×6 — belt or hold DB between feet. Full dead hang, chin over bar.","beloti",
-      "Pre-shift: vertical pulling only — no heavy barbell rows off the floor. Pull-ups don't load the lumbar the same way."),
-    E("Seated Cable Row","4×10 — mid-back focus, full retraction, controlled release. No forward lean.",null,
-      "Sitting removes the lumbar load you'd get from a Pendlay row. Same back development, back-safe."),
-    E("Lat Pulldown","3×12 — wide grip, pull to upper chest, squeeze lats at bottom"),
-    E("Face Pulls","3×15 — cable, elbows high, external rotation, rear delt and shoulder health"),
-  ]),
-  B("VMO Step-Ups — ZeroBounce","10 min",[
-    E("Explosive Step-Ups","4×8 each leg — knee-height box, drive through heel, explode up","zero",
-      "ZeroBounce's cheat code for VMO strength and single-leg power. On pull day because it doesn't tax the posterior chain the way squats and deadlifts do — safe before shift."),
-    E("Isometric Step-Up Hold","3×30 sec each — hold at top, 90° knee angle, don't move","zero",
-      "Builds the exact joint angle strength used at takeoff. Low fatigue, high carryover."),
-  ]),
-  B("Biceps","10 min",[
-    E("Barbell Curl","3×10 — strict, no swinging. Beloti staple.","beloti",
-      "Working toward 27kg goal — go as heavy as strict form allows."),
-    E("Hammer Curl","3×12 each — neutral grip, brachialis and forearm"),
-    E("Incline Dumbbell Curl","3×10 — full stretch at bottom, peak contraction at top","beloti"),
-  ]),
-  B("Shift Prep — Do Not Skip","8 min",[
-    E("Cat-Cow","2 min — 10 slow reps, full range each way",null,
-      "Non-negotiable before shift. Spinal mobility resets here."),
-    E("90/90 Hip Stretch","90 sec each side — sit tall, transition slowly",null,
-      "Hip rotation is restricted by warehouse work over time. This keeps it open."),
+  B("Recovery Flow","8 min",[
+    E("Cat-Cow","2 min — slow, 10 reps. Resets the lower back after the bench/OHP work."),
     E("Doorframe Lat Stretch","30 sec each side — hold frame, sink hips back",null,
-      "Lat tightness from pull day + warehouse lifting compounds. Stretch it now."),
-    E("Pigeon Pose","60 sec each side — breathe into it",null,
-      "Hip external rotation — warehouse work repeatedly loads hip internal rotation. This counters it."),
-  ],true),
+      "Lats get tight fast from weighted pull-ups. Worth doing properly, not rushing."),
+    E("Thoracic Rotation (in squat)","10 each side — deep squat hold, hand behind head, rotate toward knee"),
+    E("Child's Pose","90 sec — arms forward, sink into it"),
+  ]),
 ],
-legs:[
+la:[
   B("Warm-Up","10 min",[
     E("Jump Rope Simulation","2 min — fast feet, no rope, ankle stiffness warm-up","zero"),
     E("Hip Circles + Leg Swings","10 each direction each leg"),
     E("Ankle Hops","2×15 — minimal knee bend, stiff ankles, tendon warm-up","zero"),
     E("Glute Bridges","15 reps — posterior chain activation before loading"),
   ]),
-  B("Power — ZeroBounce","16 min",[
-    E("Full Depth Front Squat","4×5 — elbows high, heels flat, full depth. ZeroBounce prefers this over back squat for athletic carryover.","zero",
-      "No heavy barbell back squat today — front squat loads the quads without the same lumbar compression. Better for a back that's already been through shift work."),
-    E("Goblet Squat","3×8 — DB at chest, full depth, heels flat. Warm-up pattern or alternative to front squat."),
+  B("Squat","16 min",[
+    E("Back Squat","5×5 — main lift, progress the same way as bench: add weight once all sets land clean, repeat if you miss.","beloti",
+      "This is the strength base the jump work in Lower B sits on top of — don't skip weeks on this one."),
+    E("Bulgarian Split Squat — Eccentric","3×8 each — 4 count slow lower, explosive drive up.","zero"),
   ]),
-  B("Eccentric Leg Work","14 min",[
-    E("Bulgarian Split Squat — Eccentric","4×6 each — 4 count slow lower, explosive drive up","zero",
-      "The eccentric (slow lower) builds more strength per rep than a normal BSS. ZeroBounce specifically programmes this."),
-    E("Leg Press","3×10 — heavy, full range, no lower back involvement","beloti"),
-    E("Walking Lunges","3×8 each — DBs, push through front heel"),
+  B("Posterior Chain","14 min",[
+    E("Romanian Deadlift","3×8 — hinge from the hip, bar close to legs, feel the hamstrings stretch."),
+    E("Nordic Hamstring Curl","3×5 — 4 count slow eccentric. Partner holds or use a machine.","zero",
+      "One of the best exercises for jump gains and hamstring injury prevention — programmed every leg session on purpose."),
   ]),
-  B("Knee Health — Non-Negotiable","12 min",[
-    E("Nordic Hamstring Curl","3×5 — 4 count slow eccentric. Partner holds or use machine.","zero",
-      "The single best exercise for jump gains and hamstring injury prevention. ZeroBounce programmes this every single leg session."),
-    E("VMO Isometric Hold (Patrick Step-Up)","3×45 sec each — stand on step, lower to 90° knee angle, hold. Don't move.","zero",
-      "ZeroBounce's signature VMO move. Builds knee strength at the exact angle used at takeoff."),
-    E("Banded Hamstring Curl","3×15 — face down, band around ankle, curl to glute","zero"),
+  B("Vertical Power — Skill Work","10 min",[
+    E("Approach Jump Practice","5 reps — full 3-step run-up, reach for the rim every rep. Technique focus, not max effort today.","zero"),
+    E("VMO Isometric Hold (Patrick Step-Up)","3×30 sec each — stand on step, lower to 90° knee angle, hold.","zero"),
   ]),
-  B("Plyometrics","8 min",[
-    E("Max Vertical Jumps","3×5 — absolute max effort every rep. 90 sec rest between sets.","zero",
-      "These come after all strength work — nervous system is loaded, now express it. Every rep is a max attempt."),
-    E("Approach Jump Practice","5 reps — full 3-step run-up, reach for the rim every rep","zero"),
-    E("Single-Leg Depth Jump","2×4 each — step off box, single-leg reactive hop","zero"),
+  B("Core","6 min",[
+    E("Hanging Leg Raise","3×10 — controlled, no swinging."),
+    E("Plank","3×45 sec — straight line, brace hard."),
   ]),
-  B("Hip Mobility — Shift Recovery","10 min",[
-    E("Hip Flexor Stretch","90 sec each — long lunge, tuck pelvis",null,
-      "After a week of shift work and training, hip flexors are chronically short. Give this proper time."),
-    E("Pigeon Pose","90 sec each — breathe and sink fully"),
+  B("Recovery Flow","8 min",[
+    E("Hip Flexor Stretch","60 sec each side — lunge, tuck pelvis under"),
+    E("Pigeon Pose","90 sec each side — breathe and sink fully"),
     E("90/90 Hip Stretch","60 sec each direction — slow transitions"),
     E("Deep Squat Hold","60 sec — heels flat, doorframe if needed"),
-    E("Child's Pose","90 sec — full spinal decompression after the week"),
-  ],true),
+  ]),
+],
+ub:[
+  B("Warm-Up","8 min",[
+    E("Treadmill or Bike","4 min easy"),
+    E("Band Pull-Aparts","15 reps"),
+    E("Scapular Push-Ups","10 reps"),
+    E("Arm Circles","15 each direction"),
+  ]),
+  B("Chest","16 min",[
+    E("Incline Dumbbell Press","4×10 — upper chest, controlled descent.","beloti"),
+    E("Cable Fly or Pec Deck","3×12 — full stretch at bottom, squeeze at top."),
+  ]),
+  B("Shoulders","14 min",[
+    E("Dumbbell Shoulder Press","3×10 — seated, strict, full lockout.","beloti"),
+    E("Wall-Sit Lateral Raise","3×12 — sit against wall at parallel, raise DBs laterally.","beloti",
+      "Isometric quad hold plus shoulder work in one move — earns its place, especially while eating in a deficit."),
+    E("Rear Delt Fly","3×15 — cable or bent-over DB."),
+  ]),
+  B("Back","10 min",[
+    E("Lat Pulldown","3×12 — wide grip, pull to upper chest, squeeze lats at bottom."),
+    E("Seated Cable Row","3×12 — higher reps than Upper A, focus on the squeeze."),
+  ]),
+  B("Arms","8 min",[
+    E("Hammer Curl","3×12 each — neutral grip, brachialis and forearm."),
+    E("Tricep Pushdown","3×12 — cable, full extension, squeeze at lockout.","beloti"),
+  ]),
+  B("Recovery Flow","8 min",[
+    E("Cat-Cow","2 min — 10 slow reps, full range each way"),
+    E("Hip Flexor Stretch","60 sec each side"),
+    E("Thoracic Rotation (in squat)","10 each side"),
+    E("Child's Pose","90 sec — arms forward, sink into it"),
+  ]),
+],
+lb:[
+  B("Warm-Up","10 min",[
+    E("Jump Rope Simulation","2 min — fast feet, no rope","zero"),
+    E("Hip Circles + Leg Swings","10 each direction each leg"),
+    E("Ankle Hops","2×15 — minimal knee bend, stiff ankles","zero"),
+    E("Glute Bridges","15 reps"),
+  ]),
+  B("Power — ZeroBounce","16 min",[
+    E("Full Depth Front Squat","4×5 — elbows high, heels flat, full depth.","zero",
+      "Loads the quads for jump power without the same lumbar load as a heavy back squat — good pairing with Lower A's squat day two sessions prior."),
+    E("Explosive Step-Ups","4×8 each leg — knee-height box, drive through heel, explode up.","zero",
+      "ZeroBounce's cheat code for VMO strength and single-leg power."),
+  ]),
+  B("Knee Health — Non-Negotiable","12 min",[
+    E("Nordic Hamstring Curl","3×5 — 4 count slow eccentric.","zero"),
+    E("VMO Isometric Hold (Patrick Step-Up)","3×45 sec each — stand on step, lower to 90° knee angle, hold. Don't move.","zero",
+      "ZeroBounce's signature VMO move. Builds knee strength at the exact angle used at takeoff."),
+    E("Banded Hamstring Curl","3×15 — face down, band around ankle, curl to glute.","zero"),
+  ]),
+  B("Plyometrics — Max Effort","10 min",[
+    E("Max Vertical Jumps","3×5 — absolute max effort every rep. 90 sec rest between sets.","zero",
+      "These come after all strength work — nervous system is loaded, now express it. Every rep is a max attempt, not a warm-up rep."),
+    E("Single-Leg Depth Jump","2×4 each — step off box, single-leg reactive hop.","zero"),
+  ]),
+  B("Recovery Flow","10 min",[
+    E("Hip Flexor Stretch","90 sec each — long lunge, tuck pelvis",null,
+      "This is the highest-demand day of the rotation — give the hips proper time back."),
+    E("Pigeon Pose","90 sec each — breathe and sink fully"),
+    E("90/90 Hip Stretch","60 sec each direction — slow transitions"),
+    E("Child's Pose","90 sec — full spinal decompression"),
+  ]),
 ],
 };
 
-var checks={push:{},pull:{},legs:{}};
+var checks={ua:{},la:{},ub:{},lb:{}};
 
 function renderWorkout(key){
   var data=WK[key];
@@ -616,7 +662,7 @@ function renderWorkout(key){
       var k=bi+'-'+ei;
       var done=checks[key][k]?' done':'';
       var srcTag=ex.src?SRC[ex.src]:'';
-      var shiftEl=ex.shift?'<div class="ex-shift">🏭 '+ex.shift+'</div>':'';
+      var shiftEl=ex.shift?'<div class="ex-shift">💬 '+ex.shift+'</div>':'';
       return '<div class="ex-item'+done+'" onclick="toggleCheck(\''+key+'\',\''+k+'\',event)" id="ei-'+key+'-'+k+'">'
         +'<div class="ex-chk" id="ec-'+key+'-'+k+'">'+(checks[key][k]?'✓':'')+'</div>'
         +'<div class="ex-cnt">'
@@ -625,11 +671,10 @@ function renderWorkout(key){
         +shiftEl
         +'</div></div>';
     }).join('');
-    var isShiftBlock=block.isShift;
-    return '<div class="block'+(isShiftBlock?' shift-block':'')+'" id="blk-'+key+'-'+bi+'">'
+    return '<div class="block" id="blk-'+key+'-'+bi+'">'
       +'<button class="block-hdr" onclick="togBlk(\''+key+'\','+bi+')">'
       +'<div class="b-left"><div class="b-num">'+String(bi+1).padStart(2,'0')+'</div>'
-      +'<div><div class="b-name">'+(isShiftBlock?'🏭 ':'')+block.name+'</div><div class="b-sub">'+block.sub+'</div></div></div>'
+      +'<div><div class="b-name">'+block.name+'</div><div class="b-sub">'+block.sub+'</div></div></div>'
       +'<div class="b-chev">▼</div></button>'
       +'<div class="block-body"><div class="ex-list">'+exHTML+'</div></div>'
       +'</div>';
@@ -668,7 +713,7 @@ function updateProg(key){
   if(done===total&&total>0){var db=document.getElementById('db-'+key);if(db)db.classList.add('show');}
 }
 
-var TABS=['home','push','pull','legs','phil','log'];
+var TABS=['home','ua','la','ub','lb','phil','log'];
 function showTab(id){
   TABS.forEach(function(t){
     var s=document.getElementById('screen-'+t);
@@ -681,11 +726,11 @@ function showTab(id){
   if(sc) sc.classList.add('active');
   if(bn) bn.classList.add('active');
   window.scrollTo(0,0);
-  if(['push','pull','legs'].includes(id)) setTimeout(function(){renderWorkout(id);},30);
+  if(['ua','la','ub','lb'].includes(id)) setTimeout(function(){renderWorkout(id);},30);
   if(id==='log' && window.__hooperShowLog) setTimeout(window.__hooperShowLog,30);
 }
 
-['push','pull','legs'].forEach(renderWorkout);
+['ua','la','ub','lb'].forEach(renderWorkout);
 </script>
 </body>
 </html>
