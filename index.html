@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Training Hub</title>
 <meta name="theme-color" content="#b8611f">
+<script src="hub-core.js"></script>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -53,8 +54,10 @@
   .topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb, var(--ground) 92%, transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
   .topbar-row{display:flex;align-items:center;gap:14px;padding-block:14px}
   .brand{font-family:'Fraunces',serif;font-weight:650;font-size:18px;color:var(--copper);letter-spacing:.01em;white-space:nowrap}
-  .search{margin-left:auto;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--ink);width:100%;max-width:220px}
+  .search{margin-left:auto;min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--ink);width:100%;max-width:220px}
   .search::placeholder{color:var(--ink-faint)}
+  .gear{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);text-decoration:none;font-size:17px;flex-shrink:0}
+  .lockmark{font-size:11px;margin-left:6px;opacity:.8}
 
   .hero{padding-block:30px 20px}
   .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--copper-ink);margin-bottom:8px}
@@ -96,6 +99,7 @@
   <div class="wrap topbar-row">
     <span class="brand">Training Hub</span>
     <input class="search" id="search" type="text" placeholder="Search tools…">
+    <a class="gear" href="settings.html" aria-label="Settings">⚙</a>
   </div>
 </div>
 
@@ -110,7 +114,7 @@
   <div class="empty" id="empty" hidden>No tools match that search.</div>
 </div>
 
-<footer>Training Hub · built with the EJx10k dashboard's design system</footer>
+<footer>Training Hub · <a href="settings.html" style="text-decoration:none">Settings</a></footer>
 
 <script>
   var TOOLS = [];
@@ -126,9 +130,10 @@
     var star = tool.pinned ? '<span class="pin-star">★</span>' : '';
     var target = tool.external ? ' target="_blank" rel="noopener"' : '';
     var meta = tool.external ? 'Opens on claude.ai' : (tool.meta || 'Tap to open');
-    return '<a class="tile' + pinned + '" href="' + tool.href + '"' + target + '>' +
+    var lockedMark = (window.HubCore && HubCore.lock.isToolLocked(tool.id)) ? '<span class="lockmark" title="Locked">🔒</span>' : '';
+    return '<a class="tile' + pinned + '" data-tool="' + tool.id + '" href="' + tool.href + '"' + target + '>' +
       '<div class="tile-top"><span class="cat ' + tool.category + '">' + tool.category + '</span>' + star + '</div>' +
-      '<div class="tile-name">' + escapeHtml(tool.name) + '</div>' +
+      '<div class="tile-name">' + escapeHtml(tool.name) + lockedMark + '</div>' +
       '<div class="tile-desc">' + escapeHtml(tool.desc || '') + '</div>' +
       '<div class="tile-meta">' + meta + '</div>' +
       '</a>';
@@ -158,6 +163,20 @@
 
   document.getElementById('search').addEventListener('input', function (e) {
     render(e.target.value);
+  });
+
+  // locked tools ask for the PIN before opening
+  document.getElementById('grid').addEventListener('click', function (e) {
+    var a = e.target.closest('a.tile');
+    if (!a || !window.HubCore) return;
+    var id = a.getAttribute('data-tool');
+    if (!HubCore.lock.isToolLocked(id) || HubCore.lock.isUnlocked()) return;
+    e.preventDefault();
+    HubCore.lock.request(id).then(function (ok) {
+      if (!ok) return;
+      if (a.target === '_blank') { HubCore.toast('Unlocked — tap ' + (a.querySelector('.tile-name').textContent.replace('🔒', '').trim()) + ' again to open'); }
+      else { location.href = a.getAttribute('href'); }
+    });
   });
 
   if ('serviceWorker' in navigator) {

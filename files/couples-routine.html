@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<script src="../hub-core.js"></script>
 <title>COUPLES ROUTINE</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
@@ -147,6 +148,7 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
   <button class="nav-btn" onclick="showTab('day-b')">Day B</button>
   <button class="nav-btn" onclick="showTab('day-c')">Day C</button>
   <button class="nav-btn" onclick="showTab('tips')">Tips</button>
+  <button class="nav-btn" onclick="showTab('progress')">Progress</button>
   <button class="nav-btn" onclick="showTab('log')">Log</button>
 </nav>
 
@@ -307,6 +309,12 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 </div>
 
 <!-- LOG -->
+<!-- PROGRESS -->
+<div class="screen" id="screen-progress">
+  <div class="slabel">YOUR PROGRESS</div>
+  <div id="progress-root"></div>
+</div>
+
 <div class="screen" id="screen-log">
   <div class="slabel" style="margin-top:24px">SESSION LOG</div>
   <div class="log-banner" id="log-not-configured">Not connected to your database yet — sessions and PRs logged here won't be saved until Supabase is set up. See README.md → "Connect the backend".</div>
@@ -364,6 +372,7 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../config.js"></script>
 <script src="../hub-data.js"></script>
+<script src="../hub-progress.js"></script>
 <script>
 (function () {
   var TOOL = 'couples-routine';
@@ -717,7 +726,7 @@ function updateProg(key){
   if(done===total&&total>0){var db=document.getElementById('db-'+key);if(db)db.classList.add('show');}
 }
 
-var TABS=['home','day-a','day-b','day-c','tips','log'];
+var TABS=['home','day-a','day-b','day-c','tips','progress','log'];
 function showTab(id){
   TABS.forEach(function(t){
     var s=document.getElementById('screen-'+t);
@@ -733,6 +742,7 @@ function showTab(id){
   var map={'day-a':'a','day-b':'b','day-c':'c'};
   if(map[id]) setTimeout(function(){renderWorkout(map[id]);},30);
   if(id==='log' && window.__couplesShowLog) setTimeout(window.__couplesShowLog,30);
+  if(id==='progress' && window.HubProgress) setTimeout(function(){HubProgress.training(document.getElementById('progress-root'),{tool:'couples-routine',rotation:[{key:'day-a',label:'Day A'},{key:'day-b',label:'Day B'},{key:'day-c',label:'Day C'}],goals:[],onLog:function(){showTab('log');}});},30);
 }
 
 ['a','b','c'].forEach(renderWorkout);

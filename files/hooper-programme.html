@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<script src="../hub-core.js"></script>
 <title>HOOPER PROGRAMME</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
@@ -156,6 +157,24 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 .pr-badge{display:inline-block;background:var(--gold);color:#000;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:6px}
 
 @media(max-width:400px){.hero-title{font-size:46px}}
+
+/* Exercise swap */
+.ex-swap{margin-left:auto;align-self:flex-start;flex-shrink:0;background:var(--bg3);border:1px solid var(--border2);color:var(--muted);border-radius:999px;font:700 10px/1 'Barlow',sans-serif;padding:7px 10px;cursor:pointer;letter-spacing:.6px;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.ex-swap.on{color:var(--gold);border-color:var(--gold)}
+.sw-tag{display:inline-block;margin-left:6px;font-size:9px;font-weight:700;letter-spacing:.5px;padding:2px 7px;border-radius:20px;background:var(--bg3);color:var(--gold);vertical-align:middle}
+.sw-was{font-size:11px;color:var(--muted);margin-top:3px}
+.sw-back{position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.62);display:flex;align-items:flex-end;justify-content:center}
+.sw-sheet{width:100%;max-width:620px;max-height:84vh;overflow:auto;background:var(--bg2);border:1px solid var(--border2);border-bottom:none;border-radius:18px 18px 0 0;padding:18px 18px calc(env(safe-area-inset-bottom,0px) + 18px)}
+.sw-h{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;line-height:1.05}
+.sw-t{font-size:12px;color:var(--muted);margin:4px 0 14px}
+.sw-t b{color:var(--gold);font-weight:700}
+.sw-opt{display:block;width:100%;text-align:left;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px;cursor:pointer;color:var(--text);font-family:'Barlow',sans-serif}
+.sw-opt.sel{border-color:var(--gold)}
+.sw-opt .on{font-size:14px;font-weight:700}
+.sw-opt .od{font-size:12px;color:var(--muted);line-height:1.5;margin-top:3px}
+.sw-keep{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--muted);margin:12px 2px 4px}
+.sw-keep input{width:18px;height:18px;accent-color:var(--gold)}
+.sw-close{width:100%;margin-top:10px;background:none;border:1px solid var(--border2);color:var(--text);border-radius:12px;padding:12px;font:700 13px 'Barlow',sans-serif;cursor:pointer}
 </style>
 </head>
 <body>
@@ -168,6 +187,7 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
   <button class="nav-btn" onclick="showTab('ub')">Upper B</button>
   <button class="nav-btn" onclick="showTab('lb')">Lower B</button>
   <button class="nav-btn" onclick="showTab('phil')">Notes</button>
+  <button class="nav-btn" onclick="showTab('progress')">Progress</button>
   <button class="nav-btn" onclick="showTab('log')">Log</button>
 </nav>
 
@@ -365,6 +385,12 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 </div>
 
 <!-- LOG -->
+<!-- PROGRESS -->
+<div class="screen" id="screen-progress">
+  <div class="slabel">YOUR PROGRESS</div>
+  <div id="progress-root"></div>
+</div>
+
 <div class="screen" id="screen-log">
   <div class="slabel" style="margin-top:24px">SESSION LOG</div>
   <div class="log-banner" id="log-not-configured">Not connected to your database yet — sessions and PRs logged here won't be saved until Supabase is set up. See README.md → "Connect the backend".</div>
@@ -423,6 +449,7 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../config.js"></script>
 <script src="../hub-data.js"></script>
+<script src="../hub-progress.js"></script>
 <script>
 (function () {
   var TOOL = 'hooper-programme';
@@ -653,12 +680,63 @@ lb:[
 
 var checks={ua:{},la:{},ub:{},lb:{}};
 
+
+/* ---- exercise swaps ---- */
+var SWAPS={"Bench Press": {"t": "Horizontal press — chest, front delts, triceps", "a": [{"n": "Dumbbell Bench Press", "d": "5×6–8 — same pressing pattern with a longer range of motion. Use the heaviest dumbbells you can control; add a rep before adding weight."}, {"n": "Incline Barbell Press", "d": "5×5 — a bit more upper chest and shoulder, still heavy barbell pressing. Start around 85–90% of your flat bench weight."}, {"n": "Machine Chest Press", "d": "4×8 — for when there is no free bench or spotter. Slow 2-second lower, last two reps hard."}, {"n": "Weighted Push-Ups", "d": "4×10–15 — no equipment. Add a backpack, or put your feet up on a bench once bodyweight gets easy."}]}, "Overhead Press": {"t": "Vertical press — shoulders, triceps", "a": [{"n": "Seated Dumbbell Shoulder Press", "d": "4×8 — back supported, so you can push closer to failure safely."}, {"n": "Landmine Press", "d": "4×8 each side — shoulder-friendly angle; good if overhead feels cranky."}, {"n": "Machine Shoulder Press", "d": "4×8–10 — fixed path, easy to load and take close to failure."}, {"n": "Pike Push-Ups", "d": "4×8–12 — no equipment. Raise your feet on a bench to make it harder."}]}, "Bodyweight Dips": {"t": "Lower chest and triceps", "a": [{"n": "Close-Grip Bench Press", "d": "3×8 — hands shoulder-width, elbows tucked in; trains the same triceps and lower chest."}, {"n": "Assisted Dip Machine", "d": "3×8–10 — if dips feel heavy or your shoulders are sore. Keep full depth."}, {"n": "Bench Dips", "d": "3×12 — feet on the floor, or on a second bench to make it harder."}]}, "Weighted Pull-Ups": {"t": "Vertical pull — lats, biceps", "a": [{"n": "Lat Pulldown", "d": "4×8 — heavy but controlled; pull to your upper chest, no swinging."}, {"n": "Chin-Ups", "d": "4×6–8 — underhand grip, bodyweight; slightly more biceps."}, {"n": "Assisted Pull-Ups", "d": "4×6–8 — full range with band or machine help; reduce the help over time."}]}, "Seated Cable Row": {"t": "Horizontal pull — mid-back, lats", "a": [{"n": "Chest-Supported Dumbbell Row", "d": "3×10 — takes the lower back out of it; pause at the top."}, {"n": "One-Arm Dumbbell Row", "d": "3×10 each side — brace on a bench; drive the elbow to your hip."}, {"n": "T-Bar Row", "d": "3×8–10 — heavier option; keep your chest up."}]}, "Face Pulls": {"t": "Rear delts and upper back — shoulder health", "a": [{"n": "Reverse Pec Deck", "d": "3×15 — same muscles, easy to feel; light weight, slow squeeze."}, {"n": "Band Pull-Aparts", "d": "3×20 — anywhere, any time; hold the squeeze for a second."}, {"n": "Dumbbell Rear Delt Fly", "d": "3×15 — bent over or chest-supported, elbows slightly bent."}]}, "Barbell Curl": {"t": "Biceps", "a": [{"n": "EZ-Bar Curl", "d": "3×10 — easier on the wrists, same loading."}, {"n": "Dumbbell Curl", "d": "3×10 — alternate arms, turn the palm up as you lift."}, {"n": "Cable Curl", "d": "3×12 — constant tension through the whole rep."}]}, "Back Squat": {"t": "Squat pattern — quads, glutes", "a": [{"n": "Front Squat", "d": "4×5 — more upright and quad-focused. Use roughly 70–75% of your back squat weight."}, {"n": "Leg Press", "d": "4×8 — heavy leg work without loading the spine. Full depth you can control."}, {"n": "Hack Squat Machine", "d": "4×8 — quad-focused and stable; feet slightly forward."}, {"n": "Goblet Squat", "d": "4×10 — slow 3-second lower; no rack needed."}]}, "Bulgarian Split Squat — Eccentric": {"t": "Single-leg quads and glutes", "a": [{"n": "Dumbbell Reverse Lunge", "d": "3×8 each side — slow 3-second lowering, like the original."}, {"n": "Weighted Step-Ups", "d": "3×8 each side — knee-height box; drive through the front heel."}, {"n": "Walking Lunges", "d": "3×10 steps each side — easier to balance."}]}, "Romanian Deadlift": {"t": "Hip hinge — hamstrings, glutes", "a": [{"n": "Dumbbell RDL", "d": "3×8–10 — same hinge, easier to set up."}, {"n": "Barbell Hip Thrust", "d": "3×8 — glute-biased hinge; pause at the top."}, {"n": "Cable Pull-Through", "d": "3×12 — lighter on the lower back, still a hinge."}, {"n": "Weighted Back Extension", "d": "3×10 — hamstrings and lower back; hold a plate to your chest."}]}, "Nordic Hamstring Curl": {"t": "Hamstring strength — knee health", "a": [{"n": "Lying Leg Curl Machine", "d": "3×8 — take 4 seconds to lower each rep, to mimic the Nordic."}, {"n": "Band-Assisted Nordic", "d": "3×5 — loop a band to take some of your weight; lower as slowly as you can."}, {"n": "Stability-Ball Leg Curl", "d": "3×10 — bridge up, curl your heels in, keep hips high."}]}, "Approach Jump Practice": {"t": "Vertical power — jump skill", "a": [{"n": "Box Jumps", "d": "5×3 — explode up, step down; aim for a fast, quiet landing."}, {"n": "Broad Jumps", "d": "5×3 — max distance, stick every landing."}, {"n": "Single-Leg Bounds", "d": "4×4 each side — drive the knee, long strides."}]}, "VMO Isometric Hold (Patrick Step-Up)": {"t": "Knee health — VMO and quad tendon", "a": [{"n": "Spanish Squat Hold", "d": "4×30–45 s — band behind the knees, sit back; strong quad burn without knee pain."}, {"n": "Banded Terminal Knee Extension", "d": "3×15 — band behind the knee; straighten fully and squeeze."}, {"n": "Wall Sit", "d": "3×45 s — thighs parallel to the floor."}]}, "Hanging Leg Raise": {"t": "Lower abs and hip flexors", "a": [{"n": "Captain's Chair Leg Raise", "d": "3×12 — the supported version of the same movement."}, {"n": "Cable Crunch", "d": "3×12 — round the spine, elbows toward knees."}, {"n": "Ab Wheel Rollout", "d": "3×8 — from your knees; stop before your lower back sags."}, {"n": "Reverse Crunch", "d": "3×15 — on the floor, slow lowering."}]}, "Plank": {"t": "Anti-extension core stability", "a": [{"n": "Dead Bug", "d": "3×8 each side — lower back pressed into the floor."}, {"n": "Side Plank", "d": "3×30 s each side — stack your feet."}, {"n": "Pallof Press", "d": "3×10 each side — resist the rotation."}, {"n": "Hollow Hold", "d": "3×20–30 s — ribs down, legs low."}]}, "Incline Dumbbell Press": {"t": "Upper chest and front delts", "a": [{"n": "Incline Barbell Press", "d": "4×8 — heavier loading, same bench angle (about 30°)."}, {"n": "Incline Machine Press", "d": "4×10 — stable; take it close to failure."}, {"n": "Feet-Elevated Push-Ups", "d": "4×max — no equipment; hands under shoulders."}]}, "Cable Fly or Pec Deck": {"t": "Chest isolation — stretch and squeeze", "a": [{"n": "Dumbbell Fly", "d": "3×12 — slight elbow bend, stop at chest level."}, {"n": "Low-to-High Cable Crossover", "d": "3×12 — cables set low, sweep up to chin height."}, {"n": "Svend Press", "d": "3×15 — squeeze a plate between your palms and press forward."}]}, "Dumbbell Shoulder Press": {"t": "Vertical press — shoulders", "a": [{"n": "Barbell Overhead Press", "d": "4×6–8 — strict, full lockout."}, {"n": "Arnold Press", "d": "3×10 — rotate your palms as you press; lighter weight."}, {"n": "Machine Shoulder Press", "d": "4×10 — fixed path, take it close to failure."}, {"n": "Landmine Press", "d": "3×10 each side — shoulder-friendly angle."}]}, "Wall-Sit Lateral Raise": {"t": "Side delts", "a": [{"n": "Cable Lateral Raise", "d": "3×12–15 — constant tension; lean slightly away from the stack."}, {"n": "Standing Dumbbell Lateral Raise", "d": "3×12–15 — lead with the elbows, stop at shoulder height."}, {"n": "Machine Lateral Raise", "d": "3×12–15 — fixed path, easy to push hard."}]}, "Rear Delt Fly": {"t": "Rear delts", "a": [{"n": "Reverse Pec Deck", "d": "3×15 — light, slow squeeze."}, {"n": "Face Pulls", "d": "3×15 — pull to your forehead, elbows high."}, {"n": "Cable Rear Delt Fly", "d": "3×15 — cables crossed, arms low to high."}]}, "Lat Pulldown": {"t": "Vertical pull — lats", "a": [{"n": "Pull-Ups", "d": "4×6–8 — bodyweight, or assisted if you need it."}, {"n": "Chin-Ups", "d": "4×6–8 — underhand grip; a bit more biceps."}, {"n": "Single-Arm Cable Pulldown", "d": "3×10 each side — full stretch at the top."}]}, "Hammer Curl": {"t": "Biceps and forearms", "a": [{"n": "Cross-Body Hammer Curl", "d": "3×10 each side — curl across the body toward the opposite shoulder."}, {"n": "Cable Rope Curl", "d": "3×12 — hammer grip on a rope; constant tension."}, {"n": "Reverse Curl", "d": "3×12 — overhand grip; forearms and brachialis."}]}, "Tricep Pushdown": {"t": "Triceps", "a": [{"n": "Overhead Cable Triceps Extension", "d": "3×12 — long head stretch; elbows pointing forward."}, {"n": "EZ-Bar Skull Crusher", "d": "3×10 — lower to forehead, elbows in."}, {"n": "Close-Grip Push-Ups", "d": "3×max — hands under your chest; no equipment."}]}, "Full Depth Front Squat": {"t": "Squat pattern — quads and vertical power", "a": [{"n": "Back Squat", "d": "4×5 — to full depth; use roughly 120–130% of your front squat weight."}, {"n": "Goblet Squat", "d": "4×8 — heavy dumbbell, slow tempo, deep."}, {"n": "Hack Squat Machine", "d": "4×8 — quad-focused and stable."}]}, "Explosive Step-Ups": {"t": "Explosive single-leg power", "a": [{"n": "Box Jumps", "d": "4×5 — explode up, step down."}, {"n": "Jump Squats", "d": "4×5 — bodyweight or a light load; max height every rep."}, {"n": "Alternating Split-Squat Jumps", "d": "3×6 each side — switch legs in the air."}]}, "Banded Hamstring Curl": {"t": "Hamstring strength", "a": [{"n": "Lying Leg Curl Machine", "d": "3×10 — slow lowering."}, {"n": "Stability-Ball Leg Curl", "d": "3×10 — bridge up, curl heels in."}, {"n": "Slider Leg Curl", "d": "3×8–10 — towel or sliders on a smooth floor."}]}, "Max Vertical Jumps": {"t": "Maximal jump practice", "a": [{"n": "Approach Jumps (wall touch)", "d": "5×3 — run-up, touch as high as you can."}, {"n": "Box Jumps", "d": "5×3 — fast and tall; step down."}, {"n": "Broad Jumps", "d": "5×3 — max distance, stick the landing."}]}, "Single-Leg Depth Jump": {"t": "Reactive power — fast ground contact", "a": [{"n": "Double-Leg Depth Jump", "d": "3×4 — low box (30–40 cm), land soft, jump immediately."}, {"n": "Single-Leg Box Jump", "d": "3×4 each side — step down between reps."}, {"n": "Lateral Bound & Stick", "d": "3×5 each side — hold the landing for 2 seconds."}]}, "Rowing Machine or Bike": {"t": "Easy cardio warm-up", "a": [{"n": "Brisk Treadmill Walk", "d": "4 min — raise the incline a little."}, {"n": "Cross-Trainer", "d": "4 min easy — nothing that tires you."}, {"n": "Easy Jump Rope", "d": "3–4 min — light and bouncy."}]}, "Treadmill or Bike": {"t": "Easy cardio warm-up", "a": [{"n": "Rowing Machine", "d": "4 min easy — just get warm."}, {"n": "Cross-Trainer", "d": "4 min easy."}, {"n": "Easy Jump Rope", "d": "3–4 min — light and bouncy."}]}, "Jump Rope Simulation": {"t": "Calf and ankle prep", "a": [{"n": "Easy Jump Rope", "d": "2–3 min — light and bouncy."}, {"n": "High Knees + Butt Kicks", "d": "2×20 m each — quick feet."}, {"n": "Skipping", "d": "2×20 m — spring through the ankle."}]}};
+var SW_KEY='hooper.swaps.v1';
+function swTodayStr(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function swLoad(){
+  var st={};try{st=JSON.parse(localStorage.getItem(SW_KEY)||'{}')||{};}catch(e){}
+  var t=swTodayStr(),changed=false;
+  Object.keys(st).forEach(function(k){if(!st[k].perm&&st[k].date!==t){delete st[k];changed=true;}});
+  if(changed)swSave(st);
+  return st;
+}
+function swSave(st){try{localStorage.setItem(SW_KEY,JSON.stringify(st));}catch(e){}}
+function effEx(key,bi,ei,ex0){
+  var sw=SWAPS[ex0.name]; if(!sw) return ex0;
+  var st=swLoad()[key+':'+bi+'-'+ei];
+  if(!st||!sw.a[st.alt]) return ex0;
+  var a=sw.a[st.alt];
+  return {name:a.n,detail:a.d,src:null,shift:ex0.shift,swappedFrom:ex0.name,perm:!!st.perm};
+}
+function rerenderKeepOpen(key){
+  var open=[];document.querySelectorAll('#bl-'+key+' .block').forEach(function(b,i){if(b.classList.contains('open'))open.push(i);});
+  renderWorkout(key);
+  setTimeout(function(){open.forEach(function(i){togBlk(key,i,true);});},60);
+}
+function closeSwap(){var el=document.getElementById('sw-back');if(el)el.remove();}
+function openSwap(key,bi,ei,e){
+  if(e){e.stopPropagation();e.preventDefault();}
+  var ex0=WK[key][bi].exs[ei], sw=SWAPS[ex0.name]; if(!sw) return;
+  var slot=key+':'+bi+'-'+ei, st=swLoad()[slot];
+  var back=document.createElement('div');back.className='sw-back';back.id='sw-back';
+  var html='<div class="sw-sheet" role="dialog" aria-label="Swap exercise"><div class="sw-h">Swap: '+ex0.name+'</div>'
+    +'<div class="sw-t">Same job: <b>'+sw.t+'</b>. Pick one that fits what you have today.</div>'
+    +'<button class="sw-opt'+(!st?' sel':'')+'" data-i="-1"><div class="on">'+ex0.name+' <span style="color:var(--muted);font-weight:600">(original)</span></div><div class="od">'+ex0.detail+'</div></button>';
+  sw.a.forEach(function(a,i){
+    html+='<button class="sw-opt'+(st&&st.alt===i?' sel':'')+'" data-i="'+i+'"><div class="on">'+a.n+'</div><div class="od">'+a.d+'</div></button>';
+  });
+  html+='<label class="sw-keep"><input type="checkbox" id="sw-perm"'+(st&&st.perm?' checked':'')+'> Keep this swap every week (otherwise it resets tomorrow)</label>'
+    +'<button class="sw-close" type="button" id="sw-x">Close</button></div>';
+  back.innerHTML=html;document.body.appendChild(back);
+  back.addEventListener('click',function(ev){
+    if(ev.target===back||ev.target.id==='sw-x'){closeSwap();return;}
+    var o=ev.target.closest('.sw-opt');if(!o)return;
+    var i=parseInt(o.getAttribute('data-i'),10), all=swLoad();
+    if(i<0){delete all[slot];}else{all[slot]={alt:i,date:swTodayStr(),perm:document.getElementById('sw-perm').checked};}
+    swSave(all);
+    if(checks[key]) checks[key][bi+'-'+ei]=false;
+    closeSwap();rerenderKeepOpen(key);
+  });
+}
+
 function renderWorkout(key){
   var data=WK[key];
   var bl=document.getElementById('bl-'+key);
   if(!bl||!data) return;
   bl.innerHTML=data.map(function(block,bi){
-    var exHTML=block.exs.map(function(ex,ei){
+    var exHTML=block.exs.map(function(ex0,ei){var ex=effEx(key,bi,ei,ex0);var canSwap=!!SWAPS[ex0.name];
       var k=bi+'-'+ei;
       var done=checks[key][k]?' done':'';
       var srcTag=ex.src?SRC[ex.src]:'';
@@ -666,10 +744,13 @@ function renderWorkout(key){
       return '<div class="ex-item'+done+'" onclick="toggleCheck(\''+key+'\',\''+k+'\',event)" id="ei-'+key+'-'+k+'">'
         +'<div class="ex-chk" id="ec-'+key+'-'+k+'">'+(checks[key][k]?'✓':'')+'</div>'
         +'<div class="ex-cnt">'
-        +'<div class="ex-name">'+ex.name+srcTag+'</div>'
+        +'<div class="ex-name">'+ex.name+srcTag+(ex.swappedFrom?'<span class="sw-tag">SWAPPED</span>':'')+'</div>'
         +'<div class="ex-detail">'+ex.detail+'</div>'
+        +(ex.swappedFrom?'<div class="sw-was">instead of '+ex.swappedFrom+(ex.perm?' · kept every week':' · today only')+'</div>':'')
         +shiftEl
-        +'</div></div>';
+        +'</div>'
+        +(canSwap?'<button class="ex-swap'+(ex.swappedFrom?' on':'')+'" type="button" aria-label="Swap '+ex0.name.replace(/"/g,'')+'" onclick="openSwap(\''+key+'\','+bi+','+ei+',event)">⇄ SWAP</button>':'')
+        +'</div>';
     }).join('');
     return '<div class="block" id="blk-'+key+'-'+bi+'">'
       +'<button class="block-hdr" onclick="togBlk(\''+key+'\','+bi+')">'
@@ -713,7 +794,7 @@ function updateProg(key){
   if(done===total&&total>0){var db=document.getElementById('db-'+key);if(db)db.classList.add('show');}
 }
 
-var TABS=['home','ua','la','ub','lb','phil','log'];
+var TABS=['home','ua','la','ub','lb','phil','progress','log'];
 function showTab(id){
   TABS.forEach(function(t){
     var s=document.getElementById('screen-'+t);
@@ -728,6 +809,7 @@ function showTab(id){
   window.scrollTo(0,0);
   if(['ua','la','ub','lb'].includes(id)) setTimeout(function(){renderWorkout(id);},30);
   if(id==='log' && window.__hooperShowLog) setTimeout(window.__hooperShowLog,30);
+  if(id==='progress' && window.HubProgress) setTimeout(function(){HubProgress.training(document.getElementById('progress-root'),{tool:'hooper-programme',rotation:[{key:'ua',label:'Upper A'},{key:'la',label:'Lower A'},{key:'ub',label:'Upper B'},{key:'lb',label:'Lower B'}],goals:[{match:/^bench( press)?$/i,label:'Bench Press → 100 kg',baseline:85,target:100,unit:'kg'}],onLog:function(){showTab('log');}});},30);
 }
 
 ['ua','la','ub','lb'].forEach(renderWorkout);

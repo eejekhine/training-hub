@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Settings · Training Hub</title>
+<script src="hub-core.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,450;9..144,550;9..144,650&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ground:#07080f; --surface:#0e1021; --surface-2:#161a33; --line:#202549;
+    --ink:#f5f6ff; --ink-dim:#9097c4; --ink-faint:#6b72a3;
+    --copper:#8b93ff; --copper-ink:#b9a6ff; --good:#4be3a1; --crit:#ff7087;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--ground);color:var(--ink);font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:15px;line-height:1.55;-webkit-tap-highlight-color:transparent;min-height:100vh}
+  h1,h2{font-family:'Fraunces',Georgia,serif;margin:0;color:var(--ink)}
+  .wrap{max-width:640px;margin:0 auto;padding:22px 20px 70px}
+  h1{font-size:1.8rem;font-weight:650}
+  .sub{color:var(--ink-dim);font-size:13.5px;margin:6px 0 0}
+  .sec{margin-top:30px}
+  .sec h2{font-size:1.15rem;font-weight:600}
+  .sec .lede{color:var(--ink-dim);font-size:13px;margin:4px 0 14px}
+  .mono{font-family:'IBM Plex Mono',ui-monospace,monospace}
+  .label{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-faint);margin:0 0 6px}
+
+  /* themes */
+  .themes{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+  .theme{position:relative;text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:10px;cursor:pointer;color:var(--ink);font:inherit}
+  .theme[aria-pressed="true"]{border-color:var(--copper)}
+  .theme .sw{display:flex;height:34px;border-radius:7px;overflow:hidden;margin-bottom:9px;border:1px solid rgba(255,255,255,.06)}
+  .theme .sw i{flex:1;display:block}
+  .theme .tn{font-weight:600;font-size:13.5px}
+  .theme .tnote{font-size:11.5px;color:var(--ink-dim);line-height:1.35;margin-top:1px}
+  .theme .tick{position:absolute;top:8px;right:9px;width:20px;height:20px;border-radius:50%;background:var(--copper);color:var(--ground);display:none;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+  .theme[aria-pressed="true"] .tick{display:flex}
+
+  /* cards / rows */
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .card + .card{margin-top:10px}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:11px 0;border-top:1px solid var(--line)}
+  .row:first-child{border-top:none}
+  .row .rt{font-size:14px;font-weight:500}
+  .row .rd{font-size:12px;color:var(--ink-dim);margin-top:1px}
+  .switch{position:relative;width:46px;height:28px;flex-shrink:0}
+  .switch input{position:absolute;inset:0;opacity:0;width:100%;height:100%;margin:0;cursor:pointer;z-index:2}
+  .switch span{position:absolute;inset:0;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;transition:background .15s}
+  .switch span::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--ink-dim);transition:transform .15s,background .15s}
+  .switch input:checked + span{background:var(--copper);border-color:var(--copper)}
+  .switch input:checked + span::after{transform:translateX(18px);background:var(--ground)}
+  .switch input:disabled{cursor:not-allowed}
+  .switch input:disabled + span{opacity:.5}
+
+  .seg{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:3px;gap:3px}
+  .seg button{border:none;background:none;color:var(--ink-dim);font:600 13px/1 'IBM Plex Sans',sans-serif;padding:9px 16px;border-radius:7px;cursor:pointer}
+  .seg button[aria-pressed="true"]{background:var(--copper);color:var(--ground)}
+
+  .field{display:grid;gap:4px;margin-top:12px}
+  .field label{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint)}
+  .field input,.field select{width:100%;background:var(--surface-2);border:1px solid var(--line);border-radius:9px;color:var(--ink);padding:11px 12px;font:500 16px 'IBM Plex Sans',sans-serif}
+  .field input.pin{letter-spacing:.4em;font-family:'IBM Plex Mono',monospace}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);border-radius:10px;padding:11px 16px;font:600 14px 'IBM Plex Sans',sans-serif;cursor:pointer;margin-top:14px}
+  .btn.primary{background:var(--copper);border-color:var(--copper);color:var(--ground)}
+  .btn.danger{color:var(--crit);border-color:color-mix(in srgb,var(--crit) 40%,var(--line))}
+  .btns{display:flex;gap:8px;flex-wrap:wrap}
+  .msg{font-size:12.5px;margin-top:10px;min-height:18px}
+  .msg.err{color:var(--crit)} .msg.ok{color:var(--good)}
+  .note{background:var(--surface);border:1px dashed var(--line);border-radius:10px;padding:12px 14px;font-size:12.5px;color:var(--ink-dim);margin-top:12px}
+  .note b{color:var(--ink)}
+  details.more{margin-top:12px;border-top:1px solid var(--line);padding-top:6px}
+  details.more summary{cursor:pointer;color:var(--ink-dim);font-size:13px;padding:8px 0;font-weight:500}
+  .pill{display:inline-block;font:600 10px 'IBM Plex Mono',monospace;letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:color-mix(in srgb,var(--good) 16%,var(--surface));color:var(--good);margin-left:8px;vertical-align:middle}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Settings</h1>
+  <p class="sub">Themes and page locks are saved on this device.</p>
+
+  <section class="sec">
+    <h2>Theme</h2>
+    <p class="lede">Applies to the Hub and every tool. Pick one and it changes straight away.</p>
+    <div class="themes" id="themes"></div>
+  </section>
+
+  <section class="sec">
+    <h2>App lock <span class="pill" id="lock-pill" hidden>On</span></h2>
+    <p class="lede">Ask for a PIN before opening chosen pages — your Dashboard and Budget Plan, say.</p>
+    <div id="lock-area"></div>
+  </section>
+
+  <section class="sec">
+    <h2>App</h2>
+    <p class="lede">If your phone is showing an old version of something, this clears the saved copy and reloads the latest.</p>
+    <div class="card">
+      <div class="btns"><button class="btn" id="refresh" type="button">Reload latest version</button></div>
+      <div class="msg" id="refresh-msg"></div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function () {
+  var HC = window.HubCore, L = HC.lock;
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { var d = document.createElement('div'); d.textContent = s == null ? '' : s; return d.innerHTML; }
+
+  // ---------- themes ----------
+  function renderThemes() {
+    var cur = HC.getTheme();
+    $('themes').innerHTML = Object.keys(HC.THEMES).map(function (k) {
+      var t = HC.THEMES[k];
+      return '<button type="button" class="theme" data-k="' + k + '" aria-pressed="' + (k === cur) + '">' +
+        '<div class="sw"><i style="background:' + t.bg + '"></i><i style="background:' + t.bg3 + '"></i><i style="background:' + t.accent + '"></i><i style="background:' + t.accent2 + '"></i></div>' +
+        '<div class="tn">' + esc(t.name) + '</div><div class="tnote">' + esc(t.note) + '</div><span class="tick">✓</span></button>';
+    }).join('');
+  }
+  $('themes').addEventListener('click', function (e) {
+    var b = e.target.closest('.theme'); if (!b) return;
+    HC.setTheme(b.getAttribute('data-k')); renderThemes();
+  });
+  renderThemes();
+
+  // ---------- lock ----------
+  var TOOLS = [];
+  fetch('tools.json').then(function (r) { return r.json(); }).then(function (d) { TOOLS = d; renderLock(); }).catch(function () { renderLock(); });
+
+  var pinLen = 4;
+  function digitsOnly(el) { el.value = el.value.replace(/\D/g, '').slice(0, 6); }
+
+  function renderLock() {
+    var area = $('lock-area');
+    $('lock-pill').hidden = !L.enabled();
+    if (!L.enabled()) { renderSetup(area); return; }
+    if (!L.isUnlocked()) {
+      area.innerHTML = '<div class="card"><div class="rt">Enter your PIN to change lock settings</div><div class="btns"><button class="btn primary" id="unlock-btn" type="button">Unlock</button></div></div>';
+      $('unlock-btn').onclick = function () { L.show({ title: 'Locked', cancelLabel: 'Cancel' }).then(function (ok) { if (ok) renderLock(); }); };
+      return;
+    }
+    renderManage(area);
+  }
+
+  function renderSetup(area) {
+    area.innerHTML =
+      '<div class="card">' +
+        '<div class="label">PIN length</div>' +
+        '<div class="seg" id="len-seg"><button type="button" data-n="4" aria-pressed="' + (pinLen === 4) + '">4 digits</button><button type="button" data-n="6" aria-pressed="' + (pinLen === 6) + '">6 digits</button></div>' +
+        '<div class="field"><label for="pin1">Choose a PIN</label><input class="pin" id="pin1" type="password" inputmode="numeric" autocomplete="new-password" maxlength="6" placeholder="••••"></div>' +
+        '<div class="field"><label for="pin2">Confirm PIN</label><input class="pin" id="pin2" type="password" inputmode="numeric" autocomplete="new-password" maxlength="6" placeholder="••••"></div>' +
+        '<div class="btns"><button class="btn primary" id="set-pin" type="button">Turn on lock</button></div>' +
+        '<div class="msg" id="setup-msg"></div>' +
+      '</div>' + honestNote();
+    $('len-seg').onclick = function (e) { var b = e.target.closest('button'); if (!b) return; pinLen = +b.getAttribute('data-n'); renderSetup(area); };
+    $('pin1').oninput = function () { digitsOnly(this); }; $('pin2').oninput = function () { digitsOnly(this); };
+    $('set-pin').onclick = function () {
+      var a = $('pin1').value, b = $('pin2').value, m = $('setup-msg');
+      m.className = 'msg err';
+      if (a.length !== pinLen) { m.textContent = 'Your PIN needs to be ' + pinLen + ' digits.'; return; }
+      if (a !== b) { m.textContent = 'The two PINs don’t match.'; return; }
+      if (!window.crypto || !crypto.subtle) { m.textContent = 'This browser can’t store a PIN securely here (needs https).'; return; }
+      L.setPin(a, pinLen).then(function () { HC.toast('Lock is on — now choose which pages to lock'); renderLock(); });
+    };
+  }
+
+  function honestNote() {
+    return '<div class="note"><b>How strong is this?</b> It keeps someone glancing at your phone out of locked pages, and your PIN is stored scrambled (not readable). It isn’t bank-grade: it lives in this browser, the Dashboard itself is a separate claude.ai page, and the numbers in the database aren’t encrypted.</div>';
+  }
+
+  function renderManage(area) {
+    var c = L.config() || {}; var pages = c.pages || {};
+    var rows = TOOLS.map(function (t) {
+      return '<div class="row"><div><div class="rt">' + esc(t.name) + '</div><div class="rd">' + (t.external ? 'Locks the link in the Hub' : 'Asks for PIN when opened') + '</div></div>' +
+        '<label class="switch"><input type="checkbox" data-id="' + esc(t.id) + '"' + (pages[t.id] ? ' checked' : '') + ' aria-label="Lock ' + esc(t.name) + '"><span></span></label></div>';
+    }).join('');
+    var relock = L.relockOptions.map(function (o) { return '<option value="' + o.v + '"' + ((c.relock == null ? 5 : c.relock) === o.v ? ' selected' : '') + '>' + esc(o.label) + '</option>'; }).join('');
+    var fid = L.passkeySupported();
+    area.innerHTML =
+      '<div class="card"><div class="label">Pages to lock</div>' + (rows || '<div class="rd">Loading pages…</div>') + '</div>' +
+      '<div class="card">' +
+        '<div class="field" style="margin-top:0"><label for="relock">Ask for the PIN again</label><select id="relock">' + relock + '</select></div>' +
+        '<div class="row" style="margin-top:12px"><div><div class="rt">Use Face ID</div><div class="rd">' + (fid ? 'Unlock with your face instead of typing. PIN always works as a backup.' : 'Not available in this browser — PIN only.') + '</div></div>' +
+        '<label class="switch"><input type="checkbox" id="fid"' + (c.passkey ? ' checked' : '') + (fid ? '' : ' disabled') + ' aria-label="Use Face ID"><span></span></label></div>' +
+        '<div class="msg" id="fid-msg"></div>' +
+      '</div>' +
+      '<div class="card"><details class="more" style="margin:0;border:none;padding:0"><summary>Change PIN or turn lock off</summary>' +
+        '<div class="field"><label for="cur">Current PIN</label><input class="pin" id="cur" type="password" inputmode="numeric" autocomplete="off" maxlength="6"></div>' +
+        '<div class="field"><label for="n1">New PIN (' + (c.len || 4) + ' digits)</label><input class="pin" id="n1" type="password" inputmode="numeric" autocomplete="new-password" maxlength="6"></div>' +
+        '<div class="field"><label for="n2">Confirm new PIN</label><input class="pin" id="n2" type="password" inputmode="numeric" autocomplete="new-password" maxlength="6"></div>' +
+        '<div class="btns"><button class="btn primary" id="chg" type="button">Change PIN</button><button class="btn danger" id="off" type="button">Turn lock off</button></div>' +
+        '<div class="msg" id="chg-msg"></div></details></div>' + honestNote();
+
+    area.querySelectorAll('input[data-id]').forEach(function (i) {
+      i.onchange = function () { var cc = L.config(); cc.pages = cc.pages || {}; if (i.checked) cc.pages[i.getAttribute('data-id')] = true; else delete cc.pages[i.getAttribute('data-id')]; L.save(cc); };
+    });
+    $('relock').onchange = function () { var cc = L.config(); cc.relock = +this.value; L.save(cc); };
+    var fidEl = $('fid');
+    fidEl.onchange = function () {
+      var m = $('fid-msg'); m.className = 'msg'; m.textContent = '';
+      if (fidEl.checked) {
+        m.textContent = 'Follow the Face ID prompt…';
+        L.registerPasskey().then(function () { m.className = 'msg ok'; m.textContent = 'Face ID is set up.'; }).catch(function (err) {
+          fidEl.checked = false; m.className = 'msg err';
+          m.textContent = (err && err.name === 'NotAllowedError') ? 'That was cancelled — Face ID is off.' : 'Couldn’t set up Face ID on this device — your PIN still works.';
+        });
+      } else { L.removePasskey(); m.textContent = 'Face ID turned off.'; }
+    };
+    ['cur', 'n1', 'n2'].forEach(function (id) { $(id).oninput = function () { digitsOnly(this); }; });
+    $('chg').onclick = function () {
+      var m = $('chg-msg'); m.className = 'msg err';
+      var len = (L.config() || {}).len || 4;
+      if ($('n1').value.length !== len) { m.textContent = 'New PIN needs to be ' + len + ' digits.'; return; }
+      if ($('n1').value !== $('n2').value) { m.textContent = 'The new PINs don’t match.'; return; }
+      L.verifyPin($('cur').value).then(function (ok) {
+        if (!ok) { m.textContent = 'Current PIN is wrong.'; return; }
+        return L.setPin($('n1').value, len).then(function () { m.className = 'msg ok'; m.textContent = 'PIN changed.'; ['cur', 'n1', 'n2'].forEach(function (id) { $(id).value = ''; }); });
+      });
+    };
+    $('off').onclick = function () {
+      var m = $('chg-msg'); m.className = 'msg err';
+      L.verifyPin($('cur').value).then(function (ok) {
+        if (!ok) { m.textContent = 'Enter your current PIN to turn the lock off.'; return; }
+        L.remove(); HC.toast('Lock turned off'); renderLock();
+      });
+    };
+  }
+
+  // ---------- refresh ----------
+  $('refresh').onclick = function () {
+    var m = $('refresh-msg'); m.className = 'msg'; m.textContent = 'Clearing saved copies…';
+    var jobs = [];
+    if ('serviceWorker' in navigator) jobs.push(navigator.serviceWorker.getRegistrations().then(function (rs) { return Promise.all(rs.map(function (r) { return r.unregister(); })); }));
+    if (window.caches) jobs.push(caches.keys().then(function (ks) { return Promise.all(ks.map(function (k) { return caches.delete(k); })); }));
+    Promise.all(jobs).catch(function () {}).then(function () { m.className = 'msg ok'; m.textContent = 'Done — reloading…'; setTimeout(function () { location.href = 'index.html?fresh=' + Date.now(); }, 500); });
+  };
+
+  if ('serviceWorker' in navigator) window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+})();
+</script>
+</body>
+</html>
