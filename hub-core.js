@@ -41,7 +41,7 @@
     mono:     { name: 'Mono', note: 'Pure black and white', bg: '#000000', bg2: '#0c0c0c', bg3: '#161616', border: '#232323', border2: '#343434', text: '#ffffff', muted: '#9a9a9a', faint: '#737373', muted2: '#4d4d4d', accent: '#ffffff', accent2: '#d8d8d8', good: '#52d98a', crit: '#ff6b6b' }
   };
   var DEFAULT_THEME = 'midnight';
-  var FAMILY_B = { index: 1, 'budget-plan': 1, 'food-plan': 1, settings: 1 }; // pages styled with --ground/--ink names
+  var FAMILY_B = { index: 1, 'budget-plan': 1, 'food-plan': 1, settings: 1, dashboard: 1 }; // pages styled with --ground/--ink names
 
   function getTheme() { var t = lsGet('hub.theme'); return THEMES[t] ? t : DEFAULT_THEME; }
 
