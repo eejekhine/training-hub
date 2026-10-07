@@ -233,14 +233,15 @@
     var net = inc - out, thisM = byMonth[curKey] || { inc: 0, out: 0 };
     var l3 = [0, 1, 2].map(function (i) { return byMonth[curKey - i] || { inc: 0, out: 0 }; });
     var avgOut = (l3[0].out + l3[1].out + l3[2].out) / 3;
-    html += '<div class="hp-tiles">' +
+    var NO = !!cfg.netOnly;
+    if (!NO) html += '<div class="hp-tiles">' +
       ui.tile('Net so far', money(net), 'income minus outgoings, all entries') +
       ui.tile('This month', money(thisM.inc - thisM.out), money(thisM.inc) + ' in · ' + money(thisM.out) + ' out') +
       ui.tile('Avg monthly outgoings', money(avgOut), 'over the last 3 months') +
       ui.tile('Entries', entries.length, 'logged in total') + '</div>';
 
     var pct = Math.max(0, Math.min(100, net / goal * 100));
-    html += '<h3>Goal: ' + money(goal) + '</h3><p class="hp-sub">Measured as net of everything entered here, so it only matches your savings if every pound is logged</p><div class="hp-card"><div class="hp-gt" style="display:flex;justify-content:space-between;font-size:12px;color:var(--hub-muted);margin-bottom:6px"><span>' + money(Math.max(net, 0)) + ' of ' + money(goal) + '</span><span>' + Math.round(pct) + '%</span></div>' + ui.meter(pct) + '<div class="hp-sub" style="margin:8px 0 0">' + (net >= goal ? 'Goal reached.' : money(goal - Math.max(net, 0)) + ' to go.') + '</div></div>';
+    if (!NO) html += '<h3>Goal: ' + money(goal) + '</h3><p class="hp-sub">Measured as net of everything entered here, so it only matches your savings if every pound is logged</p><div class="hp-card"><div class="hp-gt" style="display:flex;justify-content:space-between;font-size:12px;color:var(--hub-muted);margin-bottom:6px"><span>' + money(Math.max(net, 0)) + ' of ' + money(goal) + '</span><span>' + Math.round(pct) + '%</span></div>' + ui.meter(pct) + '<div class="hp-sub" style="margin:8px 0 0">' + (net >= goal ? 'Goal reached.' : money(goal - Math.max(net, 0)) + ' to go.') + '</div></div>';
 
     var months = []; for (var i = 5; i >= 0; i--) { var k = curKey - i, m = byMonth[k] || { inc: 0, out: 0 }, y = Math.floor(k / 12), mo = k % 12; months.push({ label: MON[mo], value: Math.round((m.inc - m.out) * 100) / 100, tip: MON[mo] + ' ' + y + ': ' + money(m.inc - m.out) + ' net (' + money(m.inc) + ' in, ' + money(m.out) + ' out)' }); }
     html += '<h3>Net per month</h3><p class="hp-sub">Income minus outgoings, last 6 months</p>' + ui.columns('hp-net', months, { fmt: function (v) { return money(v); }, colHead: 'Month', valHead: 'Net' });
@@ -248,7 +249,7 @@
     var catTotals = {};
     entries.forEach(function (e) { if (e.type !== 'outgoing') return; var d = mkey(e.date); if (curKey - d > 2 || d > curKey) return; var c = (e.category || 'Uncategorised').trim() || 'Uncategorised'; catTotals[c] = (catTotals[c] || 0) + Number(e.amount || 0); });
     var cats = Object.keys(catTotals).map(function (c) { return { label: c, value: catTotals[c] }; }).sort(function (a, b) { return b.value - a.value; });
-    if (cats.length) {
+    if (cats.length && !NO) {
       if (cats.length > 6) { var rest = cats.slice(5).reduce(function (s, c) { return s + c.value; }, 0); cats = cats.slice(0, 5).concat([{ label: 'Other', value: rest }]); }
       html += '<h3>Where it goes</h3><p class="hp-sub">Outgoings by category, last 3 months</p><div class="hp-card">' + ui.hbars(cats, function (v) { return money(v); }) + '</div>';
     }

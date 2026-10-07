@@ -365,6 +365,12 @@ function updateHomeProg(){
   if(ring) ring.style.setProperty('--pct', pct);
   if(ringText) ringText.textContent = pct+'%';
   if(title) title.textContent = done+' of '+total+' topics reviewed';
+  // share a tiny summary with the Dashboard (same-origin localStorage)
+  try {
+    var todayS = new Date().toISOString().slice(0,10), nx = null;
+    ASSESSMENTS.forEach(function(a){ if(!nx && a.d >= todayS) nx = {label:a.label, d:a.d}; });
+    localStorage.setItem('uni.summary.v1', JSON.stringify({done:done, total:total, next:nx, t:Date.now()}));
+  } catch(e){}
 }
 
 var TABS = ['home'];

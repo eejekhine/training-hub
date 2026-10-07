@@ -55,7 +55,7 @@
   .goalbar-today{position:absolute;top:-4px;width:2px;height:16px;background:var(--ink);left:0%}
 
   /* sections */
-  section{padding-block:34px;border-bottom:1px solid var(--line)}
+  section{scroll-margin-top:120px;padding-block:34px;border-bottom:1px solid var(--line)}
   section:last-of-type{border-bottom:none}
   .sec-head{display:flex;align-items:baseline;gap:10px;margin-bottom:6px}
   .sec-num{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--ink-faint)}
@@ -127,6 +127,23 @@
   .mlabel-wrap{position:relative;height:52px;margin-top:8px}
 
   .changes{margin-top:24px}
+  .ov-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  @media (max-width:640px){.ov-grid{grid-template-columns:1fr}}
+  .ov-card{display:flex;flex-direction:column;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 15px;text-decoration:none;color:var(--ink)}
+  a.ov-card:hover{border-color:var(--copper)}
+  .ov-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+  .ov-name{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint)}
+  .ov-open{font-size:11.5px;color:var(--copper-ink)}
+  .ov-big{font-family:'IBM Plex Mono',monospace;font-size:1.5rem;font-weight:600;line-height:1.2;font-variant-numeric:tabular-nums}
+  .ov-line{font-size:12.5px;color:var(--ink-dim)}
+  .ov-note{font-size:12.5px;color:var(--ink-faint)}
+  .ov-bar{height:7px;border-radius:4px;background:var(--surface-2);border:1px solid var(--line);overflow:hidden;margin-top:2px}
+  .ov-bar>i{display:block;height:100%;background:var(--copper)}
+  .cart-row{display:flex;gap:10px;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+  .cart-row .cn{flex:1;color:var(--ink)}
+  .cart-row .cn small{display:block;color:var(--ink-faint);font-size:11.5px}
+  .cart-row .ca{font-family:'IBM Plex Mono',monospace;color:var(--ink-dim);white-space:nowrap}
+
   footer{padding:34px 0 60px;color:var(--ink-faint);font-size:11.5px;font-family:'IBM Plex Mono',monospace}
 
   @media (max-width:640px){
@@ -148,6 +165,7 @@
       <a href="#transition">Transition</a>
       <a href="#body">Body</a>
       <a href="#room">Room</a>
+      <a href="#tools">Tools</a>
       <a href="#social">Social</a>
       <a href="#apps">Apps</a>
       <a href="#priorities">Priorities</a>
@@ -163,22 +181,22 @@
   <header class="hero" id="overview">
     <div class="eyebrow">Personal dashboard · year clock starts 1 Jan 2027</div>
     <h1>Ten grand, one year, four fronts.</h1>
-    <p>A night job and uni running side by side, a body and training goal alongside them, a room being rebuilt into somewhere that actually works, and a growing set of apps — all inside the same twelve months. This is the one page that tracks it: what's confirmed, what's still open, and what to do next.</p>
+    <p>Uni and a training goal side by side, a room being rebuilt into somewhere that actually works, a growing set of apps, and a savings goal that now reads straight from the Budget Plan — all inside the same twelve months. This is the one page that tracks it: what is confirmed, what is still open, and what to do next.</p>
 
     <div class="stat-grid">
-      <div class="stat"><div class="stat-val mono">£10,000</div><div class="stat-label">1-year savings goal</div></div>
-      <div class="stat"><div class="stat-val mono">10pm–6am</div><div class="stat-label">New night job, Mon–Fri (pay to confirm)</div></div>
+      <div class="stat"><div class="stat-val mono" id="liveGoal">£10,000</div><div class="stat-label">Main savings goal</div></div>
+      <div class="stat"><div class="stat-val mono" id="liveBal">£–</div><div class="stat-label">Savings balance — live from Budget Plan</div></div>
       <div class="stat"><div class="stat-val mono">Year 1</div><div class="stat-label">Leeds Beckett — Data Science with AI, started Sep 2026</div></div>
       <div class="stat"><div class="stat-val mono" id="blockerCount">–</div><div class="stat-label">Red flags open right now</div></div>
     </div>
 
     <div class="changes">
-      <div class="panel-label">Updated 6 Oct 2026 — what changed since 25 Sep</div>
+      <div class="panel-label">Updated 7 Oct 2026 — what changed</div>
       <div class="fact-list">
-        <div class="fact"><span class="dot good"></span><div class="fact-body"><b>Done:</b> the Training Hub is built and live — installable on iPhone, synced to a database, with themes, a back/home bar, PIN lock, exercise swaps and a progress tab in every tool. The Dashboard now lives inside it.</div></div>
-        <div class="fact"><span class="dot good"></span><div class="fact-body"><b>Done:</b> Hooper Programme rebuilt as a 4-day Upper/Lower rotation; Uni Study now covers Maths, FCS and Intro to Data Analytics.</div></div>
-        <div class="fact"><span class="dot good"></span><div class="fact-body"><b>New:</b> uni has started, a new 10pm–6am night job replaces Evri, and the Cylinderr calendar app is the next build.</div></div>
-        <div class="fact"><span class="dot crit"></span><div class="fact-body"><b>Changed:</b> delivery and courier work is ruled out entirely (can't drive) — removed from every plan below. Missed the Leeds Beckett basketball team at trials; the target is next year's.</div></div>
+        <div class="fact"><span class="dot good"></span><div class="fact-body"><b>Bought:</b> laptop from Back Market (£800), a Boohoo order and most of the Amazon cart. Savings balance is now about £300.</div></div>
+        <div class="fact"><span class="dot good"></span><div class="fact-body"><b>New:</b> the Budget Plan tracks your real balance, goals, planned purchases (with links) and bills — and this Dashboard now reads it live, plus a card for every other tool below.</div></div>
+        <div class="fact"><span class="dot crit"></span><div class="fact-body"><b>Changed:</b> no job right now — Evri is done and nothing new is lined up. Delivery and courier work is ruled out (no car). Not playing basketball anywhere; missed the uni trials and training for next year's.</div></div>
+        <div class="fact"><span class="dot good"></span><div class="fact-body"><b>Earlier:</b> Training Hub live with themes, lock, swaps and progress tabs; Hooper Programme rebuilt as Upper/Lower; Uni Study covers Maths, FCS and Intro to Data Analytics; uni started.</div></div>
       </div>
     </div>
 
@@ -188,6 +206,14 @@
     </div>
   </header>
 
+  <!-- TOOLS OVERVIEW -->
+  <section id="tools">
+    <div class="sec-head"><span class="sec-num mono">◎</span><h2>Every tool at a glance</h2></div>
+    <p class="sec-sub">Live numbers from each part of the Training Hub. Tap a card to open the tool. Figures refresh whenever you open this page.</p>
+    <div class="ov-grid" id="ovGrid"><div class="ov-card"><div class="ov-note">Loading…</div></div></div>
+    <p class="source-note" id="ovNote"></p>
+  </section>
+
   <!-- TRANSITION -->
   <section id="transition">
     <div class="sec-head"><span class="sec-num mono">01</span><h2>Transition — uni, work, money</h2></div>
@@ -195,7 +221,7 @@
 
     <div class="status-chips">
       <span class="pill good"><span class="dot good"></span>Uni started — Leeds Beckett</span>
-      <span class="pill open"><span class="dot open"></span>Leaving Evri for a new night job</span>
+      <span class="pill crit"><span class="dot crit"></span>No job right now</span>
       <span class="pill crit"><span class="dot crit"></span>Royal Mail ruled out</span>
       <span class="pill crit"><span class="dot crit"></span>Delivery work ruled out — no car</span>
       <span class="pill open"><span class="dot open"></span>Tutoring — DBS needed</span>
@@ -206,9 +232,9 @@
         <div class="panel-label">What we have</div>
         <div class="fact-list">
           <div class="fact"><span class="dot good"></span><div class="fact-body"><b>A-levels: Maths B, Economics B, Computer Science C.</b> Now studying Data Science with AI at Leeds Beckett — started September 2026.</div></div>
-          <div class="fact"><span class="dot good"></span><div class="fact-body"><b>Evri Gildersome nights</b> (since 10 Aug, ~£13.21/hr) are being left behind. The replacement is a <b>new night job, 10pm–6am Mon–Fri</b> — start date and pay still to confirm here.</div></div>
+          <div class="fact"><span class="dot crit"></span><div class="fact-body"><b>Evri is done and there is no new job yet.</b> Evri Gildersome nights (since 10 Aug, ~£13.21/hr) have ended. Nothing is lined up, so income is the single biggest open question: tutoring first, then anything schedule-friendly that is not delivery.</div></div>
           <div class="fact"><span class="dot crit"></span><div class="fact-body"><b>Royal Mail is off the table (25 Sep)</b> — its fixed 20–40 hrs/week block didn't fit around basketball. Supersedes the earlier "confirmed bridge job" plan outright.</div></div>
-          <div class="fact"><span class="dot crit"></span><div class="fact-body"><b>Delivery and courier work is ruled out entirely</b> — no car, and not something he wants. Tutoring (DBS in progress) is the main near-term income lane alongside the night job.</div></div>
+          <div class="fact"><span class="dot crit"></span><div class="fact-body"><b>Delivery and courier work is ruled out entirely</b> — no car, and not something he wants. Tutoring (DBS in progress) is the main near-term income lane.</div></div>
           <div class="fact"><span class="dot good"></span><div class="fact-body"><b>Uni Study tool built</b> in the Hub: Maths and Foundations of Computer Science revision, coursework prep, an Intro to Data Analytics module and Excel basics — with a progress tab and assessment countdowns.</div></div>
           <div class="fact"><span class="dot open"></span><div class="fact-body"><b>Timetable partly fixed:</b> Monday busy (10–12, 14–17), Tuesday has a practical, Wednesday free, Thursday two back-to-back sessions. Friday and weekend still unknown.</div></div>
           <div class="fact"><span class="dot good"></span><div class="fact-body">Tutoring CV built (one page) for Tutorful / MyTutor / First Tutors applications.</div></div>
@@ -217,10 +243,10 @@
       <div>
         <div class="panel-label">Next steps</div>
         <ul class="checklist">
-          <li class="check-item"><input type="checkbox" id="t1"><label for="t1">Fill in the rest of the timetable (Fri/weekend) and map the real weekly shape — 10pm–6am nights, uni contact time, training, sleep.</label></li>
+          <li class="check-item"><input type="checkbox" id="t1"><label for="t1">Fill in the rest of the timetable (Fri/weekend) and map the real weekly shape — uni contact time, training, any work, sleep.</label></li>
           <li class="check-item"><input type="checkbox" id="t2"><label for="t2"><span class="tag">Optional extra income</span>Check the live Leeds Beckett SU casual listings — built around student timetables. No delivery or courier work.</label></li>
-          <li class="check-item"><input type="checkbox" id="t3"><label for="t3"><span class="tag">Top open question</span>Confirm the new night job — start date, hourly rate and real take-home. The £2k/month target and the savings maths both depend on it.</label></li>
-          <li class="check-item"><input type="checkbox" id="t4"><label for="t4">Update which carts and purchases have actually been bought, so the savings maths in the Goal section is real.</label></li>
+          <li class="check-item"><input type="checkbox" id="t3"><label for="t3"><span class="tag">Top open question</span>Land an income: tutoring sign-ups and the DBS check first, plus SU casual roles and retail or hospitality applications. No delivery.</label></li>
+          <li class="check-item"><input type="checkbox" id="t4"><label for="t4">Keep the Budget Plan's Purchases tab current — it feeds this page and the savings maths.</label></li>
         </ul>
         <p class="source-note">Full detail: <span class="mono">Ethan_Conversation_Summary.html</span> — money section now superseded by this update.</p>
       </div>
@@ -237,7 +263,7 @@
       <span class="pill good"><span class="dot good"></span>Hooper Programme rebuilt</span>
       <span class="pill good"><span class="dot good"></span>Recovery stack specced</span>
       <span class="pill open"><span class="dot open"></span>Couples Routine — rework on hold</span>
-      <span class="pill crit"><span class="dot crit"></span>Missed uni basketball trials</span>
+      <span class="pill crit"><span class="dot crit"></span>Not on a team — missed uni trials</span>
     </div>
 
     <div class="track-cols">
@@ -249,7 +275,7 @@
           <div class="fact"><span class="dot good"></span><div class="fact-body">Goals fixed: 27kg dumbbell curl, athletic (not bodybuilder) build — now joined by the dunk / bench / lean-weight targets above.</div></div>
           <div class="fact"><span class="dot good"></span><div class="fact-body"><b>Hooper Programme rebuilt (27 Sep)</b> as a 4-day Upper A / Lower A / Upper B / Lower B rotation — not pinned to fixed weekdays. Bench (85kg baseline → 100kg) and Back Squat as the main lifts, vertical-power work on both lower days, with workout and PR logging, exercise swaps and a progress tab. Vert Lab and Shift Hooper were dropped from the Hub.</div></div>
           <div class="fact"><span class="dot open"></span><div class="fact-body"><b>Couples Routine</b> still has its original content — rework is on hold until his girlfriend is free to be involved.</div></div>
-          <div class="fact"><span class="dot crit"></span><div class="fact-body"><b>Didn't make the Leeds Beckett basketball team at trials.</b> Target is next year's trials, with a 12-month development plan. Bench PR is also unconfirmed — last logged 85kg, training has been inconsistent since.</div></div>
+          <div class="fact"><span class="dot crit"></span><div class="fact-body"><b>Not playing basketball anywhere right now.</b> Didn't make the Leeds Beckett team at trials; training for next year's trials with a 12-month development plan. Bench PR is also unconfirmed — last logged 85kg, training has been inconsistent since.</div></div>
           <div class="fact"><span class="dot good"></span><div class="fact-body">Recovery stack specced — creatine, magnesium glycinate, zinc, D3/K2/omega-3, melatonin on shift days only — plus a daily hand-care protocol for warehouse strain.</div></div>
           <div class="fact"><span class="dot good"></span><div class="fact-body">Income ladder mapped end to end: Prolific/UserTesting now → reselling → Fiverr/Upwork data work → freelance data science as the actual exit from warehouse work.</div></div>
         </div>
@@ -395,7 +421,7 @@
           <li class="check-item"><input type="checkbox" id="a3"><label for="a3">Send the module handbooks (Databases, Statistics in Practice, Programming) so Uni Study gets real assessment detail.</label></li>
           <li class="check-item"><input type="checkbox" id="a4"><label for="a4">Check the Hub on the iPhone: PIN lock, Face ID, and the back bar in the installed app.</label></li>
         </ul>
-        <p class="source-note">Daily Stretch and Food Plan have no progress overview yet — they don't log data.</p>
+        <p class="source-note">Daily Stretch and Food Plan have no progress overview yet — they don't log data. The Budget Plan now has balance, goals, purchases with links, bills and an overview.</p>
       </div>
     </div>
   </section>
@@ -408,7 +434,7 @@
     <div class="priority-list">
       <div class="priority">
         <div class="priority-num">1</div>
-        <div class="priority-body"><h3>Confirm the new night job and the weekly shape</h3><p>Start date, hourly rate and take-home for the 10pm–6am job, laid against the uni timetable (Friday and weekend still unknown). Every income number and the £2k/month target hangs off this.</p></div>
+        <div class="priority-body"><h3>Get an income moving</h3><p>No job right now, so every other number depends on this. Tutoring is the lead lane — DBS check first — with SU casual roles and retail or hospitality applications alongside. No delivery or courier work.</p></div>
         <div class="priority-track">Transition</div>
       </div>
       <div class="priority">
@@ -423,7 +449,7 @@
       </div>
       <div class="priority">
         <div class="priority-num">4</div>
-        <div class="priority-body"><h3>Decide what actually gets bought</h3><p>Three carts totalling ~£1,020 plus the laptop and camera — essential now versus held, against a take-home that isn't confirmed yet.</p></div>
+        <div class="priority-body"><h3>Finish the purchases list</h3><p>Laptop, Boohoo and most of Amazon are bought. Keep the remaining carts (SHEIN, basketball gear, camera) in the Budget Plan's Purchases tab and decide what is worth it against a balance of about £300 and no income.</p></div>
         <div class="priority-track">Transition</div>
       </div>
       <div class="priority">
@@ -437,12 +463,13 @@
   <!-- GOAL -->
   <section id="goal">
     <div class="sec-head"><span class="sec-num mono">£</span><h2>The £10k goal</h2></div>
-    <p class="sec-sub">One savings goal, one calendar year — 1 Jan to 1 Jan. The real lever on it isn't spending less, it's a reliable income that actually fits around uni, the night job and tutoring.</p>
+    <p class="sec-sub">One savings goal, one calendar year — 1 Jan to 1 Jan. The real lever on it isn't spending less, it's getting a reliable income started that fits around uni and tutoring.</p>
 
     <div class="stat-grid" style="grid-template-columns:1fr 1fr;margin-bottom:6px">
-      <div class="stat"><div class="stat-val mono">£275</div><div class="stat-label">Actual balance right now (14 Sep 2026) — the real starting point</div></div>
-      <div class="stat"><div class="stat-val mono">£9,725</div><div class="stat-label">Still needed to hit £10k by Jan '28</div></div>
+      <div class="stat"><div class="stat-val mono" id="goalBal">£–</div><div class="stat-label" id="goalBalLabel">Savings balance — live from Budget Plan</div></div>
+      <div class="stat"><div class="stat-val mono" id="goalLeft">£–</div><div class="stat-label" id="goalLeftLabel">Still needed to hit the goal</div></div>
     </div>
+    <p class="source-note" id="goalProgress"></p>
     <p class="source-note"><b style="color:var(--gold)">Pre-clock checkpoint:</b> the goals sheet sets £500 saved by the 3-month mark (~mid-Dec 2026) — <i>before</i> the official Jan '27→Jan '28 clock even starts. Ethan's own note on it: "should be more." Treat it as a warm-up target, not a point on the milestone bar below.</p>
 
     <div class="mlabel-wrap" id="milestoneWrap">
@@ -456,8 +483,8 @@
 
     <div class="panel-label" style="margin-top:30px">Ways to make money — the actual focus</div>
     <div class="fact-list">
-      <div class="fact"><span class="dot crit"></span><div class="fact-body"><b>Royal Mail is out (25 Sep)</b> and <b>delivery or courier work is ruled out entirely</b> — no car, and not an option he wants. The income now is the new 10pm–6am Mon–Fri night job plus tutoring on top.</div></div>
-      <div class="fact"><span class="dot open"></span><div class="fact-body"><b>The real target: £2k/month</b> (from the goals sheet). Evri paid ~£1,830/month take-home on ~38.5 hrs/week, so £2k needs a better rate or a second lane. The new night job's pay is still to confirm — tutoring is what moves this number.</div></div>
+      <div class="fact"><span class="dot crit"></span><div class="fact-body"><b>Royal Mail is out (25 Sep)</b> and <b>delivery or courier work is ruled out entirely</b> — no car, and not an option he wants. Evri has ended and there is no replacement job yet, so tutoring is the starting point.</div></div>
+      <div class="fact"><span class="dot open"></span><div class="fact-body"><b>The real target: £2k/month</b> (from the goals sheet). Evri paid ~£1,830/month take-home on ~38.5 hrs/week, so £2k needs a better rate or more than one income lane. With no job right now, tutoring is what moves this number first.</div></div>
       <div class="fact"><span class="dot open"></span><div class="fact-body"><b>Tutoring (Maths, Computer Science, Economics — your own A-level subjects).</b> A student tutor without QTS realistically starts around £20–35/hr on Tutorful, MyTutor or First Tutors. At £25/hr, hitting £2k/month takes ~18.5 hrs/week — still under half Evri's hours. Most under-18 students require a DBS check first, which can take weeks — worth starting that now if this is the direction.</div></div>
       <div class="fact"><span class="dot open"></span><div class="fact-body"><b>Wider platform list, researched 15 Sep:</b> join now — <b>PMT Education</b> (18% commission, the lowest of any platform checked, but wants an enhanced DBS + strong A-level grades — the DBS you're already starting covers this) and <b>Superprof</b> (0% commission, keep 100% of what you set, no vetting bar, but you're competing in an open marketplace from zero reviews). Apply later, once Tutorful/PMT reviews exist — <b>The Profs</b> (£45–100/hr, but a real interview + trial lesson to pass) and <b>Tutor Hunt</b> (flexible, but ~33% commission eats a lot of it). Lower priority — <b>GoStudent</b> (pay works out lower per hour once you do the maths on their lesson bundles) and <b>Preply</b> (often USD-priced, 33% commission for new tutors, dominated by language tutoring). Not yet an option — <b>Spires</b> explicitly requires 2 years of <i>paid</i> tutoring experience; volunteering doesn't count, so this is a revisit-in-a-year platform, not a now one.</div></div>
       <div class="fact"><span class="dot open"></span><div class="fact-body"><b>Optional extra hours, no fixed rota:</b> <b>Leeds Beckett SU casual roles</b> (bar/event/venue staff via lbsu.mystaffsavvy.com) are built around student timetables — worth checking the live listings, since pay and hours weren't published on the jobs page. Backup, less flexible: retail (~£10–12/hr, Trinity Leeds, Kirkgate Market, supermarkets) and hospitality (~£9–15/hr plus tips). <b>Delivery and courier work is ruled out</b> and is not part of any plan here.</div></div>
@@ -475,20 +502,15 @@
       <li class="check-item"><input type="checkbox" id="m3"><label for="m3">Build the 3-Kaggle-dataset portfolio Fiverr/Upwork clients will actually see, if the data-science route stays live.</label></li>
     </ul>
 
-    <div class="panel-label" style="margin-top:30px">Carts &amp; purchases pending</div>
-    <div class="fact-list">
-      <div class="fact"><span class="dot good"></span><div class="fact-body"><b>Amazon — £488.41, confirmed.</b> Only the ticked items are being bought — every item across the basket screenshots showed as ticked, so this total stands: recovery-stack supplements, Anker USB-C hub, M-AUDIO MIDI keyboard, gym gear (RDX belt, knee brace, resistance bands, lifting hooks, compression pants), manicure set, headband, Beats Powerbeats Fit.</div></div>
-      <div class="fact"><span class="dot open"></span><div class="fact-body"><b>SHEIN — £203.79</b> (was £350.82). 15 items in cart; 5 confirmed by screenshot (glasses, a jacket, trousers, a top, a scarf), the other 10 make up the rest of the total. Free shipping.</div></div>
-      <div class="fact"><span class="dot good"></span><div class="fact-body"><b>Basketball gear — £327.50</b> (was £435.00). 3 items, cart matches exactly: Nike Varsity Elite Backpack, Nike Kobe IX Elite High Protro, adidas Harden Volume 9 — straight off the back of the vert/hooper training goal.</div></div>
-      <div class="fact"><span class="dot good"></span><div class="fact-body"><b>Laptop — finalised: refurbished 13" MacBook Pro M1, 16GB RAM</b>, from ~£685 on Back Market. Picked over the Windows/RTX alternative — active cooling handles sustained video export better than the fanless Air, and Mac is the stronger platform for the music side (Logic Pro, Core Audio). 512GB will fill up fast with video projects — a ~£60–80 1TB external SSD is a cheaper fix than paying for more internal storage. Replaces the old £350 gear-timeline line outright, not in addition to it.</div></div>
-      <div class="fact"><span class="dot open"></span><div class="fact-body"><b>Camera — shortlisted, not confirmed bought.</b> Current one caps out at 25fps with a 20-minute recording limit. A used <b>Sony ZV-1F</b> (~£350) was recommended over the Canon V10.</div></div>
-      <div class="fact"><span class="dot open"></span><div class="fact-body"><b>Tripod — needed, cheap, not yet bought.</b> For the social media push — anything solo (GRWM, the intro video, the art series).</div></div>
-      <div class="fact"><span class="dot open"></span><div class="fact-body"><b>Phone — on hold until take-home is confirmed.</b> Wants an iPhone, pay-monthly, capped at £50/month — holding off until the new job's income is known. For reference: iPhone 15/16 128GB deals currently run ~£28–30/month with £0 upfront (Three, Vodafone, iD Mobile), comfortably under the cap with room for the yearly price rises these contracts usually carry.</div></div>
+    <div class="panel-label" style="margin-top:30px">Purchases — live from Budget Plan</div>
+    <div id="cartList"><div class="ov-note">Loading…</div></div>
+    <div class="stat-grid" style="margin-top:14px;grid-template-columns:repeat(3,1fr)">
+      <div class="stat"><div class="stat-val mono" id="cartWanted">£–</div><div class="stat-label">Still wanted</div></div>
+      <div class="stat"><div class="stat-val mono" id="cartOrdered">£–</div><div class="stat-label">Ordered</div></div>
+      <div class="stat"><div class="stat-val mono" id="cartBought">£–</div><div class="stat-label">Bought</div></div>
     </div>
-    <div class="stat-grid" style="margin-top:14px;grid-template-columns:1fr">
-      <div class="stat"><div class="stat-val mono">£1,019.70 + ~£685</div><div class="stat-label">Confirmed carts plus the finalised MacBook Pro — before any phone contract, which is on hold</div></div>
-    </div>
-    <p class="source-note" style="margin-top:16px">This page doesn't track a running savings balance. The £275 above is a 14 Sep snapshot — the Budget Plan in the Training Hub is where the live £10k countdown now lives.</p>
+    <p class="source-note" style="margin-top:12px">Not in the list yet: a tripod (cheap, price not set) and an iPhone on pay-monthly capped at £50/month — on hold until income exists. Add them in the Budget Plan's Purchases tab and they appear here.</p>
+    <p class="source-note" style="margin-top:16px">The balance and every purchase on this page are read live from the Budget Plan — change them there.</p>
   </section>
 
   <!-- ALL GOALS -->
@@ -513,7 +535,7 @@
       <div class="roadmap-list">
         <div class="roadmap-item"><span class="rnum mono">1</span><div class="rbody">Complete room setup.</div><span class="rtrack">Room</span></div>
         <div class="roadmap-item"><span class="rnum mono">2</span><div class="rbody">87–88kg.</div><span class="rtrack">Body</span></div>
-        <div class="roadmap-item"><span class="rnum mono">3</span><div class="rbody">Get a set job <i>(new 10pm–6am night job — confirm it counts)</i>.</div><span class="rtrack">Transition</span></div>
+        <div class="roadmap-item"><span class="rnum mono">3</span><div class="rbody">Get a set job <i>(no job right now — top priority)</i>.</div><span class="rtrack">Transition</span></div>
         <div class="roadmap-item"><span class="rnum mono">4</span><div class="rbody">Complete purchases.</div><span class="rtrack">Goal</span></div>
         <div class="roadmap-item"><span class="rnum mono">5</span><div class="rbody">£500 in savings <i>(Ethan's own note: "should be more")</i>.</div><span class="rtrack">Goal</span></div>
       </div>
@@ -556,9 +578,9 @@
     <div class="phase">
       <div class="phase-head">Phase 1 — now (October 2026)</div>
       <div class="roadmap-list">
-        <div class="roadmap-item"><span class="rnum mono">1</span><div class="rbody"><b>Confirm the new night job</b> — start date, rate, take-home — and map the weekly shape against uni.</div><span class="rtrack">Transition</span></div>
+        <div class="roadmap-item"><span class="rnum mono">1</span><div class="rbody"><b>Get an income moving</b> — tutoring sign-ups and DBS first, SU casual roles and retail/hospitality applications alongside. No delivery.</div><span class="rtrack">Transition</span></div>
         <div class="roadmap-item"><span class="rnum mono">2</span><div class="rbody">Sign up to Tutorful / MyTutor / First Tutors and <b>start the DBS check</b> — the slowest step, so it goes first.</div><span class="rtrack">Money</span></div>
-        <div class="roadmap-item"><span class="rnum mono">3</span><div class="rbody">Decide what's essential across the SHEIN, Amazon and basketball-gear carts, the laptop and the camera.</div><span class="rtrack">Transition</span></div>
+        <div class="roadmap-item"><span class="rnum mono">3</span><div class="rbody">Decide what is worth buying from the remaining carts (SHEIN, basketball gear, camera) with about £300 and no income — the Budget Plan shows the balance after each one.</div><span class="rtrack">Transition</span></div>
         <div class="roadmap-item"><span class="rnum mono">4</span><div class="rbody">Re-measure the room — confirm which wall actually has the 48" gap.</div><span class="rtrack">Room</span></div>
         <div class="roadmap-item"><span class="rnum mono">5</span><div class="rbody">Keep a <b>3-posts/week</b> rhythm across both platforms; phone is fine.</div><span class="rtrack">Social</span></div>
         <div class="roadmap-item"><span class="rnum mono">6</span><div class="rbody">Log real sessions in Hooper Programme to re-establish the bench baseline.</div><span class="rtrack">Body</span></div>
@@ -580,7 +602,7 @@
     <div class="phase">
       <div class="phase-head">Phase 3 — once income is steady</div>
       <div class="roadmap-list">
-        <div class="roadmap-item"><span class="rnum mono">13</span><div class="rbody">Ramp up tutoring bookings — the second income lane on top of the night job.</div><span class="rtrack">Money</span></div>
+        <div class="roadmap-item"><span class="rnum mono">13</span><div class="rbody">Ramp up tutoring bookings until they replace what Evri paid.</div><span class="rtrack">Money</span></div>
         <div class="roadmap-item"><span class="rnum mono">14</span><div class="rbody">Start Room OS Phase 1 — Home Assistant on the spare desktop, pair the bulb already owned.</div><span class="rtrack">Room</span></div>
         <div class="roadmap-item"><span class="rnum mono">15</span><div class="rbody">Ramp posting to 5–6/week combined once editing and camera are sorted — bring in Gideon, Toby and Mana for collab content.</div><span class="rtrack">Social</span></div>
       </div>
@@ -598,9 +620,87 @@
 </div>
 
 <footer>
-  <div class="wrap">Consolidated 14 Sep 2026; refreshed 6 Oct 2026 (job, uni, basketball, delivery ruled out, Training Hub and Cylinderr added). Room, savings balance, follower counts and purchase status are still as of mid-September. Checkboxes save locally to this device.</div>
+  <div class="wrap">Consolidated 14 Sep 2026; refreshed 7 Oct 2026. Savings, purchases and tool figures are live; Room and follower counts (396 at 14 Sep) are unchanged. Checkboxes save locally to this device.</div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../config.js"></script>
+<script src="../hub-data.js"></script>
+<script>
+(function(){
+  function $(i){return document.getElementById(i);}
+  function esc(t){var d=document.createElement('div');d.textContent=t==null?'':String(t);return d.innerHTML;}
+  function m0(n){var v=Number(n)||0;return (v<0?'-':'')+'£'+Math.abs(Math.round(v)).toLocaleString('en-GB');}
+  function m2(n){var v=Number(n)||0;return (v<0?'-':'')+'£'+Math.abs(v).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2});}
+  function pad(n){return String(n).padStart(2,'0');}
+  function ds(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+  function daysAgo(n){var d=new Date();d.setDate(d.getDate()-n);return ds(d);}
+  function fdate(s){return new Date(s+'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'});}
+  function safeUrl(u){try{var x=new URL(u);return (x.protocol==='https:'||x.protocol==='http:')?x.href:null;}catch(e){return null;}}
+  function card(name,href,big,lines,pct){
+    return '<a class="ov-card" href="'+href+'"><div class="ov-top"><span class="ov-name">'+esc(name)+'</span><span class="ov-open">Open ›</span></div><div class="ov-big">'+big+'</div>'
+      +(pct!=null?'<div class="ov-bar"><i style="width:'+Math.max(0,Math.min(100,pct))+'%"></i></div>':'')
+      +lines.map(function(l){return '<div class="ov-line">'+l+'</div>';}).join('')+'</a>';
+  }
+  function trainCard(name,href,sessions,prs,bench){
+    var d7=daysAgo(7),d30=daysAgo(30);
+    var n7=sessions.filter(function(s){return s.date>=d7;}).length, n30=sessions.filter(function(s){return s.date>=d30;}).length;
+    var last=sessions.slice().sort(function(a,b){return b.date.localeCompare(a.date);})[0];
+    var lines=[n30+' in the last 30 days'+(last?' · last: '+fdate(last.date)+(last.split?' ('+esc(last.split)+')':''):' · none logged yet')];
+    if(bench){
+      var best=prs.filter(function(p){return /^bench( press)?$/i.test((p.exercise||'').trim());}).reduce(function(m,p){return Math.max(m,Number(p.value)||0);},0);
+      lines.push(best?'Bench best '+best+'kg of 100kg goal':'Bench: no PR logged yet — last confirmed 85kg');
+    }
+    return card(name,href,n7+' this week',lines,null);
+  }
+  async function run(){
+    var cfg=window.HubData&&HubData.isConfigured();
+    var cards=[];
+    var sm=null, t1=[], p1=[], t2=[];
+    if(cfg){
+      try{
+        var r=await Promise.all([HubData.getBudgetSummary(),HubData.getSessions('hooper-programme'),HubData.getPRs('hooper-programme'),HubData.getSessions('couples-routine')]);
+        sm=r[0]; t1=r[1]; p1=r[2]; t2=r[3];
+      }catch(e){console.warn(e);}
+    }
+    // budget
+    if(sm){
+      var g=sm.primary, pct=g?sm.balance/g.target*100:null;
+      cards.push(card('Budget Plan','budget-plan.html',m2(sm.balance),[g?esc(g.name)+': '+m0(g.target)+' ('+Math.max(0,pct).toFixed(1)+'%)':'No goal set','Planned buys '+m0(sm.wanted)+' · this month '+m0(sm.monthIncome)+' in, '+m0(sm.monthOutgoing)+' out'],pct));
+      var set=function(id,t){var e=$(id);if(e)e.textContent=t;};
+      set('liveBal',m0(sm.balance)); set('goalBal',m2(sm.balance));
+      if(g){
+        set('liveGoal',m0(g.target)); set('goalLeft',m2(Math.max(0,g.target-sm.balance)));
+        set('goalLeftLabel','Still needed to hit '+g.name+(g.target_date?' by '+new Date(g.target_date+'T00:00:00').toLocaleDateString('en-GB',{month:'short',year:'numeric'}):''));
+        var gp=$('goalProgress'); if(gp) gp.innerHTML='<b>'+Math.max(0,pct).toFixed(1)+'%</b> of '+esc(g.name)+' saved.'+(sm.goals.length>1?' Other goals: '+sm.goals.filter(function(x){return x.id!==g.id;}).map(function(x){return esc(x.name)+' '+m0(x.target)+(x.target_date?' by '+new Date(x.target_date+'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'');}).join('; ')+'.':'');
+      }
+      // carts
+      var order={wanted:0,ordered:1,bought:2};
+      var ps=sm.purchases.slice().sort(function(a,b){return order[a.status]-order[b.status];});
+      $('cartList').innerHTML=ps.length?ps.map(function(p){var u=safeUrl(p.link);return '<div class="cart-row"><span class="pill '+(p.status==='bought'?'good':'open')+'"><span class="dot '+(p.status==='bought'?'good':'open')+'"></span>'+p.status+'</span><div class="cn">'+esc(p.name)+(p.note?'<small>'+esc(p.note)+'</small>':'')+(u?'<small><a href="'+esc(u)+'" target="_blank" rel="noopener noreferrer">link ↗</a></small>':'')+'</div><div class="ca">'+m2(p.amount)+'</div></div>';}).join(''):'<div class="ov-note">No purchases yet — add them in the Budget Plan.</div>';
+      set('cartWanted',m0(sm.wanted)); set('cartOrdered',m0(sm.ordered)); set('cartBought',m0(sm.bought));
+    } else {
+      cards.push(card('Budget Plan','budget-plan.html','Open',['Live balance appears here once the Hub can reach its database.'],null));
+      var cl=$('cartList'); if(cl) cl.innerHTML='<div class="ov-note">Purchases load from the Budget Plan when you are online.</div>';
+    }
+    // training
+    cards.push(cfg?trainCard('Hooper Programme','hooper-programme.html',t1,p1,true):card('Hooper Programme','hooper-programme.html','Open',['Progress appears when online.'],null));
+    cards.push(cfg?trainCard('Couples Routine','couples-routine.html',t2,[],false):card('Couples Routine','couples-routine.html','Open',['Progress appears when online.'],null));
+    // uni
+    var us=null; try{us=JSON.parse(localStorage.getItem('uni.summary.v1')||'null');}catch(e){}
+    if(us&&us.total){
+      var ln=['Topics reviewed: '+us.done+' of '+us.total];
+      if(us.next){var dd=Math.round((new Date(us.next.d+'T00:00:00')-new Date(ds(new Date())+'T00:00:00'))/86400000); ln.push('Next: '+esc(us.next.label)+' — '+(dd<=0?'this week':dd+' days'));}
+      cards.push(card('Uni Study','uni-study.html',Math.round(us.done/us.total*100)+'%',ln,us.done/us.total*100));
+    } else cards.push(card('Uni Study','uni-study.html','Open',['Revision progress appears here once you start ticking topics off.'],null));
+    cards.push(card('Daily Stretch','daily-stretch.html','Open',['Morning, evening and post-hoops mobility. No logged data to summarise.'],null));
+    cards.push(card('Food Plan','food-plan.html','Open',['Meals, timing and freezer system. Not built out yet.'],null));
+    $('ovGrid').innerHTML=cards.join('');
+    var n=$('ovNote'); if(n) n.textContent='Budget Plan figures are visible here even if you lock the Budget Plan page itself — lock the Dashboard too if you want both hidden.';
+  }
+  run();
+})();
+</script>
 <script>
 (function(){
   var bc=document.getElementById('blockerCount'); if(bc) bc.textContent=document.querySelectorAll('.status-chips .pill.crit').length;
