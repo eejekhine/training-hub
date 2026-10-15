@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<script src="../hub-core.js"></script>
+<title>Creator Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Figtree:wght@400;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#0d0f1a; --surface:#151829; --surface2:#1d2138; --border:#2a2f4b;
+  --text:#eef0fb; --dim:#a4aac8; --faint:#737aa5;
+  --accent:#8f84ff; --accent-ink:#0d0f1a; --accent2:#5fd0ff;
+  --good:#5be3a1; --warn:#ffcc66; --crit:#ff8a9a; --shadow:rgba(0,0,0,.45);
+}
+*{box-sizing:border-box}
+.hub-bar{margin-inline:-16px}
+body{background:var(--bg);color:var(--text);font:16px/1.5 'Figtree',system-ui,sans-serif;padding-inline:16px;padding-block:0 100px;max-width:820px;margin-inline:auto}
+h1,h2,h3{font-family:'Space Grotesk','Arial Narrow',sans-serif;margin:0;text-wrap:balance;letter-spacing:-.01em}
+a{color:var(--accent2)}
+.lab{font:500 11px 'JetBrains Mono',ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+.mono{font-family:'JetBrains Mono',ui-monospace,monospace}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+header{padding-block:22px 6px}
+header h1{font-size:34px;line-height:1.02}
+header p{margin:6px 0 0;color:var(--dim);max-width:54ch}
+.sync{font:500 11px 'JetBrains Mono',monospace;color:var(--faint);margin-top:8px}
+.sync b{color:var(--good);font-weight:500}
+.sync b.local{color:var(--warn)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;margin-block:12px}
+.card h2{font-size:22px;margin-bottom:4px}
+.card h3{font-size:17px;margin-bottom:4px}
+.dim{color:var(--dim)} .small{font-size:14px}
+.btn{background:var(--accent);color:var(--accent-ink);border:0;border-radius:10px;padding:10px 16px;font-weight:600}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--border)}
+.btn.sm{padding:6px 11px;font-size:14px;border-radius:8px}
+.bar{height:8px;border-radius:99px;background:var(--surface2);overflow:hidden;margin-top:6px}
+.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px}
+.bar.full>i{background:var(--good)}
+.tgt{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:10px}
+.tgt>div{background:var(--surface2);border-radius:10px;padding:10px 12px}
+.tgt b{font:700 24px/1 'Space Grotesk',sans-serif;font-variant-numeric:tabular-nums}
+.tgt b small{font:500 13px 'JetBrains Mono',monospace;color:var(--faint)}
+.ck{flex:none;width:26px;height:26px;border-radius:8px;border:2px solid var(--faint);background:transparent;display:grid;place-items:center;padding:0;margin-top:1px}
+.ck[aria-checked=true]{background:var(--accent);border-color:var(--accent)}
+.ck[aria-checked=true]::after{content:"";width:6px;height:11px;border:solid var(--accent-ink);border-width:0 2.5px 2.5px 0;transform:translateY(-1px) rotate(45deg)}
+.it{display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--border)}
+.it:first-child{border-top:0}
+.it .tx{flex:1;min-width:0}
+.it.done .ti{color:var(--faint);text-decoration:line-through;text-decoration-color:var(--faint)}
+.it .ti{font-weight:600;overflow-wrap:anywhere}
+.it .wh{color:var(--dim);font-size:14px}
+.chip{display:inline-block;font:500 10px 'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--border);border-radius:99px;padding:2px 8px;color:var(--faint);margin-top:3px}
+.tabs{position:fixed;left:0;right:0;bottom:0;display:flex;gap:4px;padding:8px 12px calc(8px + env(safe-area-inset-bottom,0px));background:var(--surface);border-top:1px solid var(--border);justify-content:center;z-index:5}
+.tabs button{flex:1;max-width:200px;background:transparent;border:0;border-radius:10px;padding:10px 4px;font-weight:600;color:var(--faint)}
+.tabs button[aria-selected=true]{background:var(--surface2);color:var(--text)}
+.view[hidden]{display:none}
+details.sec{background:var(--surface);border:1px solid var(--border);border-radius:14px;margin-block:10px}
+details.sec>summary{list-style:none;padding:14px 16px;display:flex;gap:10px;align-items:center;cursor:pointer}
+details.sec>summary::-webkit-details-marker{display:none}
+details.sec>summary h3{flex:1;font-size:18px}
+details.sec>summary .cnt{font:500 12px 'JetBrains Mono',monospace;color:var(--faint)}
+details.sec>summary::after{content:"+";font:500 18px 'JetBrains Mono',monospace;color:var(--faint)}
+details.sec[open]>summary::after{content:"–"}
+details.sec .bd{padding:0 16px 14px}
+.bd p{margin:8px 0}
+.bd h4{font:500 11px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--accent2);margin:16px 0 4px}
+.bd ul,.bd ol{margin:6px 0;padding-left:1.2rem}
+.bd li{margin-bottom:4px}
+table.rt{width:100%;border-collapse:collapse;font-size:14px;margin:6px 0}
+table.rt th{font:500 11px 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);text-align:left;padding:6px 8px;border-bottom:1px solid var(--border)}
+table.rt td{padding:8px;border-bottom:1px solid var(--border);vertical-align:top}
+table.rt td:first-child{font-weight:600}
+@media (max-width:640px){
+  table.rt thead{display:none}
+  table.rt,table.rt tbody,table.rt tr,table.rt td{display:block;width:100%}
+  table.rt tr{border:1px solid var(--border);border-radius:10px;padding:6px 10px;margin-bottom:8px;background:var(--surface2)}
+  table.rt td{border:0;padding:3px 0}
+  table.rt td::before{content:attr(data-l);display:block;font:500 10px 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+  table.rt td:first-child::before{display:none}
+}
+.step{display:inline-flex;align-items:center;gap:8px;margin-top:4px}
+.step button{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:var(--surface);font-weight:700}
+.step b{min-width:22px;text-align:center;font-variant-numeric:tabular-nums}
+.wk{display:flex;gap:12px;padding:10px 0;border-top:1px solid var(--border)}
+.wk:first-of-type{border-top:0}
+.wk .n{font:700 20px/1.1 'Space Grotesk',sans-serif;color:var(--faint);min-width:84px}
+.wk.now{background:var(--surface2);border-radius:10px;padding-inline:10px;margin-inline:-10px;border-top-color:transparent}
+.wk.now .n{color:var(--accent)}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+label.f span{display:block;margin-bottom:4px}
+select,input[type=text],input[type=number],input[type=date],textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 10px}
+.log li{list-style:none;display:flex;gap:10px;padding:9px 0;border-top:1px solid var(--border);align-items:flex-start}
+.log{margin:0;padding:0}
+.log .ty{font:500 10px 'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--accent2);min-width:72px;padding-top:3px}
+.log .tx{flex:1;min-width:0;overflow-wrap:anywhere}
+.log .dt{font:500 11px 'JetBrains Mono',monospace;color:var(--faint)}
+.empty{color:var(--dim);padding:8px 0}
+.next{border-color:var(--accent)}
+svg text{fill:var(--dim);font:11px 'JetBrains Mono',monospace}
+</style>
+</head>
+<body>
+
+
+<header>
+  <div class="lab">Training Hub · Content</div>
+  <h1>Creator Hub</h1>
+  <p>Work through video, photography and basketball mixtapes at your own pace. Tick things off, log what you shoot and post, and pick up wherever you left off.</p>
+  <div class="sync" id="sync"></div>
+</header>
+
+<main>
+<section class="view" id="v-home"></section>
+<section class="view" id="v-content" hidden></section>
+<section class="view" id="v-learn" hidden></section>
+<section class="view" id="v-log" hidden></section>
+</main>
+
+<nav class="tabs" role="tablist">
+  <button role="tab" data-tab="home" aria-selected="true">Home</button>
+  <button role="tab" data-tab="learn" aria-selected="false">Learn</button>
+  <button role="tab" data-tab="content" aria-selected="false">Content</button>
+  <button role="tab" data-tab="log" aria-selected="false">Log</button>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../config.js"></script>
+<script>
+var SECS=[{"id": "how-to-use-this-guide", "title": "How to use this guide", "blocks": [{"k": "p", "h": "Work through one section at a time, and practise the same day you watch something. Everything here is free unless marked otherwise."}, {"k": "h", "h": "Suggested order (about 8 weeks):"}, {"k": "ol", "items": ["Weeks 1–2: Filming basics + DaVinci Resolve beginner tutorial. Post 2 TikToks a week.", "Weeks 3–4: Photography fundamentals + Lightroom basics. Take 20 photos a week on a theme.", "Weeks 5–6: Resolve colour page + photo colour grading. Post 3 TikToks a week.", "Weeks 7–8: Film and edit your first basketball mixtape.", "Ongoing: one basketball mixtape a month, plus weekly training clips."]}, {"k": "h", "h": "Weekly routine:"}, {"k": "tasks", "items": ["Watch 1–2 tutorials", "Shoot once using the technique you just learned", "One batch-editing evening (2–3 videos)", "Post on TikTok and Instagram", "Film one basketball session"]}]}, {"id": "content-plan", "title": "Content plan", "blocks": [{"k": "p", "h": "Your ideas grouped into repeatable series. Start with one intro video, then rotate 2–3 series a week so you always know what to film next."}, {"k": "h", "h": "Kick-off"}, {"k": "tasks", "items": ["<strong>Introduction video:<\/strong> one main video that starts everything off (who you are, what the page is about), plus a short 2–3 second intro clip reused at the start of every video. It can be voiceover over B-roll if you're not ready to talk to camera."]}, {"k": "h", "h": "Video series"}, {"k": "table", "head": ["Series", "Episodes / ideas", "Platform", "Faceless-friendly?", "Who"], "rows": [["GRWM", "Work, school, church, basketball, gym, date", "TikTok, Reels", "Yes — hands, outfit, mirror, text on screen", "You"], ["Date content", "A pic every hour; spend the day with me (special day)", "TikTok, Reels, photo carousel", "Yes", "You + your girlfriend"], ["A day in the life", "Uni days, Leeds, work, trips", "TikTok, YouTube", "Yes — B-roll and text", "You"], ["Trip", "Travel vlog of each trip", "TikTok, YouTube", "Yes", "You + friends"], ["Basketball", "Training clips, progress series, court reviews, mixtapes", "TikTok, Reels, YouTube", "Yes", "You, Gideon, Toby"], ["Teaching my gf sports", "Basketball and other sports, one sport per episode", "TikTok, Reels", "Partly", "You + your girlfriend"], ["Sports", "Other sports and sports takes", "TikTok", "Depends on format", "You"], ["Music content", "Mana singing, Ethan playing", "TikTok, Reels, YouTube", "Yes for you (hands on instrument)", "You + Mana"], ["Mukbangs", "Food spots around Leeds", "TikTok, Reels", "Partly — food close-ups and hands", "You + friends"], ["Gym", "Workouts, progress, routines", "TikTok, Reels", "Yes", "You, Gideon, Toby"], ["Getting better at art", "Weekly progress series, same subject redrawn", "TikTok, Reels", "Yes — hands and paper only", "You"]]}, {"k": "h", "h": "Posts (Instagram)"}, {"k": "table", "head": ["Series", "What to post", "Tip"], "rows": [["Fit pics", "Outfits, mirror shots, street fits around Leeds", "Shoot on the D5100 for a cleaner look"], ["Basketball", "Action stills, court shots, mixtape covers", "Fast shutter to freeze the action"], ["Photography", "Leeds street and architecture", "Keep one Lightroom preset for a consistent feed"], ["Art", "Progress carousel: first vs latest", "Same lighting and angle every time"]]}, {"k": "h", "h": "Collaborations (Gideon, Toby, Mana)"}, {"k": "table", "head": ["Collab", "Idea", "Who"], "rows": [["Photography", "Photo walks around Leeds, shooting each other's fits", "Anyone"], ["Basketball", "1v1s, pickup mixtapes, shooting challenges", "Gideon, Toby"], ["Food", "Food spot reviews, pics and vids", "Anyone"], ["Gym", "Workout splits, challenges, spotting each other", "Gideon, Toby"], ["Music", "Covers and originals", "Mana"]]}, {"k": "p", "h": "Ask friends before posting them, and agree who posts what so you can cross-tag."}, {"k": "p", "h": "<strong>Equipment you already have:<\/strong> camera (Nikon D5100), tripod, DaVinci Resolve. The shopping list for upgrades lives in our chat; the cheapest big win is a mic (about £12–20)."}, {"k": "h", "h": "Suggested weekly rotation"}, {"k": "table", "head": ["Day", "Content"], "rows": [["Mon", "GRWM (work or school)"], ["Wed", "Basketball or gym clip"], ["Fri", "A day in the life or mukbang"], ["Sun", "Instagram post (fits, photography or art) + one collab or series episode"]]}]}, {"id": "filming-basics-shots-angles-movement-and", "title": "Filming basics: shots, angles, movement and cuts", "blocks": [{"k": "p", "h": "Start with StudioBinder's free 10-episode series — one episode a day covers the foundations in two weeks."}, {"k": "res", "rows": [{"id": "the-shot-list-full-series", "title": "The Shot List — full series", "url": "https://classcentral.com/classroom/youtube-the-shot-list-80162", "what": "Shot sizes, framing, angles, focus, movement, lenses, frame rate, transitions, editing", "type": "10 videos"}, {"id": "ultimate-guide-to-camera-angles", "title": "Ultimate Guide to Camera Angles", "url": "https://www.youtube.com/watch?v=wLfZL9PZI9k", "what": "Low, high, overhead angles and what each makes the viewer feel", "type": "Video, ~13 min"}, {"id": "every-camera-movement-explained", "title": "Every Camera Movement Explained", "url": "https://www.youtube.com/watch?v=IiyBo-qLDeM", "what": "Pans, tilts, tracking, push-ins for cinematic B-roll", "type": "Video, ~29 min"}, {"id": "cuts-transitions-101", "title": "Cuts & Transitions 101", "url": "https://www.youtube.com/watch?v=OAH0MoAv2CI", "what": "J-cuts, L-cuts, match cuts, jump cuts with film examples", "type": "Video"}, {"id": "studiobinder-types-of-camera-shots", "title": "StudioBinder: Types of Camera Shots", "url": "https://studiobinder.com/blog/types-of-camera-shots/", "what": "Written reference for every shot type", "type": "Article"}, {"id": "9-most-used-cuts-in-video-editing", "title": "9 Most-used Cuts in Video Editing", "url": "https://invideo.io/blog/video-editing-types-of-cuts/", "what": "Cut types incl. match on action for sports", "type": "Article"}, {"id": "six-common-types-of-cuts", "title": "Six Common Types of Cuts", "url": "https://captions.ai/blog/six-common-types-of-cuts-in-film", "what": "When to use each cut in online video", "type": "Article"}, {"id": "b-roll-beginner-s-guide", "title": "B-roll Beginner's Guide", "url": "https://descript.com/blog/article/using-b-roll-a-beginners-guide", "what": "Shooting and using B-roll — key for faceless content", "type": "Article"}, {"id": "b-roll-101", "title": "B-ROLL 101", "url": "https://invideo.io/blog/b-roll/", "what": "Five B-roll shot types with examples", "type": "Article"}]}, {"k": "p", "h": "<strong>Most important for you:<\/strong> match on action (basketball), jump cuts (vlogs), and filming every moment wide, medium and close."}]}, {"id": "davinci-resolve-video-editing", "title": "DaVinci Resolve video editing", "blocks": [{"k": "p", "h": "Start with one beginner walkthrough, then the official free books, then the colour page. Use only the Cut and Edit pages for the first two weeks."}, {"k": "h", "h": "Getting started"}, {"k": "res", "rows": [{"id": "davinci-resolve-tutorial-for-beginners-c", "title": "DaVinci Resolve Tutorial for Beginners (Casey Faris)", "url": "https://www.youtube.com/watch?v=EEksPdEc7aI", "what": "Import, edit, render — the full basic workflow", "type": "Video"}, {"id": "primal-video-resolve-for-beginners-2026-", "title": "Primal Video: Resolve for Beginners (2026 update)", "url": "https://primalvideo.com/video-creation/editing/davinci-resolve-complete-tutorial-for-beginners", "what": "Pages, cutting, B-roll, titles, audio, colour, export", "type": "Video + article"}, {"id": "blackmagic-official-training-page", "title": "Blackmagic official training page", "url": "https://www.blackmagicdesign.com/uk/products/davinciresolve/training", "what": "Free official videos and free PDF books, incl. The Beginner's Guide to DaVinci Resolve 20", "type": "Videos + books"}, {"id": "no-film-school-free-resolve-20-books", "title": "No Film School: free Resolve 20 books", "url": "https://nofilmschool.com/davinci-resolve-training-books", "what": "Overview of every free official book", "type": "Article"}, {"id": "best-resolve-youtube-channels-premiumbea", "title": "Best Resolve YouTube channels (PremiumBeat)", "url": "https://www.premiumbeat.com/royalty-free/best-youtube-channels-for-video-editing-tutorials/davinci-resolve", "what": "Channels to follow: Casey Faris and others", "type": "List"}]}, {"k": "h", "h": "TikTok and vertical video"}, {"k": "res", "rows": [{"id": "how-to-make-vertical-videos-in-resolve", "title": "How to make vertical videos in Resolve", "url": "https://photography.tutsplus.com/articles/how-to-quickly-make-vertical-videos-in-davinci-resolve--cms-108180", "what": "9:16 timeline setup", "type": "Article"}, {"id": "changing-aspect-ratio-in-resolve", "title": "Changing aspect ratio in Resolve", "url": "https://www.miracamp.com/learn/davinci-resolve/how-to-change-aspect-ratio-in-davinci-resolve", "what": "Resolution and export settings per platform", "type": "Article"}, {"id": "resolve-to-tiktok", "title": "Resolve to TikTok", "url": "https://www.videvo.net/blog/?p=41274", "what": "Uploading straight to TikTok from the Deliver page", "type": "Article"}]}, {"k": "h", "h": "Colour grading"}, {"k": "res", "rows": [{"id": "color-grading-for-beginners-free-course", "title": "Color Grading for Beginners — free course", "url": "https://www.classcentral.com/course/youtube-davinci-resolve-color-grading-for-beginners-free-course-90204", "what": "Colour page layout, scopes, skin tones, cinematic looks", "type": "Video course"}, {"id": "free-colour-grading-tutorials-roundup-fi", "title": "Free colour grading tutorials roundup (Filmdaft)", "url": "https://filmdaft.com/free-tutorials-for-learning-color-grading-in-davinci-resolve/", "what": "Nodes, LUTs, white balance from skin tones", "type": "List of videos"}]}, {"k": "p", "h": "<strong>Audio in Resolve:<\/strong> your sound-engineering background suits the Fairlight page; the official Fairlight Audio Guide is on the Blackmagic training page above."}, {"k": "p", "h": "<strong>Free live webinars:<\/strong> Blackmagic runs free online beginner sessions a few times a year — <a href=\"https://dvresolve.com/tag/blackmagic-design/\" rel=\"noopener\" target=\"_blank\">schedule news on DVResolve<\/a>."}]}, {"id": "photography-fundamentals", "title": "Photography fundamentals", "blocks": [{"k": "p", "h": "Learn the exposure triangle first, shoot in Aperture Priority (A mode), then work on composition. Your Leeds street shots are a great practice subject."}, {"k": "h", "h": "Exposure and camera settings"}, {"k": "res", "rows": [{"id": "exposure-triangle-in-plain-english-shotk", "title": "Exposure triangle in plain English (Shotkit)", "url": "https://shotkit.com/exposure-triangle/", "what": "Aperture, shutter speed, ISO and how they balance", "type": "Article"}, {"id": "exposure-triangle-explained-capture-the-", "title": "Exposure triangle explained (Capture the Atlas)", "url": "https://capturetheatlas.com/exposure-triangle-explained-photography/", "what": "Deeper version with diagrams and stops", "type": "Article"}, {"id": "exposure-triangle-beginner-s-guide-petap", "title": "Exposure Triangle: Beginner's Guide (PetaPixel)", "url": "https://petapixel.com/2017/03/25/exposure-triangle-making-sense-aperture-shutter-speed-iso/", "what": "Another clear explanation of exposure values", "type": "Article"}, {"id": "nikon-d5100-manual-resources", "title": "Nikon D5100 manual + resources", "url": "https://www.cameratips.com/d5100/manual", "what": "Official PDF manual — read the modes and ISO sections", "type": "Manual"}]}, {"k": "h", "h": "Composition"}, {"k": "res", "rows": [{"id": "mpb-beginner-s-guide-to-composition", "title": "MPB: Beginner's Guide to Composition", "url": "https://www.mpb.com/en-us/content/tips-and-techniques/photography-a-beginners-guide-to-composition", "what": "Rule of thirds, space, leading lines, framing", "type": "Article"}, {"id": "composition-rules-for-beginners-alan-ran", "title": "Composition Rules for Beginners (Alan Ranger)", "url": "https://www.alanranger.com/blogs/mastering-photography-composition-rules", "what": "Thirds, symmetry, balance, negative space + printable guide", "type": "Article"}, {"id": "beyond-the-rule-of-thirds-30-techniques-", "title": "Beyond the Rule of Thirds: 30 techniques (Format)", "url": "https://www.format.com/magazine/resources/photography/beyond-the-rule-of-thirds-30-creative-techniques-for-composition", "what": "Lines, patterns, depth, contrast, golden ratio", "type": "Article"}]}, {"k": "h", "h": "Street photography (Leeds city centre practice)"}, {"k": "res", "rows": [{"id": "20-street-photography-tips-zenfolio", "title": "20 Street Photography Tips (Zenfolio)", "url": "https://zenfolio.com/street-photography/street-photography-tips", "what": "Focal lengths, social skills, shy-friendly approaches", "type": "Article"}, {"id": "street-photography-guide-keh", "title": "Street Photography Guide (KEH)", "url": "https://www.keh.com/shop/blog/street-photography-guide", "what": "Types of street photography and 11 tips", "type": "Article"}, {"id": "6-street-photography-tips-digital-photo-", "title": "6 Street Photography Tips (Digital Photo Mentor)", "url": "https://www.digitalphotomentor.com/6-street-photography-tips/", "what": "Getting started, black-and-white workflow", "type": "Article"}]}, {"k": "p", "h": "<strong>YouTube channels to follow:<\/strong> Jamie Windsor, Sean Tucker, Peter McKinnon."}, {"k": "p", "h": "<strong>Weekly challenge ideas:<\/strong> reflections, Leeds architecture, people in motion, night lights, matcha and food close-ups."}]}, {"id": "photo-editing", "title": "Photo editing", "blocks": [{"k": "p", "h": "Start with free Lightroom Mobile or darktable on your Mac, learn basic corrections, then move on to colour grading. Shoot RAW on the D5100 for the most editing control."}, {"k": "h", "h": "Lightroom (mobile and desktop)"}, {"k": "res", "rows": [{"id": "adobe-basic-edits-in-lightroom-mobile", "title": "Adobe: basic edits in Lightroom mobile", "url": "https://www.adobe.com/learn/lightroom-cc/web/lightroom-mobile-adjustments", "what": "Light, colour, straightening, object removal — 5 min", "type": "Official tutorial"}, {"id": "phlearn-intro-to-lightroom-mobile", "title": "PHLEARN: Intro to Lightroom Mobile", "url": "https://phlearn.com/tutorial/intro-to-lightroom-mobile/", "what": "Light and colour sliders, masking, includes practice RAW files", "type": "Video"}, {"id": "lightroom-mobile-tutorial-for-beginners-", "title": "Lightroom Mobile Tutorial for Beginners (Tuts+)", "url": "https://photography.tutsplus.com/lightroom-mobile-tutorial-for-beginners--ytc-64c", "what": "Cropping, RAW editing, presets, exporting", "type": "Article"}, {"id": "phlearn-beginner-s-guide-to-lightroom-cl", "title": "PHLEARN: Beginner's Guide to Lightroom Classic", "url": "https://phlearn.com/tutorial/beginners-guide-lightroom/", "what": "Full desktop workflow: import, edit, colour, presets, export", "type": "Video course"}, {"id": "beginner-s-lightroom-workflow-imagely", "title": "Beginner's Lightroom Workflow (Imagely)", "url": "https://www.imagely.com/beginners-lightroom-workflow-tutorial/", "what": "Importing, culling, editing in rounds, local tools", "type": "Article"}]}, {"k": "h", "h": "Colour grading your photos"}, {"k": "res", "rows": [{"id": "adobe-colour-grading-in-lightroom", "title": "Adobe: Colour grading in Lightroom", "url": "https://www.adobe.com/th_en/creativecloud/roc/blog/photography/colour-grading.html", "what": "Grading vs correction, the colour wheels, saving presets", "type": "Official guide"}, {"id": "cinematic-look-in-lightroom-iphotography", "title": "Cinematic look in Lightroom (iPhotography)", "url": "https://www.iphotography.com/blog/cinematic-look-in-lightroom-with-colour-grading/", "what": "Teal and orange, moody palettes, mobile steps", "type": "Article"}, {"id": "make-photos-look-cinematic-step-by-step-", "title": "Make photos look cinematic, step by step (Brendan Williams)", "url": "https://www.bwillcreative.com/?p=67093", "what": "Matte shadows, tone curve, HSL for one or two dominant colours", "type": "Article"}, {"id": "lightroom-colour-grading-guide-the-lens-", "title": "Lightroom colour grading guide (The Lens Lounge)", "url": "https://thelenslounge.com/lightroom-color-grading/", "what": "Tone curve, HSL, colour schemes", "type": "Article"}, {"id": "5-lightroom-tips-for-colour-grading-b-h", "title": "5 Lightroom Tips for Colour Grading (B&H)", "url": "https://static.bhphotovideo.com/explora/videos/photography/5-lightroom-tips-for-color-grading", "what": "Profiles, HSL, calibration, presets", "type": "Video, ~4 min"}, {"id": "colour-grading-in-portrait-photography-p", "title": "Colour grading in portrait photography (PetaPixel)", "url": "https://petapixel.com/color-grading/", "what": "Mood boards, urban and vintage looks, grain", "type": "Article"}]}, {"k": "h", "h": "Free alternatives to Lightroom"}, {"k": "table", "head": ["Tool", "Best for", "Platform"], "rows": [["<a href=\"https://www.darktable.org/\" rel=\"noopener\" target=\"_blank\">darktable<\/a>", "Full RAW editing, open source", "Mac, Windows, Linux"], ["<a href=\"https://www.photopea.com/\" rel=\"noopener\" target=\"_blank\">Photopea<\/a>", "Photoshop-style layers in the browser, no account", "Browser"], ["Snapseed (Google)", "Quick edits on your phone", "iPhone, Android"], ["<a href=\"https://www.tourboxtech.com/en/news/lightroom-alternative-free.html\" rel=\"noopener\" target=\"_blank\">Free Lightroom alternatives roundup (TourBox)<\/a>", "Compare darktable, RawTherapee, digiKam, Photopea", "Article"]]}, {"k": "p", "h": "<strong>Tip:<\/strong> once you like an edit, save it as a preset so your feed has a consistent look."}]}, {"id": "faceless-and-basketball-content", "title": "Faceless and basketball content", "blocks": [{"k": "p", "h": "You don't need to talk to camera: B-roll, text on screen, voiceover and slideshows all work. Basketball is a natural fit because the play is the content."}, {"k": "h", "h": "Faceless content ideas for you"}, {"k": "ul", "items": ["Day-in-Leeds vlogs: hands, food, streets, buses, cut to music", "\"Photos I took this week\" slideshows from the D5100", "Text-on-screen uni life: \"a day as a first year in Leeds\"", "Voiceover recorded at home on your laptop", "\"How I got this shot\" behind-the-scenes, filmed on the phone mounted on the camera"]}, {"k": "h", "h": "Basketball content ideas"}, {"k": "ul", "items": ["Training clips: shooting drills, handles, footwork set to music", "Progress series: \"day 1 vs day 30 of fixing my jumper\"", "Rating outdoor courts around Leeds and Headingley", "Pickup highlights (ask people before posting)", "Slow-motion form shots (phone slo-mo)"]}, {"k": "h", "h": "Links"}, {"k": "res", "rows": [{"id": "basketball-videography-guide-for-beginne", "title": "Basketball Videography Guide for Beginners (OBSBOT)", "url": "https://obsbot.com/blog/video-production/basketball-videograph", "what": "Camera positions, lenses, lighting on indoor courts, stabilisation", "type": "Article"}, {"id": "how-to-properly-film-basketball-pixellot", "title": "How To Properly Film Basketball (Pixellot)", "url": "https://docs.pixellot.tv/portal/en/kb/articles/how-to-properly-film-basketball-19-5-2025", "what": "Tripod use, when to start and stop recording", "type": "Article"}, {"id": "best-settings-for-filming-sports-canon", "title": "Best settings for filming sports (Canon)", "url": "https://www.canon-europe.com/pro/stories/video-settings-for-sport/", "what": "Shutter speed and settings for fast action, low calf-level angles", "type": "Article"}, {"id": "12-faceless-tiktok-ideas-nestscale", "title": "12 Faceless TikTok Ideas (Nestscale)", "url": "https://nestscale.com/blog/tiktok-ideas-without-showing-face.html", "what": "Food, product and carousel formats without showing your face", "type": "Article"}, {"id": "faceless-tiktok-ideas-blogging-guide", "title": "Faceless TikTok Ideas (Blogging Guide)", "url": "https://bloggingguide.com/faceless-tiktok-ideas/", "what": "Hands-only videos and other faceless formats", "type": "Article"}]}, {"k": "p", "h": "<strong>Filming tip:<\/strong> shoot basketball from a low angle near the baseline with the whole hoop in frame, and cut on the moment the ball goes in."}]}, {"id": "basketball-mixtape-part-1-filming", "title": "Basketball mixtape part 1: filming", "blocks": [{"k": "p", "h": "A good mixtape is mostly good footage: low angles, steady framing, and lots of short clips of makes, handles and reactions. Film way more than you need."}, {"k": "h", "h": "Angles that work"}, {"k": "table", "head": ["Angle", "Where to stand", "Best for"], "rows": [["Baseline low", "Under or beside the hoop, camera near the floor", "Layups, dunks, finishes — makes players look bigger"], ["Wing / corner", "45° to the hoop, tripod at waist height", "Jumpers, full shot arc with the rim in frame"], ["Half-court wide", "Tripod at half-court, slightly raised", "Context shots, fast breaks, full plays"], ["Follow cam", "Handheld, walking behind or beside the ball handler", "Handles, crossovers, iso moves"], ["Close-up details", "Right next to the action", "Shoes, ball through the net, hands, celebrations"]]}, {"k": "h", "h": "Camera settings"}, {"k": "ul", "items": ["<strong>Shutter:<\/strong> fast enough to freeze action in photos (sports guides suggest 1/500 or faster for stills); for video, keep motion natural and avoid shooting in very dim light", "<strong>Frame rate:<\/strong> shoot the highest frame rate available if you want slow motion. As far as I know the D5100 tops out at 30fps, so use your <strong>phone's slo-mo<\/strong> for slow-motion shots until you upgrade (the Nikon Z30/Z50 do 1080p at 120fps)", "<strong>Focus:<\/strong> pre-focus on the hoop area; D5100 video autofocus is slow", "<strong>Hold steady:<\/strong> tripod for static angles, tight neck strap or handle for handheld", "<strong>Record:<\/strong> keep rolling through the whole possession — you can always trim"]}, {"k": "h", "h": "Links"}, {"k": "res", "rows": [{"id": "basketball-videography-guide-for-beginne", "title": "Basketball Videography Guide for Beginners (OBSBOT)", "url": "https://obsbot.com/blog/video-production/basketball-videograph", "what": "Camera positions, lenses, indoor lighting, stabilisation", "type": "Article"}, {"id": "best-settings-for-filming-sports-canon", "title": "Best settings for filming sports (Canon)", "url": "https://www.canon-europe.com/pro/stories/video-settings-for-sport/", "what": "Shutter speed for action, filming from the front, low calf-level angles", "type": "Article"}, {"id": "how-to-properly-film-basketball-pixellot", "title": "How To Properly Film Basketball (Pixellot)", "url": "https://docs.pixellot.tv/portal/en/kb/articles/how-to-properly-film-basketball-19-5-2025", "what": "Tripod use, when to start and stop recording", "type": "Article"}, {"id": "ultimate-guide-to-camera-angles-studiobi", "title": "Ultimate Guide to Camera Angles (StudioBinder)", "url": "https://www.youtube.com/watch?v=wLfZL9PZI9k", "what": "Low and high angles and what they make viewers feel", "type": "Video"}]}, {"k": "p", "h": "<strong>Shot list for one session:<\/strong> 10 makes from the baseline, 10 from the wing, 5 handles clips, 5 slow-mo shots on the phone, 5 detail shots, a few reactions. Ask before filming other people in pickup games."}]}, {"id": "basketball-mixtape-part-2-editing-in-res", "title": "Basketball mixtape part 2: editing in Resolve", "blocks": [{"k": "p", "h": "The formula: pick the song first, mark its beats, then cut your best plays to those beats with a speed ramp on the biggest moments. Keep TikTok mixtapes 15–60 seconds; YouTube can run 2–4 minutes."}, {"k": "h", "h": "Editing workflow"}, {"k": "ol", "items": ["<strong>Log your footage:<\/strong> watch everything once and keep only makes, handles and reactions", "<strong>Mark the beat:<\/strong> play the song in Resolve and tap M on every kick or snare to drop markers", "<strong>Rough cut:<\/strong> put your best play first (the hook), then order the rest by energy, saving a highlight for the drop", "<strong>Cut on the beat:<\/strong> trim each clip so the make, crossover or dunk lands on a marker", "<strong>Match on action:<\/strong> cut between angles mid-move so a layup flows from wide to close-up", "<strong>Speed ramps:<\/strong> normal speed into slow motion on the release or finish, then snap back", "<strong>Polish:<\/strong> a quick colour grade, text for name and team, then export at 1080 x 1920 for TikTok"]}, {"k": "h", "h": "Speed ramps and slow motion"}, {"k": "res", "rows": [{"id": "how-to-speed-ramp-in-resolve-complete-gu", "title": "How to Speed Ramp in Resolve: complete guide (TryUncle, Resolve 21)", "url": "https://tryuncle.com/learn/davinci-resolve/how-to-speed-ramp-in-davinci-resolve", "what": "Speed points, retime curve, retime process, what changed in Resolve 21", "type": "Article"}, {"id": "speed-ramps-in-resolve-quickly-cined", "title": "Speed ramps in Resolve quickly (CineD)", "url": "https://www.cined.com/?p=300649", "what": "Speed points and turning keyframes into smooth curves", "type": "Article"}, {"id": "speed-ramping-in-premiere-resolve-and-fi", "title": "Speed ramping in Premiere, Resolve and Final Cut (Filmdaft)", "url": "https://filmdaft.com/what-is-speed-ramping-and-how-to-create-it/", "what": "Step-by-step plus recommended MrAlexTech video", "type": "Article"}, {"id": "how-to-speed-ramp-in-resolve-17-pro-tuto", "title": "How to Speed Ramp in Resolve 17 — Pro Tutorial", "url": "https://creativevideotips.com/tutorials/how-to-speed-ramp-in-davinci-resolve-17-pro-tutorial", "what": "Retime curve, optical flow, fixing bad slow-mo", "type": "Video"}, {"id": "how-to-change-clip-speed-in-resolve-simo", "title": "How to change clip speed in Resolve (Simon Says)", "url": "https://www.simonsaysai.com/blog/how-to-change-clip-speed-in-davinci-resolve", "what": "Speed changes and whip pans with motion blur", "type": "Article"}]}, {"k": "h", "h": "Sports editing technique"}, {"k": "res", "rows": [{"id": "how-to-make-sports-video-edits-eklipse", "title": "How to Make Sports Video Edits (Eklipse)", "url": "https://blog.eklipse.gg/guide/how-to-edit-sport-video.html", "what": "Rough cut, slow-mo, speed ramps, zooms, music, text", "type": "Article"}, {"id": "sports-highlights-learn-video-editing-fi", "title": "Sports Highlights: Learn Video Editing (Finchley Studio)", "url": "https://www.finchley.co.uk/finchley-learning/sports-highlights-learn-video-editing-to-capture-action-packed-moments", "what": "Building a reel, text and graphics, exporting", "type": "Article"}, {"id": "9-most-used-cuts-incl-match-on-action-in", "title": "9 Most-used Cuts incl. match on action (InVideo)", "url": "https://invideo.io/blog/video-editing-types-of-cuts/", "what": "Match-on-action cuts for sports", "type": "Article"}, {"id": "cuts-transitions-101", "title": "Cuts & Transitions 101", "url": "https://www.youtube.com/watch?v=OAH0MoAv2CI", "what": "Match cuts, jump cuts, J and L cuts", "type": "Video"}, {"id": "colour-grading-for-beginners-free-course", "title": "Colour grading for beginners — free course", "url": "https://www.classcentral.com/course/youtube-davinci-resolve-color-grading-for-beginners-free-course-90204", "what": "A consistent look across clips from different courts", "type": "Video course"}]}, {"k": "p", "h": "<strong>Effects to learn (in order):<\/strong> speed ramps, zoom-in on the make, freeze frame on the release, a subtle shake on dunks, then text tracking. Don't stack them all in one clip — one effect per big moment hits harder."}]}, {"id": "basketball-mixtape-part-3-music-copyrigh", "title": "Basketball mixtape part 3: music, copyright and posting", "blocks": [{"k": "p", "h": "On TikTok, pick the song from TikTok's own sound library when you upload — songs there are cleared to use. On YouTube, popular songs can get your video claimed or muted, so use royalty-free music or the YouTube Audio Library. You can also make your own beats in BandLab or GarageBand."}, {"k": "h", "h": "Music by platform"}, {"k": "table", "head": ["Platform", "Safest music choice", "Why"], "rows": [["TikTok", "Song from TikTok's sound library, added in the app", "Cleared for use on TikTok; also gives you trending-sound reach"], ["Instagram Reels", "Song from Instagram's music library, added in the app", "Same idea as TikTok"], ["YouTube", "YouTube Audio Library or royalty-free tracks", "Copyrighted songs can be claimed, muted or have ad money redirected"]]}, {"k": "p", "h": "<strong>Tip:<\/strong> edit to the real song in Resolve to get your cuts on the beat, then export without audio for TikTok or Reels and add that same song in the app."}, {"k": "h", "h": "Links"}, {"k": "res", "rows": [{"id": "tiktok-copyright-explained-uppbeat", "title": "TikTok Copyright Explained (Uppbeat)", "url": "https://uppbeat.io/blog/tiktok/tiktok-copyright", "what": "When you can use songs on TikTok and how claims work", "type": "Article"}, {"id": "uppbeat", "title": "Uppbeat", "url": "https://uppbeat.io/", "what": "Royalty-free music made for creators", "type": "Music library"}, {"id": "youtube-audio-library-inside-youtube-stu", "title": "YouTube Audio Library (inside YouTube Studio)", "url": "", "what": "Free music safe for YouTube", "type": "Music library"}, {"id": "free-music-for-sports-highlights", "title": "Free music for sports highlights", "url": "https://grandavehousing.calpoly.edu/news/unleash-the-game-free-music", "what": "YouTube Audio Library, Pixabay, Free Music Archive, Incompetech", "type": "Article"}, {"id": "royalty-free-music-and-why-it-matters-lo", "title": "Royalty-free music and why it matters (Loudly)", "url": "https://www-lol.loudly.com/?p=1280", "what": "How copyright claims affect monetisation and reach", "type": "Article"}]}, {"k": "h", "h": "Posting checklist"}, {"k": "tasks", "items": ["Hook in the first 1–2 seconds: open on your best play", "Vertical 1080 x 1920 for TikTok and Reels; 16:9 cut for YouTube", "Caption with a hook plus location, e.g. \"Headingley run, Sunday\"", "3–5 hashtags: #basketball #hoops #leeds #mixtape", "Tag anyone featured (with their permission)", "Post 6–9pm, and reply to comments in the first hour", "Cut a 10–15 second teaser from a longer YouTube mixtape for TikTok"]}]}, {"id": "free-tools-cheat-sheet", "title": "Free tools cheat sheet", "blocks": [{"k": "p", "h": "Everything below is free, so your whole workflow costs £0 in software."}, {"k": "table", "head": ["Job", "Tool", "Where"], "rows": [["Video editing, speed ramps, colour", "<a href=\"https://www.blackmagicdesign.com/uk/products/davinciresolve/training\" rel=\"noopener\" target=\"_blank\">DaVinci Resolve<\/a>", "MacBook"], ["Video audio", "Fairlight page inside Resolve", "MacBook"], ["Slow-motion clips", "Phone slo-mo mode", "iPhone"], ["Photo editing (desktop)", "<a href=\"https://www.darktable.org/\" rel=\"noopener\" target=\"_blank\">darktable<\/a>", "MacBook"], ["Photo editing (phone)", "Lightroom Mobile (free tier), Snapseed", "iPhone"], ["Layers and graphics", "<a href=\"https://www.photopea.com/\" rel=\"noopener\" target=\"_blank\">Photopea<\/a>", "Browser"], ["Thumbnails and text graphics", "Canva (free tier)", "Browser"], ["Mixtape music (YouTube)", "YouTube Audio Library, <a href=\"https://uppbeat.io/\" rel=\"noopener\" target=\"_blank\">Uppbeat<\/a>", "Browser"], ["Mixtape music (TikTok, Reels)", "In-app sound library", "Phone"], ["Your own beats", "BandLab, GarageBand", "Browser, MacBook"]]}]}];
+(function(){
+var $=function(id){return document.getElementById(id)};
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function clean(h){return String(h).replace(/<\/?label>/g,'')}
+
+/* ---------- sections ---------- */
+var HOW=SECS[0], PLANSEC=SECS[1];
+var LEARN=SECS.slice(2,10), TOOLS=SECS[10];
+var ROUTINE=HOW.blocks[4].items.map(clean);
+var RESLIST=[];
+LEARN.forEach(function(sec){var g='';sec.blocks.forEach(function(b){
+  if(b.k==='h')g=b.h.replace(/:$/,'');
+  else if(b.k==='res')b.rows.forEach(function(r){RESLIST.push({sec:sec,r:r,g:g,key:sec.id+':'+r.id})})})});
+var STAGES=[
+ {id:'s1',name:'Filming basics and Resolve for beginners',hint:'As you go: film something short each time you learn a technique, and post it.',
+  test:function(x){return x.sec.id==='filming-basics-shots-angles-movement-and'||(x.sec.id==='davinci-resolve-video-editing'&&/Getting started|TikTok/.test(x.g))}},
+ {id:'s2',name:'Photography basics and Lightroom',hint:'As you go: pick a theme and shoot a batch of photos to practise on.',
+  test:function(x){return x.sec.id==='photography-fundamentals'||(x.sec.id==='photo-editing'&&/^Lightroom/.test(x.g))}},
+ {id:'s3',name:'Colour grading for video and photos',hint:'As you go: grade a clip and a photo, then post the best one.',
+  test:function(x){return (x.sec.id==='davinci-resolve-video-editing'||x.sec.id==='photo-editing')&&/Colour grading/.test(x.g)}},
+ {id:'s4',name:'Your first basketball mixtape',hint:'As you go: film a session, then cut it to the beat.',
+  test:function(x){return /^(faceless|basketball-mixtape)/.test(x.sec.id)}}
+];
+STAGES.forEach(function(st){st.items=RESLIST.filter(st.test)});
+var LOGTYPES=[['watched','Watched or read'],['shot','Shot footage'],['edited','Edited'],['posted','Posted'],['hoops','Filmed a hoops session'],['photos','Took photos']];
+var LTNAME={};LOGTYPES.forEach(function(t){LTNAME[t[0]]=t[1]});
+
+/* ---------- dates ---------- */
+function ymd(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function parse(s){var p=s.split('-');return new Date(+p[0],+p[1]-1,+p[2])}
+function monday(d){var x=new Date(d.getFullYear(),d.getMonth(),d.getDate());var wd=(x.getDay()+6)%7;x.setDate(x.getDate()-wd);return x}
+function addDays(d,n){var x=new Date(d);x.setDate(x.getDate()+n);return x}
+var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function nice(d){return d.getDate()+' '+MON[d.getMonth()]}
+var TODAY=new Date();
+
+/* ---------- state ---------- */
+var S={done:{},checklist:{},tasks:{},series:{},log:[]};
+function norm(o){
+  o=o||{};
+  return {done:o.done||{},checklist:o.checklist||{},tasks:o.tasks||{},series:o.series||{},log:Array.isArray(o.log)?o.log:[]};
+}
+var store={mode:'local',ref:null,pending:false,saving:false,timer:null};
+function lsGet(){try{return JSON.parse(localStorage.getItem('creator-hub')||'null')}catch(e){return null}}
+function lsSet(){try{localStorage.setItem('creator-hub',JSON.stringify(S))}catch(e){}}
+function setSync(){
+  $('sync').innerHTML=store.mode==='db'?'<b>● Saved to your Hub</b> · synced across your devices':'<b class="local">● This device only</b> · progress is saved in this browser';
+}
+function save(){
+  lsSet();
+  if(store.mode!=='db')return;
+  store.pending=true;
+  clearTimeout(store.timer);
+  store.timer=setTimeout(flush,500);
+}
+function flush(){
+  if(store.saving){store.timer=setTimeout(flush,300);return}
+  store.saving=true;store.pending=false;
+  store.ref.from('hub_kv').upsert({key:'creator-hub',value:JSON.parse(JSON.stringify(S)),updated_at:new Date().toISOString()}).then(function(r){
+    store.saving=false;
+    if(r.error){store.mode='local';setSync()}
+  },function(){store.saving=false;store.mode='local';setSync()});
+}
+function initStore(){
+  if(!(window.supabase&&window.SUPABASE_URL&&window.SUPABASE_ANON_KEY)){setSync();return Promise.resolve()}
+  var cl=window.supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);
+  return cl.from('hub_kv').select('value').eq('key','creator-hub').maybeSingle().then(function(r){
+    if(r.error){setSync();return}
+    store.ref=cl;store.mode='db';
+    if(r.data&&r.data.value&&Object.keys(r.data.value).length){S=norm(r.data.value);lsSet()}
+    else{var l=lsGet();if(l){S=norm(l)}save()}
+    setSync();
+  },function(){setSync()});
+}
+
+/* ---------- counts ---------- */
+function resKey(sec,r){return sec.id+':'+r.id}
+function secCounts(sec){
+  var t=0,d=0;
+  sec.blocks.forEach(function(b){if(b.k==='res')b.rows.forEach(function(r){t++;if(S.done[resKey(sec,r)])d++})});
+  return {t:t,d:d};
+}
+function allCounts(){
+  var t=0,d=0;LEARN.forEach(function(s){var c=secCounts(s);t+=c.t;d+=c.d});return {t:t,d:d};
+}
+function bar(d,t){var p=t?Math.round(d/t*100):0;return '<div class="bar'+(p===100?' full':'')+'"><i style="width:'+p+'%"></i></div>'}
+function stageCounts(st){var d=0;st.items.forEach(function(x){if(S.done[x.key])d++});return {d:d,t:st.items.length}}
+function totals(){var tot={};S.log.forEach(function(e){tot[e.type]=(tot[e.type]||0)+(e.type==='photos'?(+e.n||1):1)});return tot}
+
+/* ---------- views ---------- */
+var openSecs={};
+var draft={type:'posted',text:'',n:''};
+var tab='home';
+
+function viewHome(){
+  var c=allCounts(),tot=totals();
+  var h='<div class="card"><div class="lab">Your progress</div><h2>'+c.d+' of '+c.t+' resources done</h2>'+bar(c.d,c.t)+'</div>';
+  var nx=nextUp();
+  if(nx)h+='<div class="card next"><div class="lab">Up next</div><h3>'+esc(nx.r.title)+'</h3><p class="dim small" style="margin:2px 0 8px">'+nx.r.what+' · '+esc(nx.sec.title)+'</p><div style="display:flex;gap:8px;flex-wrap:wrap">'+(nx.r.url?'<a class="btn sm" style="text-decoration:none" href="'+esc(nx.r.url)+'" target="_blank" rel="noopener">Open</a>':'')+'<button class="btn ghost sm" data-act="res" data-k="'+esc(nx.key)+'">Mark done</button></div></div>';
+  else h+='<div class="card next"><h3>Everything ticked</h3><p class="dim small" style="margin:2px 0 0">You have been through every resource. Keep shooting and posting.</p></div>';
+  h+='<div class="card"><h3>Suggested order</h3><div class="dim small">Take them in this order, or jump to whatever you feel like.</div>';
+  STAGES.forEach(function(st,i){
+    var k=stageCounts(st),first=null;
+    for(var j=0;j<st.items.length;j++){if(!S.done[st.items[j].key]){first=st.items[j];break}}
+    h+='<div style="margin-top:14px"><div style="display:flex;justify-content:space-between;gap:10px"><b>'+(i+1)+'. '+esc(st.name)+'</b><span class="mono dim small">'+k.d+'/'+k.t+'</span></div>'+bar(k.d,k.t)+'<div class="dim small" style="margin-top:6px">'+esc(st.hint)+'</div>'
+     +(first?'<button class="btn ghost sm" style="margin-top:8px" data-act="goto" data-k="'+first.sec.id+'">Open in Learn</button>':'')+'</div>';
+  });
+  h+='<p class="dim small" style="margin:16px 0 0"><b>After that:</b> one basketball mixtape a month, plus training clips whenever you are on court.</p></div>';
+  var ck=S.checklist,cd=0;ROUTINE.forEach(function(_,i){if(ck[i])cd++});
+  h+='<div class="card"><div style="display:flex;justify-content:space-between;gap:10px;align-items:baseline"><h3>When you sit down to work</h3><span class="mono dim small">'+cd+'/'+ROUTINE.length+'</span></div><div class="dim small">Tick these off in a session, then reset for the next one.</div>';
+  ROUTINE.forEach(function(t,i){
+    h+='<div class="it'+(ck[i]?' done':'')+'"><button class="ck" role="checkbox" aria-checked="'+(!!ck[i])+'" aria-label="'+esc(t)+'" data-act="rt" data-k="'+i+'"></button><div class="tx"><span class="ti">'+t+'</span></div></div>';
+  });
+  h+='<button class="btn ghost sm" style="margin-top:8px" data-act="resetck">Reset checklist</button></div>';
+  h+='<div class="card"><h3>Log something</h3><div class="row" style="margin-top:8px"><label class="f"><span class="lab">What</span><select id="lgType">'+LOGTYPES.map(function(t){return '<option value="'+t[0]+'"'+(draft.type===t[0]?' selected':'')+'>'+t[1]+'</option>'}).join('')+'</select></label>'
+   +'<label class="f"><span class="lab">How many (photos)</span><input type="number" id="lgN" min="1" max="500" inputmode="numeric" value="'+esc(draft.n)+'" placeholder="20"></label></div>'
+   +'<label class="f" style="display:block;margin-top:10px"><span class="lab">Note</span><input type="text" id="lgText" value="'+esc(draft.text)+'" placeholder="e.g. Leeds station, golden hour"></label>'
+   +'<div style="margin-top:12px"><button class="btn" data-act="addlog">Add to log</button></div></div>';
+  var last=S.log.slice(0,3);
+  if(last.length){h+='<div class="card"><h3>Latest</h3><ul class="log">'+last.map(logLi).join('')+'</ul></div>'}
+  $('v-home').innerHTML=h;
+}
+function nextUp(){
+  for(var i=0;i<STAGES.length;i++){
+    var it=STAGES[i].items;
+    for(var j=0;j<it.length;j++){if(!S.done[it[j].key])return it[j]}
+  }
+  return null;
+}
+function logLi(e){
+  var d=parse(e.d);
+  return '<li><span class="ty">'+esc(LTNAME[e.type]||e.type)+'</span><span class="tx">'+(e.type==='photos'&&e.n?'<b>'+e.n+' photos</b> ':'')+esc(e.text||'')+'<div class="dt">'+nice(d)+'</div></span><button class="btn ghost sm" data-act="dellog" data-k="'+e.t+'">Delete</button></li>';
+}
+
+function blocks(sec,bl,isLearn){
+  var h='';
+  bl.forEach(function(b,bi){
+    if(b.k==='p')h+='<p>'+b.h+'</p>';
+    else if(b.k==='h')h+='<h4>'+esc(b.h.replace(/:$/,''))+'</h4>';
+    else if(b.k==='ul'||b.k==='ol')h+='<'+b.k+'>'+b.items.map(function(i){return '<li>'+i+'</li>'}).join('')+'</'+b.k+'>';
+    else if(b.k==='tasks'){
+      b.items.forEach(function(t,i){
+        var key='t:'+sec.id+':'+bi+':'+i,on=S.tasks[key];
+        h+='<div class="it'+(on?' done':'')+'"><button class="ck" role="checkbox" aria-checked="'+(!!on)+'" data-act="task" data-k="'+key+'"></button><div class="tx"><span class="ti" style="font-weight:400">'+clean(t)+'</span></div></div>';
+      });
+      if(sec.id.indexOf('part-3')>0)h+='<button class="btn ghost sm" data-act="resettasks" data-k="t:'+sec.id+':'+bi+':">Reset for the next post</button>';
+    }
+    else if(b.k==='res'){
+      b.rows.forEach(function(r){
+        var key=resKey(sec,r),on=S.done[key];
+        var ti=r.url?'<a href="'+esc(r.url)+'" target="_blank" rel="noopener">'+esc(r.title)+'</a>':esc(r.title);
+        h+='<div class="it'+(on?' done':'')+'"><button class="ck" role="checkbox" aria-checked="'+(!!on)+'" aria-label="Done: '+esc(r.title)+'" data-act="res" data-k="'+esc(key)+'"></button><div class="tx"><div class="ti">'+ti+'</div><div class="wh">'+r.what+'</div><span class="chip">'+esc(r.type)+'</span></div></div>';
+      });
+    }
+    else if(b.k==='table'){
+      var isSeries=b.head[0]==='Series'&&b.head.length===5;
+      h+='<table class="rt"><thead><tr>'+b.head.map(function(x){return '<th>'+esc(x)+'</th>'}).join('')+(isSeries?'<th>Posted</th>':'')+'</tr></thead><tbody>';
+      b.rows.forEach(function(r){
+        h+='<tr>'+r.map(function(c,i){return '<td data-l="'+esc(b.head[i])+'">'+c+'</td>'}).join('');
+        if(isSeries){
+          var id=r[0].replace(/<[^>]+>/g,'').trim(),n=S.series[id]||0;
+          h+='<td data-l="Posted"><span class="step"><button data-act="ser" data-k="'+esc(id)+'" data-d="-1" aria-label="One fewer">–</button><b>'+n+'</b><button data-act="ser" data-k="'+esc(id)+'" data-d="1" aria-label="One more">+</button></span></td>';
+        }
+        h+='</tr>';
+      });
+      h+='</tbody></table>';
+    }
+  });
+  return h;
+}
+function viewContent(){
+  $('v-content').innerHTML='<div class="card"><h2>Content plan</h2><div class="bd">'+blocks(PLANSEC,PLANSEC.blocks,false)+'</div></div>';
+}
+function viewLearn(){
+  var c=allCounts();
+  var h='<div class="card"><div class="lab">Everything you have ticked</div><h2>'+c.d+' of '+c.t+' resources</h2>'+bar(c.d,c.t)+'</div>';
+  LEARN.concat([TOOLS]).forEach(function(s){
+    var cc=secCounts(s),open=openSecs[s.id];
+    h+='<details class="sec" data-sec="'+s.id+'"'+(open?' open':'')+'><summary><h3>'+esc(s.title)+'</h3>'+(cc.t?'<span class="cnt">'+cc.d+'/'+cc.t+'</span>':'')+'</summary><div class="bd">'+(cc.t?bar(cc.d,cc.t):'')+blocks(s,s.blocks,true)+'</div></details>';
+  });
+  $('v-learn').innerHTML=h;
+}
+function viewLog(){
+  var tot=totals();
+  var h='<div class="card"><h2>Totals</h2><div class="tgt">'+LOGTYPES.map(function(t){return '<div><span class="lab">'+t[1]+'</span><br><b>'+(tot[t[0]]||0)+'</b></div>'}).join('')+'</div></div>';
+  h+='<div class="card"><h3>History</h3>'+(S.log.length?'<ul class="log">'+S.log.slice(0,100).map(logLi).join('')+'</ul>':'<div class="empty">Nothing logged yet. Add your first entry on the Home tab.</div>')+'</div>';
+  $('v-log').innerHTML=h;
+}
+function render(){
+  /* keep what the user is typing */
+  var t=$('lgText');if(t){draft.text=t.value}
+  var n=$('lgN');if(n){draft.n=n.value}
+  var ty=$('lgType');if(ty){draft.type=ty.value}
+  viewHome();viewContent();viewLearn();viewLog();
+}
+
+/* ---------- events ---------- */
+var confirmDel=null;
+document.addEventListener('click',function(e){
+  var tb=e.target.closest('[data-tab]');
+  if(tb){setTab(tb.dataset.tab);return}
+  var b=e.target.closest('[data-act]');if(!b)return;
+  var a=b.dataset.act,k=b.dataset.k;
+  if(a==='res'){if(S.done[k])delete S.done[k];else S.done[k]=1;save();keepOpen();render()}
+  else if(a==='task'){if(S.tasks[k])delete S.tasks[k];else S.tasks[k]=1;save();keepOpen();render()}
+  else if(a==='resettasks'){Object.keys(S.tasks).forEach(function(x){if(x.indexOf(k)===0)delete S.tasks[x]});save();keepOpen();render()}
+  else if(a==='rt'){if(S.checklist[k])delete S.checklist[k];else S.checklist[k]=1;save();render()}
+  else if(a==='resetck'){S.checklist={};save();render()}
+  else if(a==='ser'){var v=(S.series[k]||0)+(+b.dataset.d);S.series[k]=Math.max(0,v);save();keepOpen();render()}
+  else if(a==='goto'){openSecs[k]=true;setTab('learn');render();var el=document.querySelector('[data-sec="'+k+'"]');if(el)el.scrollIntoView()}
+  else if(a==='addlog'){
+    var type=$('lgType').value,txt=$('lgText').value.trim(),nn=parseInt($('lgN').value,10);
+    var ent={t:Date.now(),d:ymd(new Date()),type:type,text:txt};
+    if(type==='photos')ent.n=nn>0?nn:1;
+    S.log.unshift(ent);if(S.log.length>400)S.log.length=400;
+    draft={type:type,text:'',n:''};save();render();
+  }
+  else if(a==='dellog'){
+    if(confirmDel!==k){confirmDel=k;b.textContent='Tap again';return}
+    confirmDel=null;S.log=S.log.filter(function(x){return String(x.t)!==k});save();render();
+  }
+});
+function keepOpen(){document.querySelectorAll('details.sec').forEach(function(d){openSecs[d.dataset.sec]=d.open})}
+document.addEventListener('toggle',function(e){var d=e.target;if(d&&d.dataset&&d.dataset.sec)openSecs[d.dataset.sec]=d.open},true);
+function setTab(n){
+  tab=n;
+  ['home','learn','content','log'].forEach(function(k){$('v-'+k).hidden=k!==n});
+  document.querySelectorAll('[data-tab]').forEach(function(b){b.setAttribute('aria-selected',String(b.dataset.tab===n))});
+  window.scrollTo(0,0);
+}
+
+/* ---------- boot ---------- */
+var l0=lsGet();if(l0)S=norm(l0);
+render();setSync();
+initStore().then(function(){render()});
+})();
+</script>
+</body>
+</html>
