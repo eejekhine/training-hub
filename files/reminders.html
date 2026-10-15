@@ -111,6 +111,12 @@
       <div><label class="f" for="fDate" id="fDateLbl">First one on</label><input type="date" id="fDate" required></div>
       <div><label class="f" for="fLink">Tap opens</label><select id="fLink"></select></div>
     </div>
+    <label class="f" for="fSkip">Only remind me if I haven't opened…</label>
+    <div class="two">
+      <select id="fSkip"><option value="">Always remind me</option></select>
+      <input type="time" id="fSince" value="05:00" aria-label="Since what time" hidden>
+    </div>
+    <p class="note" id="fSkipNote" style="margin:6px 0 0" hidden>Skips the reminder if you've opened that page since the time on the right, on the day it's due.</p>
     <div class="btns">
       <button class="btn primary" type="submit" id="fSave">Add reminder</button>
       <button class="btn" type="button" id="fCancel" hidden>Cancel</button>
@@ -260,7 +266,8 @@
         return '<div class="card" data-id="' + r.id + '"><div class="rem' + (r.enabled ? '' : ' off') + '">' +
           '<div class="grow"><div class="t">' + esc(r.title) + '</div>' +
           '<div class="m">' + repeatText(r.every_days) + ' · ' + esc(when) + '</div>' +
-          (r.body ? '<div class="m">' + esc(r.body) + '</div>' : '') + '</div>' +
+          (r.body ? '<div class="m">' + esc(r.body) + '</div>' : '') +
+          (r.skip_tool ? '<div class="m">Skipped if you\'ve opened ' + esc(toolName(r.skip_tool)) + ' since ' + r.since_time.slice(0, 5) + '</div>' : '') + '</div>' +
           '<label class="sw" aria-label="On or off"><input type="checkbox" data-act="tog"' + (r.enabled ? ' checked' : '') + '><i></i></label></div>' +
           '<div class="acts"><button class="btn small" data-act="edit">Edit</button><button class="btn small danger" data-act="del">Delete</button></div></div>';
       }).join('');
@@ -292,11 +299,17 @@
   });
 
   /* ---------- add / edit form ---------- */
+  var TOOLNAMES = {};
+  function toolName(id) { return TOOLNAMES[id] || id; }
   function fillLinks() {
     var opts = [['files/reminders.html', 'Reminders (check-in page)'], ['index.html', 'Hub home']];
     fetch('../tools.json').then(function (r) { return r.json(); }).then(function (tools) {
-      tools.forEach(function (t) { opts.push([t.href, t.name]); });
+      tools.forEach(function (t) {
+        opts.push([t.href, t.name]);
+        if (!t.external) { TOOLNAMES[t.id] = t.name; var o = document.createElement('option'); o.value = t.id; o.textContent = t.name; $('fSkip').appendChild(o); }
+      });
     }).catch(function () {}).then(function () {
+      render();
       var seen = {};
       $('fLink').innerHTML = opts.filter(function (o) { return !seen[o[0]] && (seen[o[0]] = 1); })
         .map(function (o) { return '<option value="' + esc(o[0]) + '">' + esc(o[1]) + '</option>'; }).join('');
@@ -307,6 +320,7 @@
     $('form').reset();
     $('fDate').value = defaultDate($('fTime').value);
     $('fRepeat').value = '2';
+    $('fSkip').value = ''; $('fSince').value = '05:00'; syncSkip();
     $('fSave').textContent = 'Add reminder';
     $('fCancel').hidden = true;
     $('formTitle').textContent = 'Add a reminder';
@@ -321,11 +335,14 @@
     }
     $('fRepeat').value = v;
     $('fDate').value = r.next_due_on;
+    $('fSkip').value = r.skip_tool || ''; $('fSince').value = r.since_time ? r.since_time.slice(0, 5) : '05:00'; syncSkip();
     if (r.link) { if (!$('fLink').querySelector('option[value="' + r.link.replace(/"/g, '') + '"]')) { var p = document.createElement('option'); p.value = r.link; p.textContent = r.link; $('fLink').appendChild(p); } $('fLink').value = r.link; }
     $('fSave').textContent = 'Save changes'; $('fCancel').hidden = false;
     $('formTitle').textContent = 'Edit reminder';
     $('form').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
+  function syncSkip() { var on = !!$('fSkip').value; $('fSince').hidden = !on; $('fSkipNote').hidden = !on; }
+  $('fSkip').addEventListener('change', syncSkip);
   $('fCancel').onclick = resetForm;
   $('fTime').addEventListener('change', function () { if (!editing) $('fDate').value = defaultDate($('fTime').value); });
   $('form').addEventListener('submit', function (e) {
@@ -335,7 +352,8 @@
       title: $('fTitle').value.trim(), body: $('fBody').value.trim() || null,
       link: $('fLink').value || null, time_of_day: $('fTime').value,
       every_days: $('fRepeat').value ? +$('fRepeat').value : null,
-      next_due_on: $('fDate').value, tz: TZ, enabled: true
+      next_due_on: $('fDate').value, tz: TZ, enabled: true,
+      skip_tool: $('fSkip').value || null, since_time: $('fSkip').value ? $('fSince').value : null
     };
     if (!row.title) return;
     $('fSave').disabled = true;

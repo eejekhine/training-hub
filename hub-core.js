@@ -84,6 +84,40 @@
   function setTheme(key) { if (!THEMES[key]) return; lsSet('hub.theme', key); applyTheme(key); }
   applyTheme(getTheme());
 
+  // ---------- open tracking (lets "skip if I already opened it" reminders work) ----------
+  (function () {
+    if (!TOOL_ID) return;
+    var QK = 'hub.opens.q', LK = 'hub.opens.last.' + TOOL_ID;
+    function q() { return jget(lsGet, QK, []); }
+    function setq(a) { lsSet(QK, JSON.stringify(a.slice(-50))); }
+    function ensureConfig(cb) {
+      if (window.SUPABASE_URL && window.SUPABASE_ANON_KEY) return cb();
+      var s = document.createElement('script'); s.src = ROOT + 'config.js'; s.onload = cb; s.onerror = function () {};
+      document.head.appendChild(s);
+    }
+    function flush() {
+      var items = q(); if (!items.length) return;
+      ensureConfig(function () {
+        if (!window.SUPABASE_URL || !window.SUPABASE_ANON_KEY) return;
+        fetch(window.SUPABASE_URL + '/rest/v1/hub_opens', {
+          method: 'POST', keepalive: true,
+          headers: { 'Content-Type': 'application/json', apikey: window.SUPABASE_ANON_KEY, Prefer: 'return=minimal' },
+          body: JSON.stringify(items)
+        }).then(function (r) { if (r.ok) setq(q().slice(items.length)); }).catch(function () {});
+      });
+    }
+    function log() {
+      var now = Date.now(), last = +lsGet(LK) || 0;
+      if (now - last >= 10 * 60000) {
+        lsSet(LK, String(now));
+        var a = q(); a.push({ tool: TOOL_ID, opened_at: new Date(now).toISOString() }); setq(a);
+      }
+      flush();
+    }
+    log();
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) log(); });
+  })();
+
   // Home Screen icon on every page (iOS reads this, not the manifest)
   (function () {
     if (!document.head || document.querySelector('link[rel="apple-touch-icon"]')) return;
