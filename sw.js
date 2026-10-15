@@ -1,13 +1,13 @@
 // Training Hub service worker.
 // Goal: every page opens offline, but you always get the newest version when you're online.
 // Strategy: network-first (fall back to the saved copy if the network is slow or gone).
-const CACHE = 'training-hub-v7';
+const CACHE = 'training-hub-v9';
 const PRECACHE = [
   './', './index.html', './settings.html', './manifest.json', './tools.json',
   './hub-core.js', './hub-data.js', './hub-progress.js', './config.js',
-  './icon-192.png', './icon-512.png',
+  './apple-touch-icon.png', './icon-v2-192.png', './icon-v2-512.png',
   './files/hooper-programme.html', './files/couples-routine.html', './files/daily-stretch.html',
-  './files/budget-plan.html', './files/food-plan.html', './files/uni-study.html', './files/dashboard.html'
+  './files/budget-plan.html', './files/food-plan.html', './files/uni-study.html', './files/dashboard.html', './files/reminders.html'
 ];
 const NETWORK_TIMEOUT_MS = 3500;
 
@@ -60,4 +60,34 @@ self.addEventListener('fetch', (event) => {
   // never cache live database calls
   if (url.hostname.endsWith('supabase.co')) return;
   event.respondWith(networkFirst(req));
+});
+
+
+// ---------- push notifications (reminders) ----------
+self.addEventListener('push', (event) => {
+  let d = {};
+  try { d = event.data ? event.data.json() : {}; } catch (e) { d = { title: 'Training Hub', body: event.data && event.data.text() }; }
+  event.waitUntil(self.registration.showNotification(d.title || 'Training Hub', {
+    body: d.body || '',
+    icon: './icon-v2-192.png',
+    badge: './icon-v2-192.png',
+    tag: d.tag || undefined,
+    data: { url: d.url || 'index.html' }
+  }));
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const target = new URL((event.notification.data && event.notification.data.url) || 'index.html', self.registration.scope).href;
+  event.waitUntil((async () => {
+    const wins = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    const same = new URL(target).origin === self.location.origin;
+    for (const w of wins) {
+      if (same && new URL(w.url).origin === self.location.origin && 'navigate' in w) {
+        try { await w.navigate(target); } catch (e) {}
+        return w.focus();
+      }
+    }
+    return self.clients.openWindow(target);
+  })());
 });

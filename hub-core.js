@@ -84,6 +84,13 @@
   function setTheme(key) { if (!THEMES[key]) return; lsSet('hub.theme', key); applyTheme(key); }
   applyTheme(getTheme());
 
+  // Home Screen icon on every page (iOS reads this, not the manifest)
+  (function () {
+    if (!document.head || document.querySelector('link[rel="apple-touch-icon"]')) return;
+    var l = document.createElement('link'); l.rel = 'apple-touch-icon'; l.sizes = '180x180'; l.href = ROOT + 'apple-touch-icon.png';
+    document.head.appendChild(l);
+  })();
+
   // ---------- shared CSS (bar, lock screen, overrides) ----------
   var CSS = '' +
     'html.hub-locked body{visibility:hidden!important}' +

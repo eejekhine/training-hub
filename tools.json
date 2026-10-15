@@ -56,5 +56,12 @@
     "category": "content",
     "href": "https://claude.ai/artifact/UnAeUwuDnf6gMCEPNXGWJV",
     "external": true
+  },
+  {
+    "id": "reminders",
+    "name": "Reminders",
+    "desc": "Phone notifications — your Uni Study + Creator Hub check-in, plus any reminder you add.",
+    "category": "life",
+    "href": "files/reminders.html"
   }
 ]
