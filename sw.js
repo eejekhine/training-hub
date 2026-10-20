@@ -1,13 +1,13 @@
 // Training Hub service worker.
 // Goal: every page opens offline, but you always get the newest version when you're online.
 // Strategy: network-first (fall back to the saved copy if the network is slow or gone).
-const CACHE = 'training-hub-v11';
+const CACHE = 'training-hub-v12';
 const PRECACHE = [
   './', './index.html', './settings.html', './manifest.json', './tools.json',
   './hub-core.js', './hub-data.js', './hub-progress.js', './config.js',
   './apple-touch-icon.png', './icon-v2-192.png', './icon-v2-512.png',
   './files/hooper-programme.html', './files/couples-routine.html', './files/daily-stretch.html',
-  './files/budget-plan.html', './files/food-plan.html', './files/uni-study.html', './files/dashboard.html', './files/reminders.html', './files/creator-hub.html'
+  './files/budget-plan.html', './files/food-plan.html', './files/uni-study.html', './files/dashboard.html', './files/reminders.html', './files/creator-hub.html', './files/music-hub.html'
 ];
 const NETWORK_TIMEOUT_MS = 3500;
 

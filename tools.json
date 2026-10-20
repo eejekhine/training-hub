@@ -57,6 +57,13 @@
     "href": "files/creator-hub.html"
   },
   {
+    "id": "music-hub",
+    "name": "Music Hub",
+    "desc": "Mixing, piano and drums: placement check, two-layer lessons, level gates, song lists and a practice and mix log.",
+    "category": "music",
+    "href": "files/music-hub.html"
+  },
+  {
     "id": "reminders",
     "name": "Reminders",
     "desc": "Phone notifications — your Uni Study + Creator Hub check-in, plus any reminder you add.",

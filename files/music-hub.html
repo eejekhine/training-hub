@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<script src="../hub-core.js"></script>
+<title>Music Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Figtree:wght@400;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Same variable names as Creator Hub. hub-core.js sets --bg/--surface/--border/--text/--good/--crit
+   for the chosen Settings theme; the rest follow the Hub's --hub-* tokens, so the whole page
+   changes with the theme. The hex values are only fallbacks. */
+:root{
+  color-scheme:dark;
+  --bg:#0d0f1a; --surface:#151829; --border:#2a2f4b; --text:#eef0fb;
+  --surface2:var(--hub-surface2,#1d2138);
+  --dim:var(--hub-muted,#a4aac8); --faint:var(--hub-faint,#737aa5);
+  --accent:var(--hub-accent,#8f84ff); --accent-ink:var(--hub-on-accent,#0d0f1a); --accent2:var(--hub-accent2,#5fd0ff);
+  --good:#5be3a1; --warn:#ffcc66; --crit:#ff8a9a; --shadow:rgba(0,0,0,.45);
+}
+*{box-sizing:border-box}
+.hub-bar{margin-inline:-16px}
+body{background:var(--bg);color:var(--text);font:16px/1.5 'Figtree',system-ui,sans-serif;padding-inline:16px;padding-block:0 100px;max-width:820px;margin-inline:auto}
+h1,h2,h3{font-family:'Space Grotesk','Arial Narrow',sans-serif;margin:0;text-wrap:balance;letter-spacing:-.01em}
+a{color:var(--accent2)}
+.lab{font:500 11px 'JetBrains Mono',ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+.mono{font-family:'JetBrains Mono',ui-monospace,monospace}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+header{padding-block:22px 6px}
+header h1{font-size:34px;line-height:1.02}
+header p{margin:6px 0 0;color:var(--dim);max-width:54ch}
+.sync{font:500 11px 'JetBrains Mono',monospace;color:var(--faint);margin-top:8px}
+.sync b{color:var(--good);font-weight:500}
+.sync b.local{color:var(--warn)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;margin-block:12px}
+.card h2{font-size:22px;margin-bottom:4px}
+.card h3{font-size:17px;margin-bottom:4px}
+.dim{color:var(--dim)} .small{font-size:14px}
+.btn{background:var(--accent);color:var(--accent-ink);border:0;border-radius:10px;padding:10px 16px;font-weight:600}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--border)}
+.btn.sm{padding:6px 11px;font-size:14px;border-radius:8px}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.bar{height:8px;border-radius:99px;background:var(--surface2);overflow:hidden;margin-top:6px}
+.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px}
+.bar.full>i{background:var(--good)}
+.tgt{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:10px}
+.tgt>div{background:var(--surface2);border-radius:10px;padding:10px 12px}
+.tgt b{font:700 24px/1 'Space Grotesk',sans-serif;font-variant-numeric:tabular-nums}
+.tgt b small{font:500 13px 'JetBrains Mono',monospace;color:var(--faint)}
+.ck{flex:none;width:26px;height:26px;border-radius:8px;border:2px solid var(--faint);background:transparent;display:grid;place-items:center;padding:0;margin-top:1px}
+.ck[aria-checked=true]{background:var(--accent);border-color:var(--accent)}
+.ck[aria-checked=true]::after{content:"";width:6px;height:11px;border:solid var(--accent-ink);border-width:0 2.5px 2.5px 0;transform:translateY(-1px) rotate(45deg)}
+.it{display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--border)}
+.it:first-child{border-top:0}
+.it .tx{flex:1;min-width:0}
+.it.done .ti{color:var(--faint);text-decoration:line-through;text-decoration-color:var(--faint)}
+.it .ti{font-weight:600;overflow-wrap:anywhere}
+.it .wh{color:var(--dim);font-size:14px}
+.chip{display:inline-block;font:500 10px 'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--border);border-radius:99px;padding:2px 8px;color:var(--faint);margin-top:3px}
+.chip.good{color:var(--good);border-color:var(--good)}
+.chip.warn{color:var(--warn);border-color:var(--warn)}
+.tabs{position:fixed;left:0;right:0;bottom:0;display:flex;gap:4px;padding:8px 12px calc(8px + env(safe-area-inset-bottom,0px));background:var(--surface);border-top:1px solid var(--border);justify-content:center;z-index:5}
+.tabs button{flex:1;max-width:200px;background:transparent;border:0;border-radius:10px;padding:10px 4px;font-weight:600;color:var(--faint)}
+.tabs button[aria-selected=true]{background:var(--surface2);color:var(--text)}
+.view[hidden]{display:none}
+.bd p{margin:8px 0}
+.bd h4{font:500 11px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--accent2);margin:16px 0 4px}
+.bd ul,.bd ol{margin:6px 0;padding-left:1.2rem}
+.bd li{margin-bottom:4px}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+label.f span{display:block;margin-bottom:4px}
+select,input[type=text],input[type=number],input[type=date],textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 10px}
+.log li{list-style:none;display:flex;gap:10px;padding:9px 0;border-top:1px solid var(--border);align-items:flex-start}
+.log{margin:0;padding:0}
+.log .ty{font:500 10px 'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--accent2);min-width:72px;padding-top:3px}
+.log .tx{flex:1;min-width:0;overflow-wrap:anywhere}
+.log .dt{font:500 11px 'JetBrains Mono',monospace;color:var(--faint)}
+.empty{color:var(--dim);padding:8px 0}
+.next{border-color:var(--accent)}
+
+/* --- Music Hub additions --- */
+.seg{display:inline-flex;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{background:transparent;border:0;padding:8px 14px;font-weight:600;color:var(--faint)}
+.seg button[aria-pressed=true]{background:var(--accent);color:var(--accent-ink)}
+.opt{display:block;width:100%;text-align:left;background:var(--surface2);border:2px solid transparent;border-radius:10px;padding:10px 12px;margin-top:6px}
+.opt[aria-pressed=true]{border-color:var(--accent)}
+.opt.right{border-color:var(--good)}
+.opt.wrong{border-color:var(--crit)}
+.part{border-top:1px solid var(--border);padding-block:12px}
+.part:first-of-type{border-top:0}
+.part .lab{margin-bottom:2px}
+.layer-note{font-size:13px;color:var(--faint);margin:0 0 6px}
+.goalrow{display:flex;justify-content:space-between;gap:10px;align-items:baseline;padding:8px 0;border-top:1px solid var(--border)}
+.goalrow:first-of-type{border-top:0}
+.lock{opacity:.6}
+.back{background:none;border:0;color:var(--accent2);padding:6px 0;font-weight:600}
+.msg{border-left:3px solid var(--accent);background:var(--surface2);border-radius:0 10px 10px 0;padding:8px 12px;margin-top:10px;font-size:14.5px}
+.msg.ok{border-left-color:var(--good)} .msg.bad{border-left-color:var(--crit)} .msg.warn{border-left-color:var(--warn)}
+.songrow{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--border)}
+.songrow:first-of-type{border-top:0}
+.songrow .rk{font:700 18px/1.2 'Space Grotesk',sans-serif;color:var(--faint);min-width:22px}
+.songrow .tx{flex:1;min-width:0}
+.songrow .stg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+.mv{display:flex;flex-direction:column;gap:4px}
+.mv button{width:30px;height:26px;border-radius:7px;border:1px solid var(--border);background:var(--surface);padding:0}
+.stars button{background:none;border:0;font-size:20px;padding:0 2px;color:var(--faint)}
+.stars button.on{color:var(--warn)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="lab">Training Hub · Music</div>
+  <h1>Music Hub</h1>
+  <p>Get better at mixing, piano and drums at your own pace. Short sessions, real lessons you can read in two layers, and a gate at the end of each level so you know you have actually got it.</p>
+  <div class="sync" id="sync"></div>
+</header>
+
+<main>
+<section class="view" id="v-home"></section>
+<section class="view" id="v-tracks" hidden></section>
+<section class="view" id="v-songs" hidden></section>
+<section class="view" id="v-log" hidden></section>
+</main>
+
+<nav class="tabs" role="tablist">
+  <button role="tab" data-tab="home" aria-selected="true">Home</button>
+  <button role="tab" data-tab="tracks" aria-selected="false">Tracks</button>
+  <button role="tab" data-tab="songs" aria-selected="false">Songs</button>
+  <button role="tab" data-tab="log" aria-selected="false">Log</button>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../config.js"></script>
+<script>
+(function(){
+var $=function(id){return document.getElementById(id)};
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+
+/* =====================================================================
+   CONTENT
+   ===================================================================== */
+
+/* Goal dates. Everything counts from the start of 2027 (set 20 Oct 2026). */
+var START='2027-01-01';
+var GOALS=[
+  {t:'Play 3 songs on piano and drums',by:'2027-04-01',kind:'songs'},
+  {t:'Mixes at a professional level',by:'2027-04-01',kind:'mix'},
+  {t:'Comfortably play piano and drums',by:'2028-01-01',kind:'year'}
+];
+var WEEK_MIN=[180,240]; /* 3 to 4 hours a week */
+
+/* Resources checked: each one was opened and loaded for free (no login) on 20 Oct 2026. */
+var RES1=[
+  {id:'apple-peak',title:'Apple: Peak level display and signal clipping in Logic Pro',url:'https://support.apple.com/guide/logicpro/peak-level-display-and-signal-clipping-lgcp8ec1ad64/mac',what:'Where the peak readout is, what red and orange mean, how to fix a clip.',type:'Official guide'},
+  {id:'apple-volume',title:'Apple: Set channel strip volume in Logic Pro',url:'https://support.apple.com/guide/logicpro/set-channel-strip-volume-and-check-levels-lgcp8ec34eec/mac',what:'Option-click a fader to reset it to 0 dB, Shift-drag for fine moves.',type:'Official guide'},
+  {id:'sos-gain-daw',title:'Sound On Sound: Gain staging your DAW software',url:'https://www.soundonsound.com/techniques/gain-staging-your-daw-software',what:'Where to set channel and plug-in levels inside a DAW, with dB targets.',type:'Article'},
+  {id:'sos-6-or-18',title:'Sound On Sound: Should I gain stage at -6 or -18 dBFS?',url:'https://www.soundonsound.com/sound-advice/q-should-gain-stage-6dbfs-or-18dbfs',what:'Why both numbers get quoted and which one applies when.',type:'Article'},
+  {id:'output-gs101',title:'Output: Gain Staging 101',url:'https://output.com/blog/gain-staging-101-how-to-supercharge-your-mix',what:'Plain walk-through with numbers. It also advertises Output products, so skim past those.',type:'Article'},
+  {id:'cmt-entry',title:'Cambridge-MT: free multitracks (Entry Level section)',url:'https://cambridge-mt.com/ms/mtk-newbies',what:'Free songs to practise on, starter projects listed first. Educational use only.',type:'Free multitracks'}
+];
+
+var PLACE_Q=[
+ {q:'In a digital system, 0 dBFS is…',o:['The quietest sound it can hold','The loudest level before digital clipping','Always the same as 0 VU'],a:1,w:'0 dBFS is the ceiling. Past it the signal clips.'},
+ {q:'Your reference track is 3 dB louder than your mix. What do you do first?',o:['Judge them by ear as they are','Level-match them, then compare','Boost your mix bus until it clips'],a:1,w:'The louder one nearly always sounds better, so match levels before judging.'},
+ {q:'A vocal sounds boomy and unclear. First move?',o:['Boost the highs','Cut some low-mids with EQ and listen','Add more reverb'],a:1,w:'Cut before you boost: take away what is muddy first.'},
+ {q:'A compressor\'s threshold sets…',o:['The level above which it starts turning the sound down','How quickly it reacts','The final output volume'],a:0,w:'Anything over the threshold gets reduced by the ratio.'},
+ {q:'Why send tracks to one shared reverb on an aux instead of putting a reverb on each track?',o:['One shared space, and each track\'s amount is set by its send level','Sends are always quieter','Inserts cannot hold a reverb'],a:0,w:'A send gives you one reverb and a per-track amount.'},
+ {q:'High-passing most instruments that are not bass mainly helps by…',o:['Making them brighter','Clearing low-end rumble so the kick and bass have room','Raising their level'],a:1,w:'It stops low-end build-up across the mix.'},
+ {q:'Parallel compression means…',o:['Two compressors in a row','Blending a heavily compressed copy with the untouched signal','Compressing left and right separately'],a:1,w:'The dry signal keeps its punch; the compressed copy adds body.'},
+ {q:'You boost a vocal\'s presence by 4 dB and it sounds better, but also louder. Best next step?',o:['Keep it. Louder is better','Level-match the before and after, then decide','Turn up the whole mix'],a:1,w:'Compare at the same loudness or you are only hearing volume.'}
+];
+
+/* The first finished lesson. It is the template every other lesson copies. */
+var L1={
+ id:'f1', title:'Gain staging: set your levels before you mix', mins:30, res:RES1,
+ parts:[
+  {k:'what',h:'What it is',
+   plain:'<p>Gain staging means keeping the volume of your sound sensible at every step it travels through: the recording, each track, each plug-in, and the final output. Nothing should be so quiet that it is weak, or so loud that it distorts.</p>',
+   deep:'<p>A modern DAW does its sums in floating point, so a track going over 0 dBFS does not clip inside the mixer the way analogue gear would. The real limits are the converters going in and out, plug-ins that expect a certain input level, and the final output staying under 0 dBFS. Sound On Sound\'s Matt Houghton makes the point that the bigger payoff is consistency: when levels are matched, meters mean something and plug-ins behave the way they were designed to.</p><p>Two numbers get quoted a lot: peaks near −6 dBFS, and −18 dBFS. They are different measurements. −18 dBFS is an average (RMS) level that lines up with 0 VU on an analogue-style meter, and −6 dBFS is a peak figure. Pick one reference and stick to it.</p>'},
+  {k:'why',h:'Why it matters',
+   plain:'<p>Ten tracks that each peak near the top add up to an output that clips. If you start with sensible levels, your faders do the fine balancing, and there is room left for mastering later.</p>',
+   deep:'<p>Summing is additive. Two unrelated signals of equal level add about 3 dB; two identical signals add about 6 dB. Across a 32-track session the sum climbs quickly.</p><p>Level also changes what a plug-in does. A compressor works relative to its threshold, so if the signal arriving is 6 dB hotter, the same setting compresses far harder. Emulation plug-ins can behave differently when fed too hot. Setting level first means every later decision is made at a known level.</p>'},
+  {k:'how',h:'How to do it in Logic',
+   plain:'<ol><li>Open the project and set every fader to 0 dB. Option-click a fader to reset it.</li><li>Play the loudest part of the song, and look at the small number above each channel\'s level meter. That is the peak level.</li><li>Find the loudest sound (usually the kick or snare). Bring it down until it peaks between −18 and −12 dBFS. If it is already quieter, leave it.</li><li>Set the other tracks around it by ear. Try to keep each track\'s peaks no higher than about −8 to −10 dBFS.</li><li>Look at the peak number on the output channel. It should stay at about −6 dBFS or lower, and never turn red.</li><li>If it turns red, lower the faders by the dB amount shown, click the peak number to clear it, and play the loud part again.</li></ol>',
+   deep:'<ol><li>Reset faders with Option-click (0 dB). Shift-drag a fader for fine steps.</li><li>Loop the loudest section. The peak display shows the highest level reached since you last cleared it. Click it to reset between passes.</li><li>Sound On Sound\'s guide suggests peaking the loudest source (kick or snare) between −12 and −18 dBFS, then building the rest of the mix around it.</li><li>Keep channel peaks around −8 to −10 dBFS at most, and aim for similar levels between plug-ins so you are not driving one hot into the next. A gain or trim plug-in first in the chain lets you correct level before anything else processes it.</li><li>On the output strip, a clip shows red. On other strips it shows orange. Apple\'s guidance is that a clip on an individual channel can be fine as long as the output strip stays clean, but while you are learning, treat any orange as a note to check.</li><li>Fix a clip by lowering the fader by the dB amount in the peak display. Leave 1 to 2 dB spare. Inter-sample peaks after conversion can run past 0 dBFS, so a mix touching exactly 0 is not safe.</li></ol><p>Rule of thumb, not law: finished mix peaks around −6 dBFS leave room for mastering.</p>'},
+  {k:'exercise',h:'Exercise',
+   plain:'<p>Open the Cambridge-MT page in the resources below and download one project from the Entry Level section. Import it into a new Logic project. Follow the steps above for 20 to 30 minutes. Do not worry about how it sounds yet. The only goal is that the levels are sensible.</p>',
+   deep:'<p>Pick an Entry Level project (they are listed roughly easiest first). Import all stems onto separate tracks, reset faders, and work through the steps. Then toggle each track\'s level before and after your changes while watching the output peak. Write down the output peak and the loudest source\'s peak. They feed the check below.</p><p>The files are free for educational use only. Do not release anything made from them.</p>'}
+ ]
+};
+
+var TRACKS=[
+ {id:'mixing',name:'Mixing',tag:'Track 1 · priority',live:true,
+  blurb:'Gain staging, EQ, compression, reverb and delay, balance, buses, automation and reference tracks. Church and worship mixes are the target.',
+  levels:[
+   {id:'f',name:'Foundations',who:'Never done it',
+    lessons:[{id:'f1',title:L1.title,written:true},
+     {id:'f2',title:'Signal flow and the Logic mixer'},{id:'f3',title:'What EQ does'},{id:'f4',title:'What a compressor does'},
+     {id:'f5',title:'Reverb and delay'},{id:'f6',title:'Balance and panning'},{id:'f7',title:'Reference tracks and level-matching'},{id:'f8',title:'Rough mix project'}],
+    gate:{title:'Gate: a balanced rough mix, no clipping',text:'Make a balanced rough mix of a simple 4-track song with no clipping. Every tick below must be true.',
+     checks:['Output peak stays at about −6 dBFS or lower, with no red clip light','All four parts can be heard clearly at once','I checked it on headphones and on a phone speaker','I logged the mix in the Log tab with one thing to fix next time']}},
+   {id:'w',name:'Working',who:'Can do it, wants it good',
+    lessons:[],
+    gate:{title:'Gate: a full multitrack mix near the reference',text:'A full multitrack mix within a few dB of a reference\'s tonal balance on a spectrum analyser, and it holds up on headphones, phone and monitors.',
+     checks:['Level-matched against the reference before comparing','Tonal balance within a few dB of the reference on an analyser','Holds up on headphones, a phone and the monitors','Logged with the reference named']}},
+   {id:'p',name:'Pro',who:'Release-ready',
+    lessons:[],
+    gate:{title:'Gate: three mixes that survive a blind A/B',text:'Three finished mixes that survive a blind A/B against commercial releases, with feedback from experienced engineers.',
+     checks:['Three finished mixes logged','Each one level-matched and blind A/B tested against a commercial release','Feedback from an experienced engineer on at least one']}}
+  ]},
+ {id:'piano',name:'Piano',tag:'Track 2',live:false,phase:'Phase 3',blurb:'Hand position, scales, chords, then your songs. Song stages are already tracked in the Songs tab.'},
+ {id:'drums',name:'Drums',tag:'Track 3',live:false,phase:'Phase 3',blurb:'Grip, rudiments, grooves and fills, then your songs. Works on a practice pad too.'},
+ {id:'midi',name:'MIDI and beats',tag:'Track 4',live:false,phase:'Phase 6',blurb:'Drum patterns, bass lines and chords in Logic, played in on a keyboard.'},
+ {id:'live',name:'Live sound',tag:'Track 5',live:false,phase:'Phase 6',blurb:'Your church work: front-of-house mix, monitors, feedback control and a setup checklist.'},
+ {id:'ear',name:'Ear training and theory',tag:'Track 6',live:false,phase:'Phase 6',blurb:'Intervals, chords, rhythm and hearing frequencies.'},
+ {id:'warm',name:'Bass, guitar, violin',tag:'Track 7 · keep-warm',live:false,phase:'Phase 6',blurb:'Not a learning plan. One short session each, now and then, so they do not go stale.'}
+];
+
+var MENU=[
+ {m:15,t:'15 min',s:'Ear training drill, plus one rudiment or scale on your main instrument.'},
+ {m:45,t:'45 min',s:'Work on one section of a song on piano or drums, then log it.'},
+ {m:90,t:'90 min',s:'One mix session: import, rough balance, one pass of EQ and compression, then A/B against the reference track.'},
+ {m:120,t:'2 hr booth',s:'Library music booth (a piano, and usually a drum kit, in daytime slots): 10 min warm-up, about 40 min on one song on piano, about 40 min on one song on drums, then 20 min playing both through and logging it. Save the real instrument time for the booth and do mixing and ear training at home.'}
+];
+
+var LISTS=[
+ {id:'worship',name:'Worship',note:'Church songs, chords first.'},
+ {id:'rnb',name:'R&B and your picks',note:'Daniel Caesar and more.'},
+ {id:'starter',name:'Beginner suggestions',note:'Simple, well-known songs to build on.'}
+];
+var SEED=[
+ {id:'w1',list:'worship',title:'10,000 Reasons (Bless the Lord)',artist:'Matt Redman'},
+ {id:'w2',list:'worship',title:'What a Beautiful Name',artist:'Hillsong Worship'},
+ {id:'w3',list:'worship',title:'Graves into Gardens',artist:'Elevation Worship'},
+ {id:'r1',list:'rnb',title:'Best Part',artist:'Daniel Caesar & H.E.R.'},
+ {id:'r2',list:'rnb',title:'Disillusioned',artist:'Daniel Caesar'},
+ {id:'r3',list:'rnb',title:'Adorn',artist:'Miguel'},
+ {id:'s1',list:'starter',title:'Let It Be',artist:'The Beatles'},
+ {id:'s2',list:'starter',title:'Stand By Me',artist:'Ben E. King'},
+ {id:'s3',list:'starter',title:'Someone Like You',artist:'Adele'}
+];
+var STAGES=['Not started','Learning','Parts together','Up to speed','Plays through'];
+
+/* =====================================================================
+   DATES
+   ===================================================================== */
+function ymd(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function parse(s){var p=s.split('-');return new Date(+p[0],+p[1]-1,+p[2])}
+function monday(d){var x=new Date(d.getFullYear(),d.getMonth(),d.getDate());x.setDate(x.getDate()-((x.getDay()+6)%7));return x}
+var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function nice(d){return d.getDate()+' '+MON[d.getMonth()]+' '+d.getFullYear()}
+function daysBetween(a,b){return Math.round((b-a)/864e5)}
+var TODAY=new Date();
+
+/* =====================================================================
+   STATE + SAVE (same method as Creator Hub: this device, plus the Hub database when reachable)
+   ===================================================================== */
+var S={done:{},lessons:{},place:{},gates:{},gateChecks:{},depth:'plain',songs:SEED.slice(),stage:{},practice:[],mixes:[]};
+function norm(o){
+  o=o||{};
+  return {done:o.done||{},lessons:o.lessons||{},place:o.place||{},gates:o.gates||{},gateChecks:o.gateChecks||{},
+    depth:o.depth==='deep'?'deep':'plain',
+    songs:Array.isArray(o.songs)&&o.songs.length?o.songs:SEED.slice(),stage:o.stage||{},
+    practice:Array.isArray(o.practice)?o.practice:[],mixes:Array.isArray(o.mixes)?o.mixes:[]};
+}
+var store={mode:'local',ref:null,pending:false,saving:false,timer:null};
+function lsGet(){try{return JSON.parse(localStorage.getItem('music-hub')||'null')}catch(e){return null}}
+function lsSet(){try{localStorage.setItem('music-hub',JSON.stringify(S))}catch(e){}}
+function setSync(){
+  $('sync').innerHTML=store.mode==='db'?'<b>● Saved to your Hub</b> · synced across your devices':'<b class="local">● This device only</b> · progress is saved in this browser';
+}
+function save(){
+  lsSet();
+  if(store.mode!=='db')return;
+  store.pending=true;
+  clearTimeout(store.timer);
+  store.timer=setTimeout(flush,500);
+}
+function flush(){
+  if(store.saving){store.timer=setTimeout(flush,300);return}
+  store.saving=true;store.pending=false;
+  store.ref.from('hub_kv').upsert({key:'music-hub',value:JSON.parse(JSON.stringify(S)),updated_at:new Date().toISOString()}).then(function(r){
+    store.saving=false;
+    if(r.error){store.mode='local';setSync()}
+  },function(){store.saving=false;store.mode='local';setSync()});
+}
+function initStore(){
+  if(!(window.supabase&&window.SUPABASE_URL&&window.SUPABASE_ANON_KEY)){setSync();return Promise.resolve()}
+  var cl=window.supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY);
+  return cl.from('hub_kv').select('value').eq('key','music-hub').maybeSingle().then(function(r){
+    if(r.error){setSync();return}
+    store.ref=cl;store.mode='db';
+    if(r.data&&r.data.value&&Object.keys(r.data.value).length){S=norm(r.data.value);lsSet()}
+    else{var l=lsGet();if(l){S=norm(l)}save()}
+    setSync();
+  },function(){setSync()});
+}
+
+/* =====================================================================
+   HELPERS
+   ===================================================================== */
+var ui={tab:'home',track:null,lesson:null,menu:null,pdraft:{instr:'Piano',min:'',note:''},mdraft:{song:'',ref:'',fix:'',rate:0},sdraft:{title:'',artist:'',list:'worship'}};
+function bar(d,t){var p=t?Math.round(d/t*100):0;return '<div class="bar'+(p===100?' full':'')+'"><i style="width:'+p+'%"></i></div>'}
+function levelOf(tr,lv){return tr.levels.filter(function(l){return l.id===lv})[0]}
+function lessonState(trId,id){return S.lessons[trId+':'+id]||{}}
+function lessonDone(trId,id){return !!lessonState(trId,id).done}
+function placedLevel(trId){var p=S.place[trId];return p?p.level:null}
+function levelOpen(tr,lv){
+  var i=tr.levels.indexOf(lv);
+  if(i===0)return true;
+  var placed=placedLevel(tr.id),pi=placed?['f','w','p'].indexOf(placed):0;
+  if(pi>=i)return true;
+  return !!S.gates[tr.id+':'+tr.levels[i-1].id];
+}
+function lvlCounts(tr,lv){
+  var t=lv.lessons.filter(function(x){return x.written}).length,d=0;
+  lv.lessons.forEach(function(x){if(x.written&&lessonDone(tr.id,x.id))d++});
+  return {d:d,t:t,all:lv.lessons.length};
+}
+function nextLesson(){
+  var tr=TRACKS[0];
+  for(var i=0;i<tr.levels.length;i++){
+    var lv=tr.levels[i];if(!levelOpen(tr,lv))continue;
+    for(var j=0;j<lv.lessons.length;j++){var l=lv.lessons[j];if(l.written&&!lessonDone(tr.id,l.id))return {tr:tr,lv:lv,l:l}}
+  }
+  return null;
+}
+function weekMinutes(){
+  var m0=ymd(monday(TODAY)),t=0;
+  S.practice.forEach(function(e){if(e.d>=m0)t+=(+e.min||0)});
+  return t;
+}
+function songsDone(){
+  var n=0;S.songs.forEach(function(s){var g=S.stage[s.id]||{};if((g.piano|0)===4&&(g.drums|0)===4)n++});
+  return n;
+}
+
+/* =====================================================================
+   VIEWS
+   ===================================================================== */
+function viewHome(){
+  var start=parse(START),h='';
+  var untilStart=daysBetween(new Date(TODAY.getFullYear(),TODAY.getMonth(),TODAY.getDate()),start);
+  h+='<div class="card"><div class="lab">Your goals</div><h2>'+(untilStart>0?'Starts in '+untilStart+' days':'Under way')+'</h2><div class="dim small">Everything counts from '+nice(start)+'.</div>';
+  GOALS.forEach(function(g){
+    var by=parse(g.by),left=daysBetween(new Date(TODAY.getFullYear(),TODAY.getMonth(),TODAY.getDate()),by);
+    var extra=g.kind==='songs'?(' · '+songsDone()+' of 3 songs on both'):'';
+    h+='<div class="goalrow"><div>'+esc(g.t)+'<div class="dim small">by '+nice(by)+extra+'</div></div><span class="mono dim small">'+(left>0?left+' d':'due')+'</span></div>';
+  });
+  h+='</div>';
+
+  var wk=weekMinutes();
+  h+='<div class="card"><div class="lab">This week</div><h3>'+wk+' of '+WEEK_MIN[0]+'–'+WEEK_MIN[1]+' minutes</h3>'+bar(Math.min(wk,WEEK_MIN[0]),WEEK_MIN[0])+'<div class="dim small" style="margin-top:6px">A realistic aim is three short sessions and one mix session. Change the target in the code if it does not fit.</div></div>';
+
+  h+='<div class="card"><h3>How long have you got?</h3><div class="seg" style="margin-top:8px" role="group">'+MENU.map(function(x){return '<button data-act="menu" data-k="'+x.m+'" aria-pressed="'+(ui.menu===x.m)+'">'+x.t+'</button>'}).join('')+'</div>';
+  if(ui.menu){
+    var it=MENU.filter(function(x){return x.m===ui.menu})[0],nx=nextLesson();
+    h+='<div class="msg" style="margin-top:12px"><b>'+it.t+':</b> '+it.s+'</div>';
+    if(nx)h+='<div class="msg"><b>Ready now:</b> '+esc(nx.l.title)+' <button class="btn sm" style="margin-left:6px" data-act="openlesson" data-k="'+nx.tr.id+':'+nx.lv.id+':'+nx.l.id+'">Open</button></div>';
+    h+='<div class="dim small" style="margin-top:8px">Ear training and the piano and drums lessons arrive in later phases. Until then, use the session time on the lesson above, a song from the Songs tab, or a mix.</div>';
+  }
+  h+='</div>';
+
+  var nx2=nextLesson();
+  if(nx2)h+='<div class="card next"><div class="lab">Up next</div><h3>'+esc(nx2.l.title)+'</h3><p class="dim small" style="margin:2px 0 8px">Mixing · '+esc(nx2.lv.name)+' · about '+L1.mins+' min</p><button class="btn sm" data-act="openlesson" data-k="'+nx2.tr.id+':'+nx2.lv.id+':'+nx2.l.id+'">Open the lesson</button></div>';
+  else h+='<div class="card next"><h3>Every written lesson is done</h3><p class="dim small" style="margin:2px 0 0">More lessons arrive in the next build phase.</p></div>';
+
+  var last=S.practice.slice(0,3);
+  if(last.length)h+='<div class="card"><h3>Latest practice</h3><ul class="log">'+last.map(practiceLi).join('')+'</ul></div>';
+  $('v-home').innerHTML=h;
+}
+
+function viewTracks(){
+  var h='';
+  if(ui.lesson)return viewLesson();
+  if(ui.track){
+    var tr=TRACKS.filter(function(t){return t.id===ui.track})[0];
+    h+='<button class="back" data-act="back">‹ All tracks</button><div class="card"><div class="lab">'+esc(tr.tag)+'</div><h2>'+esc(tr.name)+'</h2><p class="dim small" style="margin:4px 0 0">'+esc(tr.blurb)+'</p></div>';
+    h+=placementCard(tr);
+    tr.levels.forEach(function(lv){h+=levelCard(tr,lv)});
+    $('v-tracks').innerHTML=h;return;
+  }
+  h+='<div class="card"><div class="lab">Seven tracks</div><h2>Pick a track</h2><p class="dim small" style="margin:2px 0 0">Mixing is built first. The others open as each phase is finished.</p></div>';
+  TRACKS.forEach(function(tr){
+    h+='<div class="card'+(tr.live?'':' lock')+'"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div><div class="lab">'+esc(tr.tag)+'</div><h3>'+esc(tr.name)+'</h3></div>'+(tr.live?'':'<span class="chip warn">Not built yet · '+esc(tr.phase)+'</span>')+'</div><p class="dim small" style="margin:6px 0 0">'+esc(tr.blurb)+'</p>';
+    if(tr.live){
+      var d=0,t=0;tr.levels.forEach(function(lv){var c=lvlCounts(tr,lv);d+=c.d;t+=c.t});
+      h+=bar(d,t)+'<div class="dim small" style="margin-top:6px">'+d+' of '+t+' written lessons done · Foundations is the only level with a finished lesson so far</div><div style="margin-top:10px"><button class="btn sm" data-act="track" data-k="'+tr.id+'">Open Mixing</button></div>';
+    }
+    h+='</div>';
+  });
+  $('v-tracks').innerHTML=h;
+}
+
+function placementCard(tr){
+  var p=S.place[tr.id],h='<div class="card"><div class="lab">Placement check</div><h3>Where should you start?</h3><p class="dim small" style="margin:2px 0 8px">Eight quick questions. A beginner starts at Foundations, and you skip what you already know. You can also pick your own start below.</p>';
+  if(p&&p.done){
+    var nm={f:'Foundations',w:'Working',p:'Pro'}[p.level];
+    h+='<div class="msg ok"><b>You scored '+p.score+' of '+PLACE_Q.length+'.</b> Start at <b>'+nm+'</b>. '+(p.level==='p'?'Pro still ends with a gate that needs real mixes and outside feedback.':(p.level==='w'?'Foundations is skipped, but you can still open any lesson in it.':'Work through Foundations in order.'))+'</div>';
+    PLACE_Q.forEach(function(q,i){
+      var a=p.a[i];
+      h+='<div style="margin-top:12px"><b>'+(i+1)+'. '+esc(q.q)+'</b>'+q.o.map(function(o,j){return '<div class="opt'+(j===q.a?' right':(j===a?' wrong':''))+'" style="cursor:default">'+esc(o)+'</div>'}).join('')+'<div class="dim small" style="margin-top:4px">'+esc(q.w)+'</div></div>';
+    });
+    h+='<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost sm" data-act="replace" data-k="'+tr.id+'">Retake</button></div>';
+  }else{
+    var cur=(p&&p.a)||[];
+    PLACE_Q.forEach(function(q,i){
+      h+='<div style="margin-top:12px"><b>'+(i+1)+'. '+esc(q.q)+'</b>'+q.o.map(function(o,j){return '<button class="opt" data-act="ans" data-q="'+i+'" data-i="'+j+'" aria-pressed="'+(cur[i]===j)+'">'+esc(o)+'</button>'}).join('')+'</div>';
+    });
+    var answered=PLACE_Q.every(function(_,i){return cur[i]!=null});
+    h+='<div style="margin-top:14px"><button class="btn" data-act="score" data-k="'+tr.id+'"'+(answered?'':' disabled')+'>See my level</button></div>';
+  }
+  h+='<div style="margin-top:14px"><span class="lab">Or choose where to start</span><div class="seg" style="margin-top:6px;display:flex;width:max-content;max-width:100%">'+['f','w','p'].map(function(l){return '<button data-act="setstart" data-k="'+l+'" aria-pressed="'+(placedLevel(tr.id)===l)+'">'+{f:'Foundations',w:'Working',p:'Pro'}[l]+'</button>'}).join('')+'</div></div></div>';
+  return h;
+}
+
+function levelCard(tr,lv){
+  var open=levelOpen(tr,lv),c=lvlCounts(tr,lv),gk=tr.id+':'+lv.id,passed=!!S.gates[gk];
+  var h='<div class="card'+(open?'':' lock')+'"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div><div class="lab">'+esc(lv.who)+'</div><h3>'+esc(lv.name)+'</h3></div>'+
+    (passed?'<span class="chip good">Gate passed</span>':(open?'<span class="chip">Open</span>':'<span class="chip warn">Locked · pass the gate before this</span>'))+'</div>';
+  if(!open){h+='<p class="dim small" style="margin:8px 0 0">This level opens when you pass the gate on the level before it, or when your placement puts you here.</p></div>';return h}
+  if(lv.lessons.length){
+    h+='<div style="margin-top:8px">';
+    lv.lessons.forEach(function(l,i){
+      var on=lessonDone(tr.id,l.id);
+      if(l.written)h+='<div class="it'+(on?' done':'')+'"><span class="ck" aria-hidden="true" style="pointer-events:none;'+(on?'background:var(--accent);border-color:var(--accent)':'')+'"></span><div class="tx"><div class="ti"><a href="#" data-act="openlesson" data-k="'+tr.id+':'+lv.id+':'+l.id+'">'+(i+1)+'. '+esc(l.title)+'</a></div><span class="chip good">Written</span></div></div>';
+      else h+='<div class="it" style="opacity:.55"><span class="ck" aria-hidden="true" style="pointer-events:none"></span><div class="tx"><div class="ti" style="font-weight:400">'+(i+1)+'. '+esc(l.title)+'</div><span class="chip">Phase 2</span></div></div>';
+    });
+    h+='</div>';
+  }else h+='<p class="dim small" style="margin:8px 0 0">Lessons for this level are planned for phase 2. The gate below is already set.</p>';
+  h+=gateBlock(tr,lv,c);
+  h+='</div>';
+  return h;
+}
+
+function gateBlock(tr,lv,c){
+  var g=lv.gate,gk=tr.id+':'+lv.id,passed=!!S.gates[gk],ticks=S.gateChecks[gk]||{};
+  var allTicked=g.checks.every(function(_,i){return ticks[i]});
+  var lessonsReady=c.all>0&&c.d===c.t&&c.t===c.all; /* every lesson in the level written and done */
+  var h='<div class="part" style="margin-top:12px"><div class="lab">Level gate</div><h3>'+esc(g.title)+'</h3><p class="dim small" style="margin:2px 0 6px">'+esc(g.text)+'</p>';
+  g.checks.forEach(function(t,i){
+    h+='<div class="it'+(ticks[i]?' done':'')+'"><button class="ck" role="checkbox" aria-checked="'+(!!ticks[i])+'" data-act="gcheck" data-k="'+gk+'" data-i="'+i+'" aria-label="'+esc(t)+'"></button><div class="tx"><span class="ti" style="font-weight:400">'+esc(t)+'</span></div></div>';
+  });
+  if(passed)h+='<div class="msg ok">Gate passed. The next level is open.</div><button class="btn ghost sm" style="margin-top:8px" data-act="ungate" data-k="'+gk+'">Undo</button>';
+  else{
+    var ok=allTicked&&lessonsReady;
+    h+='<div style="margin-top:10px"><button class="btn" data-act="gate" data-k="'+gk+'"'+(ok?'':' disabled')+'>Mark the gate passed</button></div>';
+    if(!lessonsReady)h+='<div class="msg warn">The gate opens once every lesson in this level is written and done. '+(c.all?c.d+' of '+c.all+' are done so far; the rest are written in phase 2.':'The lessons for this level are written in phase 2.')+' Ticking videos is not enough: this gate needs a real piece of work.</div>';
+  }
+  h+='</div>';
+  return h;
+}
+
+function viewLesson(){
+  var p=ui.lesson.split(':'),tr=TRACKS.filter(function(t){return t.id===p[0]})[0],lv=levelOf(tr,p[1]);
+  var L=L1,st=lessonState(p[0],p[2]),h='';
+  h+='<button class="back" data-act="back">‹ '+esc(tr.name)+' · '+esc(lv.name)+'</button>';
+  h+='<div class="card"><div class="lab">Lesson · about '+L.mins+' min</div><h2>'+esc(L.title)+'</h2>'+(st.done?'<span class="chip good" style="margin-top:6px">Done</span>':'')+
+     '<div style="margin-top:12px"><div class="lab" style="margin-bottom:4px">Reading layer</div><div class="seg" role="group"><button data-act="depth" data-k="plain" aria-pressed="'+(S.depth==='plain')+'">Plain English</button><button data-act="depth" data-k="deep" aria-pressed="'+(S.depth==='deep')+'">Go deeper</button></div></div></div>';
+  h+='<div class="card bd">';
+  L.parts.forEach(function(pt,i){
+    h+='<div class="part"><div class="lab">'+(i+1)+' of 5</div><h3>'+esc(pt.h)+'</h3><p class="layer-note">'+(S.depth==='deep'?'Deeper version: numbers, settings and reasons.':'Plain version: written for someone who has never done this.')+'</p>'+(S.depth==='deep'?pt.deep:pt.plain)+'</div>';
+  });
+  h+=checkPart(p[0],p[2],st);
+  h+='<div class="part"><div class="lab">Resources</div><h3>Read and open</h3><p class="layer-note">Each one was opened and loaded for free on 20 Oct 2026.</p>';
+  L.res.forEach(function(r){
+    var key=p[0]+':'+p[2]+':'+r.id,on=S.done[key];
+    h+='<div class="it'+(on?' done':'')+'"><button class="ck" role="checkbox" aria-checked="'+(!!on)+'" aria-label="Done: '+esc(r.title)+'" data-act="res" data-k="'+esc(key)+'"></button><div class="tx"><div class="ti"><a href="'+esc(r.url)+'" target="_blank" rel="noopener">'+esc(r.title)+'</a></div><div class="wh">'+esc(r.what)+'</div><span class="chip">'+esc(r.type)+'</span></div></div>';
+  });
+  h+='</div></div>';
+  $('v-tracks').innerHTML=h;
+}
+
+function checkPart(trId,lid,st){
+  var key=trId+':'+lid,h='<div class="part"><div class="lab">5 of 5</div><h3>Check</h3><p class="layer-note">This tells you whether you did it right. Fill it in after the exercise.</p>';
+  h+='<div class="it'+(st.ex?' done':'')+'"><button class="ck" role="checkbox" aria-checked="'+(!!st.ex)+'" data-act="lfield" data-k="'+key+'" data-f="ex" aria-label="I did the exercise"></button><div class="tx"><span class="ti" style="font-weight:400">I did the exercise on a real project</span></div></div>';
+  h+='<div class="it'+(st.noclip?' done':'')+'"><button class="ck" role="checkbox" aria-checked="'+(!!st.noclip)+'" data-act="lfield" data-k="'+key+'" data-f="noclip" aria-label="No red"></button><div class="tx"><span class="ti" style="font-weight:400">The output channel never turned red</span></div></div>';
+  h+='<div class="it'+(st.loud?' done':'')+'"><button class="ck" role="checkbox" aria-checked="'+(!!st.loud)+'" data-act="lfield" data-k="'+key+'" data-f="loud" aria-label="Loudest source"></button><div class="tx"><span class="ti" style="font-weight:400">The loudest source (kick or snare) peaks between −18 and −12 dBFS, or was already lower</span></div></div>';
+  h+='<label class="f" style="display:block;margin-top:10px"><span class="lab">Highest peak on the output channel (dBFS, e.g. −6.5)</span><input type="text" inputmode="decimal" id="peakIn" value="'+esc(st.peak||'')+'" placeholder="−6.5"></label>';
+  h+='<div style="margin-top:10px"><button class="btn" data-act="lcheck" data-k="'+key+'">Check my answer</button></div>';
+  if(st.msg)h+='<div class="msg '+st.msgk+'">'+st.msg+'</div>';
+  if(st.done)h+='<div style="margin-top:10px"><button class="btn ghost sm" data-act="lundo" data-k="'+key+'">Mark not done</button></div>';
+  return h+'</div>';
+}
+
+function viewSongs(){
+  var h='<div class="card"><div class="lab">Your songs</div><h2>'+songsDone()+' of 3 played through on both</h2><p class="dim small" style="margin:2px 0 0">Each list is ranked from easiest to hardest. That ranking is my estimate, so reorder it with the arrows once you have tried them. Add anything you want to learn at the bottom. Tutorial links are checked and added in phase 3.</p></div>';
+  LISTS.forEach(function(L){
+    var items=S.songs.filter(function(s){return s.list===L.id});
+    h+='<div class="card"><h3>'+esc(L.name)+'</h3><div class="dim small">'+esc(L.note)+'</div><div style="margin-top:6px">';
+    if(!items.length)h+='<div class="empty">No songs here yet.</div>';
+    items.forEach(function(s,i){
+      var g=S.stage[s.id]||{};
+      h+='<div class="songrow"><span class="rk">'+(i+1)+'</span><div class="tx"><b>'+esc(s.title)+'</b><div class="dim small">'+esc(s.artist||'')+'</div><div class="stg">'+
+        ['piano','drums'].map(function(ins){return '<label class="f"><span class="lab">'+(ins==='piano'?'Piano':'Drums')+'</span><select data-act="stage" data-k="'+s.id+'" data-i="'+ins+'">'+STAGES.map(function(n,j){return '<option value="'+j+'"'+((g[ins]|0)===j?' selected':'')+'>'+n+'</option>'}).join('')+'</select></label>'}).join('')+
+        '</div></div><div class="mv"><button data-act="mv" data-k="'+s.id+'" data-d="-1" aria-label="Easier">▲</button><button data-act="mv" data-k="'+s.id+'" data-d="1" aria-label="Harder">▼</button></div></div>';
+    });
+    h+='</div></div>';
+  });
+  h+='<div class="card"><h3>Add a song</h3><div class="row" style="margin-top:8px"><label class="f"><span class="lab">Title</span><input type="text" id="sgT" value="'+esc(ui.sdraft.title)+'"></label><label class="f"><span class="lab">Artist</span><input type="text" id="sgA" value="'+esc(ui.sdraft.artist)+'"></label><label class="f"><span class="lab">List</span><select id="sgL">'+LISTS.map(function(L){return '<option value="'+L.id+'"'+(ui.sdraft.list===L.id?' selected':'')+'>'+esc(L.name)+'</option>'}).join('')+'</select></label></div><div style="margin-top:12px"><button class="btn" data-act="addsong">Add to the bottom of the list</button></div></div>';
+  $('v-songs').innerHTML=h;
+}
+
+function practiceLi(e){
+  return '<li><span class="ty">'+esc(e.instr)+'</span><span class="tx"><b>'+esc(e.min)+' min</b> '+esc(e.note||'')+'<div class="dt">'+nice(parse(e.d))+'</div></span><button class="btn ghost sm" data-act="delp" data-k="'+e.t+'">Delete</button></li>';
+}
+function mixLi(e){
+  var st='';for(var i=1;i<=5;i++)st+=(i<=e.rate?'★':'☆');
+  return '<li><span class="ty">Mix</span><span class="tx"><b>'+esc(e.song)+'</b> '+st+'<div class="dim small">Reference: '+esc(e.ref||'none')+'</div><div class="dim small">Fix next time: '+esc(e.fix||'')+'</div><div class="dt">'+nice(parse(e.d))+'</div></span><button class="btn ghost sm" data-act="delm" data-k="'+e.t+'">Delete</button></li>';
+}
+function viewLog(){
+  var h='<div class="card"><h3>Log practice</h3><div class="row" style="margin-top:8px"><label class="f"><span class="lab">Instrument</span><select id="pcI">'+['Piano','Drums','Mixing','MIDI and beats','Live sound','Ear training','Bass','Guitar','Violin'].map(function(n){return '<option'+(ui.pdraft.instr===n?' selected':'')+'>'+n+'</option>'}).join('')+'</select></label><label class="f"><span class="lab">Minutes</span><input type="number" id="pcM" min="1" max="600" inputmode="numeric" value="'+esc(ui.pdraft.min)+'" placeholder="30"></label></div><label class="f" style="display:block;margin-top:10px"><span class="lab">What you worked on</span><input type="text" id="pcN" value="'+esc(ui.pdraft.note)+'" placeholder="e.g. chorus, hands together"></label><div style="margin-top:12px"><button class="btn" data-act="addp">Add</button></div></div>';
+  h+='<div class="card"><h3>Log a mix</h3><div class="dim small">After each mix: the reference you compared with, one thing to fix next time, and a rating.</div><div class="row" style="margin-top:8px"><label class="f"><span class="lab">Song</span><input type="text" id="mxS" value="'+esc(ui.mdraft.song)+'"></label><label class="f"><span class="lab">Reference track</span><input type="text" id="mxR" value="'+esc(ui.mdraft.ref)+'" placeholder="e.g. Graves into Gardens"></label></div><label class="f" style="display:block;margin-top:10px"><span class="lab">One thing to fix next time</span><input type="text" id="mxF" value="'+esc(ui.mdraft.fix)+'"></label><div class="stars" style="margin-top:8px">'+[1,2,3,4,5].map(function(i){return '<button data-act="rate" data-k="'+i+'" class="'+(ui.mdraft.rate>=i?'on':'')+'" aria-label="'+i+' stars">★</button>'}).join('')+'</div><div style="margin-top:10px"><button class="btn" data-act="addm">Add mix</button></div><div class="dim small" style="margin-top:10px"><b>Suggested references:</b> Elevation Worship, <i>Graves into Gardens</i> (your church\'s sound) and Hillsong Worship, <i>What a Beautiful Name</i> (a wider, polished live-worship mix). Compare with whatever you already stream. Do not rip or download them.</div></div>';
+  h+='<div class="card"><h3>Practice history</h3>'+(S.practice.length?'<ul class="log">'+S.practice.slice(0,100).map(practiceLi).join('')+'</ul>':'<div class="empty">Nothing logged yet.</div>')+'</div>';
+  h+='<div class="card"><h3>Mix history</h3>'+(S.mixes.length?'<ul class="log">'+S.mixes.slice(0,100).map(mixLi).join('')+'</ul>':'<div class="empty">No mixes logged yet.</div>')+'</div>';
+  $('v-log').innerHTML=h;
+}
+
+function render(){
+  var m=$('pcI');if(m){ui.pdraft.instr=m.value;ui.pdraft.min=$('pcM').value;ui.pdraft.note=$('pcN').value}
+  var x=$('mxS');if(x){ui.mdraft.song=x.value;ui.mdraft.ref=$('mxR').value;ui.mdraft.fix=$('mxF').value}
+  var g=$('sgT');if(g){ui.sdraft.title=g.value;ui.sdraft.artist=$('sgA').value;ui.sdraft.list=$('sgL').value}
+  viewHome();viewTracks();viewSongs();viewLog();
+}
+
+/* =====================================================================
+   EVENTS
+   ===================================================================== */
+var confirmDel=null;
+function setTab(n){
+  ui.tab=n;
+  ['home','tracks','songs','log'].forEach(function(k){$('v-'+k).hidden=k!==n});
+  document.querySelectorAll('[data-tab]').forEach(function(b){b.setAttribute('aria-selected',String(b.dataset.tab===n))});
+  window.scrollTo(0,0);
+}
+function nz(v){return parseFloat(String(v).replace('−','-').replace(',','.'))}
+
+document.addEventListener('click',function(e){
+  var tb=e.target.closest('[data-tab]');
+  if(tb){ui.lesson=null;setTab(tb.dataset.tab);render();return}
+  var b=e.target.closest('[data-act]');if(!b||b.tagName==='SELECT')return;
+  if(b.tagName==='A')e.preventDefault();
+  var a=b.dataset.act,k=b.dataset.k;
+  if(a==='menu'){ui.menu=ui.menu===+k?null:+k;render()}
+  else if(a==='track'){ui.track=k;render();window.scrollTo(0,0)}
+  else if(a==='back'){if(ui.lesson)ui.lesson=null;else ui.track=null;render();window.scrollTo(0,0)}
+  else if(a==='openlesson'){var p=k.split(':');ui.track=p[0];ui.lesson=k;setTab('tracks');render();window.scrollTo(0,0)}
+  else if(a==='depth'){S.depth=k;save();render()}
+  else if(a==='res'){if(S.done[k])delete S.done[k];else S.done[k]=1;save();render()}
+  else if(a==='ans'){var tid='mixing',pl=S.place[tid]||{a:[]};pl.a=pl.a||[];pl.a[+b.dataset.q]=+b.dataset.i;S.place[tid]=pl;save();render()}
+  else if(a==='score'){
+    var pl2=S.place[k]||{a:[]},sc=0;PLACE_Q.forEach(function(q,i){if(pl2.a[i]===q.a)sc++});
+    S.place[k]={a:pl2.a,score:sc,level:sc>=7?'p':(sc>=4?'w':'f'),done:true,date:ymd(TODAY)};save();render();
+  }
+  else if(a==='replace'){S.place[k]={a:[]};save();render()}
+  else if(a==='setstart'){var cur=S.place.mixing||{a:[]};cur.level=k;S.place.mixing=cur;save();render()}
+  else if(a==='lfield'){var st=S.lessons[k]||{};st[b.dataset.f]=!st[b.dataset.f];S.lessons[k]=st;save();render()}
+  else if(a==='lcheck'){
+    var s2=S.lessons[k]||{},pk=$('peakIn')?$('peakIn').value.trim():(s2.peak||'');s2.peak=pk;
+    var v=nz(pk);
+    if(pk===''||isNaN(v)){s2.msg='Type the highest peak you saw on the output channel, for example −6.5.';s2.msgk='warn';s2.done=false}
+    else if(v>0){s2.msg='A peak above 0 dBFS means the output is clipping. Lower the faders by that many dB, clear the peak display and play the loud part again.';s2.msgk='bad';s2.done=false}
+    else if(!s2.ex){s2.msg='Do the exercise on a real project first, then tick it.';s2.msgk='warn';s2.done=false}
+    else if(!s2.noclip){s2.msg='Tick that the output never turned red, or lower the levels until it does not.';s2.msgk='warn';s2.done=false}
+    else if(!s2.loud){s2.msg='Check the loudest source: it should peak between −18 and −12 dBFS, or already be lower. Tick it when that is true.';s2.msgk='warn';s2.done=false}
+    else if(v>-6){s2.msg='No clipping, but your output peaks at '+pk+' dBFS, which is tighter than the −6 dBFS rule of thumb. Pull the faders down 2 to 3 dB and try again. It is a rule of thumb, but you will thank yourself at the mastering stage.';s2.msgk='warn';s2.done=false}
+    else{s2.msg='Passed. Output peaks at '+pk+' dBFS with room to spare and no clipping. That is a clean starting point for every mix.';s2.msgk='ok';s2.done=true}
+    S.lessons[k]=s2;save();render();
+  }
+  else if(a==='lundo'){var s3=S.lessons[k]||{};s3.done=false;s3.msg='';S.lessons[k]=s3;save();render()}
+  else if(a==='gcheck'){var t=S.gateChecks[k]||{};t[b.dataset.i]=!t[b.dataset.i];S.gateChecks[k]=t;save();render()}
+  else if(a==='gate'){S.gates[k]=1;save();render()}
+  else if(a==='ungate'){delete S.gates[k];save();render()}
+  else if(a==='mv'){
+    var i=S.songs.findIndex(function(s){return s.id===k});if(i<0)return;
+    var list=S.songs[i].list,d=+b.dataset.d,j=i+d;
+    while(j>=0&&j<S.songs.length&&S.songs[j].list!==list)j+=d;
+    if(j>=0&&j<S.songs.length){var tmp=S.songs[i];S.songs[i]=S.songs[j];S.songs[j]=tmp;save();render()}
+  }
+  else if(a==='addsong'){
+    var ti=$('sgT').value.trim();if(!ti)return;
+    S.songs.push({id:'c'+Date.now(),list:$('sgL').value,title:ti,artist:$('sgA').value.trim(),custom:1});
+    ui.sdraft={title:'',artist:'',list:$('sgL').value};save();render();
+  }
+  else if(a==='rate'){ui.mdraft.rate=+k;
+    var x=$('mxS');if(x){ui.mdraft.song=x.value;ui.mdraft.ref=$('mxR').value;ui.mdraft.fix=$('mxF').value}
+    viewLog()}
+  else if(a==='addp'){
+    var mn=parseInt($('pcM').value,10);if(!(mn>0))return;
+    S.practice.unshift({t:Date.now(),d:ymd(new Date()),instr:$('pcI').value,min:mn,note:$('pcN').value.trim()});
+    if(S.practice.length>400)S.practice.length=400;
+    ui.pdraft={instr:$('pcI').value,min:'',note:''};save();render();
+  }
+  else if(a==='addm'){
+    var sg=$('mxS').value.trim();if(!sg)return;
+    S.mixes.unshift({t:Date.now(),d:ymd(new Date()),song:sg,ref:$('mxR').value.trim(),fix:$('mxF').value.trim(),rate:ui.mdraft.rate|0});
+    if(S.mixes.length>200)S.mixes.length=200;
+    ui.mdraft={song:'',ref:'',fix:'',rate:0};save();render();
+  }
+  else if(a==='delp'||a==='delm'){
+    if(confirmDel!==a+k){confirmDel=a+k;b.textContent='Tap again';return}
+    confirmDel=null;
+    if(a==='delp')S.practice=S.practice.filter(function(x){return String(x.t)!==k});
+    else S.mixes=S.mixes.filter(function(x){return String(x.t)!==k});
+    save();render();
+  }
+});
+document.addEventListener('change',function(e){
+  var s=e.target;
+  if(s&&s.dataset&&s.dataset.act==='stage'){
+    var g=S.stage[s.dataset.k]||{};g[s.dataset.i]=+s.value;S.stage[s.dataset.k]=g;save();render();
+  }
+});
+
+/* =====================================================================
+   BOOT
+   ===================================================================== */
+var l0=lsGet();if(l0)S=norm(l0);
+render();setSync();
+initStore().then(function(){render()});
+})();
+</script>
+</body>
+</html>
